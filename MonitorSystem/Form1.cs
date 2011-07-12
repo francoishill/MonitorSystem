@@ -32,7 +32,8 @@ namespace MonitorSystem
         public static readonly string LocalAppDataPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\" + "FJH" + "\\" + ThisAppName;
         public static string SavedListFileName = LocalAppDataPath + "\\EmailAndPasswordList.fjset";
 
-        private const string ServerAddress = "http://localhost";//"https://fjh.co.za";
+        //private const string ServerAddress = "http://localhost";
+        private const string ServerAddress = "https://fjh.co.za";
         private const string doWorkAddress = ServerAddress + "/other/codeigniter/index.php/desktopapp";
         private string Username = "f";
         private string Password = "f";
@@ -183,11 +184,13 @@ namespace MonitorSystem
                             if (NextAction == NextActionEnum.Username)
                             {
                                 Clipboard.SetText(tmpUsername);
+                                notifyIcon1.ShowBalloonTip(300, "Ready", "Paste ready", ToolTipIcon.Info);
                                 if (tmpPassword.Length > 0) NextAction = NextActionEnum.Password;
                             }
                             else if (NextAction == NextActionEnum.Password)
                             {
                                 Clipboard.SetText(tmpPassword);
+                                notifyIcon1.ShowBalloonTip(300, "Ready", "Paste ready", ToolTipIcon.Info);
                                 NextAction = NextActionEnum.Username;
                                 ClearClipboardAfterMilliseconds(1000);
                             }
