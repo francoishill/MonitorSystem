@@ -179,22 +179,28 @@ namespace MonitorSystem
                         string tmpRegex = DecodeStringHex(RegexUsernamePassword.Split('|')[0]);
                         string tmpUsername = DecodeStringHex(RegexUsernamePassword.Split('|')[1]);
                         string tmpPassword = DecodeStringHex(RegexUsernamePassword.Split('|')[2]);
-                        if (Regex.IsMatch(activeTitle, tmpRegex, RegexOptions.IgnoreCase | RegexOptions.Multiline))
+
+                        string currText = Clipboard.GetText();
+                        if ((NextAction == NextActionEnum.Username && currText != tmpUsername)
+                            || (NextAction == NextActionEnum.Password && currText != tmpPassword))
                         {
-                            if (NextAction == NextActionEnum.Username)
+                            if (Regex.IsMatch(activeTitle, tmpRegex, RegexOptions.IgnoreCase | RegexOptions.Multiline))
                             {
-                                Clipboard.SetText(tmpUsername);
-                                notifyIcon1.ShowBalloonTip(300, "Ready", "Paste ready", ToolTipIcon.Info);
-                                if (tmpPassword.Length > 0) NextAction = NextActionEnum.Password;
+                                if (NextAction == NextActionEnum.Username)
+                                {
+                                    Clipboard.SetText(tmpUsername);
+                                    notifyIcon1.ShowBalloonTip(300, "Ready", "Paste ready", ToolTipIcon.Info);
+                                    if (tmpPassword.Length > 0) NextAction = NextActionEnum.Password;
+                                }
+                                else if (NextAction == NextActionEnum.Password)
+                                {
+                                    Clipboard.SetText(tmpPassword);
+                                    notifyIcon1.ShowBalloonTip(300, "Ready", "Paste ready", ToolTipIcon.Info);
+                                    NextAction = NextActionEnum.Username;
+                                    ClearClipboardAfterMilliseconds(1000);
+                                }
+                                break;
                             }
-                            else if (NextAction == NextActionEnum.Password)
-                            {
-                                Clipboard.SetText(tmpPassword);
-                                notifyIcon1.ShowBalloonTip(300, "Ready", "Paste ready", ToolTipIcon.Info);
-                                NextAction = NextActionEnum.Username;
-                                ClearClipboardAfterMilliseconds(1000);
-                            }
-                            break;
                         }
                     }
 
