@@ -32,8 +32,8 @@ namespace MonitorSystem
         public static readonly string LocalAppDataPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\" + "FJH" + "\\" + ThisAppName;
         public static string SavedListFileName = LocalAppDataPath + "\\EmailAndPasswordList.fjset";
 
-        //private const string ServerAddress = "http://localhost";
-        private const string ServerAddress = "https://fjh.co.za";
+        private const string ServerAddress = "http://localhost";
+        //private const string ServerAddress = "https://fjh.co.za";
         private const string doWorkAddress = ServerAddress + "/other/codeigniter/index.php/desktopapp";
         private string Username = "f";
         private string Password = "f";
@@ -455,6 +455,32 @@ namespace MonitorSystem
             }
         }
 
+        //PerformFunctionSeperateThread((Func<int, string>)delegate(int i) { return ""; }, null);
+        public object PerformFunctionSeperateThread(Delegate method, object[] param)
+        {
+            object res = new object();
+            System.Threading.Thread th = new System.Threading.Thread(() =>
+            {
+                res = method.DynamicInvoke(param);
+            });
+            th.Start();
+            //th.Join();
+            while (th.IsAlive) { Application.DoEvents(); }
+            return res;
+        }
+
+        //PerformVoidFunctionSeperateThread(() => { MessageBox.Show("Test"); MessageBox.Show("Test1"); });
+        public void PerformVoidFunctionSeperateThread(MethodInvoker method)
+        {
+            System.Threading.Thread th = new System.Threading.Thread(() =>
+            {
+                method.Invoke();
+            });
+            th.Start();
+            //th.Join();
+            while (th.IsAlive) { Application.DoEvents(); }
+        }
+
         private void linkLabelGetPrivateKey_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             try
@@ -462,12 +488,11 @@ namespace MonitorSystem
                 toolStripStatusLabelCurrentStatus.Text = "Obtaining pvt key...";
                 //See App.xaml.cs for bypassing invalid SSL certificates
                 string tmpkey = "";
-                System.Threading.Thread th = new System.Threading.Thread(delegate()
+
+                PerformVoidFunctionSeperateThread(() =>
                 {
                     tmpkey = PostPHP(ServerAddress + "/generateprivatekey.php", "username=" + Username + "&password=" + Password);
                 });
-                th.Start();
-                while (th.IsAlive) { Application.DoEvents(); }
 
                 string tmpSuccessKeyString = "Success: Key=";
                 if (tmpkey != null && tmpkey.Length > 0 && tmpkey.ToUpper().StartsWith(tmpSuccessKeyString.ToUpper()))
@@ -482,19 +507,27 @@ namespace MonitorSystem
                 try
                 {
                     if (Username != null && Username.Length > 0
-                        && tmpkey != null && tmpkey.Length > 0)
+                                   && tmpkey != null && tmpkey.Length > 0)
                     {
-                        //string username = "f";
-                        //string query = PhpEncryption.SimpleTripleDesEncrypt("_att_" + "un=" + Username, tmpkey);
-                        addrequest = (HttpWebRequest)WebRequest.Create(doWorkAddress + "/dotask/" + PhpEncryption.SimpleTripleDesEncrypt(Username, "123456789abcdefghijklmno") + "/" + PhpEncryption.SimpleTripleDesEncrypt("getlist", tmpkey));// + "/");
-                        addresponse = (HttpWebResponse)addrequest.GetResponse();
+                        string encryptedstring;
+                        string decryptedstring = "";
 
-                        input = new StreamReader(addresponse.GetResponseStream());
-                        string encryptedstring = input.ReadToEnd();
+                        PerformVoidFunctionSeperateThread(() =>
+                        {
+                            //string username = "f";
+                            //string query = PhpEncryption.SimpleTripleDesEncrypt("_att_" + "un=" + Username, tmpkey);
+                            addrequest = (HttpWebRequest)WebRequest.Create(doWorkAddress + "/dotask/" + PhpEncryption.SimpleTripleDesEncrypt(Username, "123456789abcdefghijklmno") + "/" + PhpEncryption.SimpleTripleDesEncrypt("getlist", tmpkey));// + "/");
+                            addresponse = (HttpWebResponse)addrequest.GetResponse();
 
-                        string decryptedstring = PhpEncryption.SimpleTripleDesDecrypt(encryptedstring, tmpkey);
-                        //textBoxLogs.Text = "";
-                        //appendLogTextbox(decryptedstring);
+                            input = new StreamReader(addresponse.GetResponseStream());
+                            encryptedstring = input.ReadToEnd();
+
+                            decryptedstring = PhpEncryption.SimpleTripleDesDecrypt(encryptedstring, tmpkey);
+                            //textBoxLogs.Text = "";
+                            //appendLogTextbox(decryptedstring);
+                        });
+
+                        treeViewTodolist.Nodes.Clear();
 
                         DataSet ds = new DataSet("Todolist");
                         DataTable dt = new DataTable("Todotable");
@@ -505,10 +538,35 @@ namespace MonitorSystem
                         dt.Columns.Add("Complete");//, typeof(bool));
                         foreach (string line in decryptedstring.Split("\n".ToCharArray(), StringSplitOptions.RemoveEmptyEntries))
                             if (line.Trim('\t', '\n', '\r', ' ', '\0').Length > 0)
+                            {
                                 dt.Rows.Add(line.Split('\t')); ;
+                                AddTabSeperatedLineToTreeview(line);
+                            }
                         ds.Tables.Add(dt);
                         dataGridView1.DataSource = ds;
                         dataGridView1.DataMember = "Todotable";
+
+                        PerformVoidFunctionSeperateThread(() =>
+                        {
+                            //string username = "f";
+                            //string query = PhpEncryption.SimpleTripleDesEncrypt("_att_" + "un=" + Username, tmpkey);
+                            addrequest = (HttpWebRequest)WebRequest.Create(doWorkAddress + "/dotask/" +
+                                PhpEncryption.SimpleTripleDesEncrypt(Username, "123456789abcdefghijklmno") + "/" +
+                                PhpEncryption.SimpleTripleDesEncrypt("addtolist", tmpkey) + "/" +
+                                PhpEncryption.SimpleTripleDesEncrypt("testcatC#\ttestsubC#\ttestitemsC#\ttestdescC#", tmpkey));// + "/");
+                            try
+                            {
+                                addresponse = (HttpWebResponse)addrequest.GetResponse();
+                                input = new StreamReader(addresponse.GetResponseStream());
+                                encryptedstring = input.ReadToEnd();
+
+                                decryptedstring = PhpEncryption.SimpleTripleDesDecrypt(encryptedstring, tmpkey);
+                                MessageBox.Show(this, decryptedstring);
+                                //textBoxLogs.Text = "";
+                                //appendLogTextbox(decryptedstring);
+                            }
+                            catch (Exception exc) { MessageBox.Show(this, "Exception:" + exc.Message, "Exception", MessageBoxButtons.OK, MessageBoxIcon.Error); }
+                        });
                     }
                 }
                 catch (Exception exc)
@@ -531,6 +589,22 @@ namespace MonitorSystem
                 System.Windows.Forms.MessageBox.Show(ex.Message);
                 return;
             }
+        }
+
+        private void AddTabSeperatedLineToTreeview(string line)
+        {
+            if (line.Contains('\t') && line.Split('\t').Length >= 4)
+            {
+                string tmpCategory = line.Split('\t')[0];
+                string tmpSubcat = line.Split('\t')[1];
+                string tmpItems = line.Split('\t')[2];
+                string tmpDescription = line.Split('\t')[3];
+                TreeNode tmpItemsNode = new TreeNode(tmpItems) { Tag = tmpDescription };
+                if (!treeViewTodolist.Nodes.ContainsKey(tmpCategory)) treeViewTodolist.Nodes.Add(tmpCategory, tmpCategory);
+                if (!treeViewTodolist.Nodes[tmpCategory].Nodes.ContainsKey(tmpSubcat)) treeViewTodolist.Nodes[tmpCategory].Nodes.Add(tmpSubcat, tmpSubcat);
+                treeViewTodolist.Nodes[tmpCategory].Nodes[tmpSubcat].Nodes.Add(tmpItemsNode);
+            }
+            else MessageBox.Show("The following line is invalid todo line: " + line);
         }
 
         /// <summary>
@@ -591,6 +665,13 @@ namespace MonitorSystem
         private void appendLogTextbox(string str)
         {
             textBoxLogs.Text += (textBoxLogs.Text.Length > 0 ? Environment.NewLine : "") + str;
+        }
+
+        private void treeViewTodolist_AfterSelect(object sender, TreeViewEventArgs e)
+        {
+            textBoxDescription.Clear();
+            if (e.Node != null && e.Node.Tag != null)
+                textBoxDescription.Text = e.Node.Tag.ToString();
         }
     }
 
