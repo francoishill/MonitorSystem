@@ -165,6 +165,8 @@ namespace MonitorSystem
             //notifyIcon1.ShowBalloonTip(100, "Mouse button pressed", e.Button.ToString(), ToolTipIcon.Info);
         }
 
+        string LastActiveTitle = "";
+        bool WasKeyLiftedAfterPreviousDown = true;
         void actHook_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.LControlKey)
@@ -173,6 +175,8 @@ namespace MonitorSystem
                 if (activeTitle != null)
                 {
                     activeTitle = activeTitle.Replace("\n", "").Replace("\r", "");
+                    if (LastActiveTitle != activeTitle) NextAction = NextActionEnum.Username;
+                    LastActiveTitle = activeTitle;
 
                     foreach (string RegexUsernamePassword in currentEmailPasswordAndRegexList)
                     {
@@ -180,23 +184,26 @@ namespace MonitorSystem
                         string tmpUsername = DecodeStringHex(RegexUsernamePassword.Split('|')[1]);
                         string tmpPassword = DecodeStringHex(RegexUsernamePassword.Split('|')[2]);
 
-                        string currText = Clipboard.GetText();
-                        if ((NextAction == NextActionEnum.Username && currText != tmpUsername)
-                            || (NextAction == NextActionEnum.Password && currText != tmpPassword))
+                        //string currText = Clipboard.GetText();
+                        if (Regex.IsMatch(activeTitle, tmpRegex, RegexOptions.IgnoreCase | RegexOptions.Multiline))
                         {
-                            if (Regex.IsMatch(activeTitle, tmpRegex, RegexOptions.IgnoreCase | RegexOptions.Multiline))
+                            //if ((NextAction == NextActionEnum.Username && currText != tmpUsername)
+                            //    || (NextAction == NextActionEnum.Password && currText != tmpPassword))
+                            if (WasKeyLiftedAfterPreviousDown)
                             {
                                 if (NextAction == NextActionEnum.Username)
                                 {
                                     Clipboard.SetText(tmpUsername);
-                                    notifyIcon1.ShowBalloonTip(300, "Ready", "Paste ready", ToolTipIcon.Info);
+                                    notifyIcon1.ShowBalloonTip(300, "Ready " + NextAction.ToString(), "Paste ready", ToolTipIcon.Info);
                                     if (tmpPassword.Length > 0) NextAction = NextActionEnum.Password;
+                                    WasKeyLiftedAfterPreviousDown = false;
                                 }
                                 else if (NextAction == NextActionEnum.Password)
                                 {
                                     Clipboard.SetText(tmpPassword);
-                                    notifyIcon1.ShowBalloonTip(300, "Ready", "Paste ready", ToolTipIcon.Info);
+                                    notifyIcon1.ShowBalloonTip(300, "Ready" + NextAction.ToString(), "Paste ready", ToolTipIcon.Info);
                                     NextAction = NextActionEnum.Username;
+                                    WasKeyLiftedAfterPreviousDown = false;
                                     ClearClipboardAfterMilliseconds(1000);
                                 }
                                 break;
@@ -259,6 +266,7 @@ namespace MonitorSystem
         {
             if (e.KeyCode == Keys.LControlKey)
             {
+                WasKeyLiftedAfterPreviousDown = true;
                 string activeTitle = GetActiveWindowTitle();
                 if (activeTitle != null)
                 {
