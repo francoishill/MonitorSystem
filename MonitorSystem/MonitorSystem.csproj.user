@@ -2,7 +2,7 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <ProjectView>ProjectFiles</ProjectView>
-    <PublishUrlHistory>F:\Development\Microsoft Visual Studio\Published\MonitorSystem\|C:\Francois\Microsoft Visual 2010\MonitorSystem\</PublishUrlHistory>
+    <PublishUrlHistory>C:\Francois\Microsoft Visual 2010\MonitorSystem\|F:\Development\Microsoft Visual Studio\Published\MonitorSystem\</PublishUrlHistory>
     <InstallUrlHistory />
     <SupportUrlHistory />
     <UpdateUrlHistory />

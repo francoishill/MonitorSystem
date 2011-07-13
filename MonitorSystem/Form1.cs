@@ -32,8 +32,8 @@ namespace MonitorSystem
         public static readonly string LocalAppDataPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\" + "FJH" + "\\" + ThisAppName;
         public static string SavedListFileName = LocalAppDataPath + "\\EmailAndPasswordList.fjset";
 
-        private const string ServerAddress = "http://localhost";
-        //private const string ServerAddress = "https://fjh.co.za";
+        //private const string ServerAddress = "http://localhost";
+        private const string ServerAddress = "https://fjh.co.za";
         private const string doWorkAddress = ServerAddress + "/other/codeigniter/index.php/desktopapp";
         private string Username = "f";
         private string Password = "f";
@@ -481,13 +481,12 @@ namespace MonitorSystem
             while (th.IsAlive) { Application.DoEvents(); }
         }
 
-        private void linkLabelGetPrivateKey_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        private string GetPrivateKey()
         {
             try
             {
                 toolStripStatusLabelCurrentStatus.Text = "Obtaining pvt key...";
-                //See App.xaml.cs for bypassing invalid SSL certificates
-                string tmpkey = "";
+                string tmpkey = null;
 
                 PerformVoidFunctionSeperateThread(() =>
                 {
@@ -500,83 +499,79 @@ namespace MonitorSystem
                     tmpkey = tmpkey.Substring(tmpSuccessKeyString.Length).Replace("\n", "").Replace("\r", "");
                     toolStripStatusLabelCurrentStatus.Text = tmpkey;
                 }
+                return tmpkey;
+            }
+            catch (Exception exc)
+            {
+                appendLogTextbox("Obtain private key exception: " + exc.Message);
+                return null;
+            }
+        }
 
-                HttpWebRequest addrequest = null;
-                HttpWebResponse addresponse = null;
-                StreamReader input = null;
-                try
+        private void linkLabelGetCurrentTodolist_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            try
+            {
+                //See App.xaml.cs for bypassing invalid SSL certificates
+                string tmpkey = GetPrivateKey();
+
+                if (tmpkey != null)
                 {
-                    if (Username != null && Username.Length > 0
-                                   && tmpkey != null && tmpkey.Length > 0)
+                    HttpWebRequest addrequest = null;
+                    HttpWebResponse addresponse = null;
+                    StreamReader input = null;
+                    try
                     {
-                        string encryptedstring;
-                        string decryptedstring = "";
-
-                        PerformVoidFunctionSeperateThread(() =>
+                        if (Username != null && Username.Length > 0
+                                       && tmpkey != null && tmpkey.Length > 0)
                         {
-                            //string username = "f";
-                            //string query = PhpEncryption.SimpleTripleDesEncrypt("_att_" + "un=" + Username, tmpkey);
-                            addrequest = (HttpWebRequest)WebRequest.Create(doWorkAddress + "/dotask/" + PhpEncryption.SimpleTripleDesEncrypt(Username, "123456789abcdefghijklmno") + "/" + PhpEncryption.SimpleTripleDesEncrypt("getlist", tmpkey));// + "/");
-                            addresponse = (HttpWebResponse)addrequest.GetResponse();
+                            string encryptedstring;
+                            string decryptedstring = "";
 
-                            input = new StreamReader(addresponse.GetResponseStream());
-                            encryptedstring = input.ReadToEnd();
-
-                            decryptedstring = PhpEncryption.SimpleTripleDesDecrypt(encryptedstring, tmpkey);
-                            //textBoxLogs.Text = "";
-                            //appendLogTextbox(decryptedstring);
-                        });
-
-                        treeViewTodolist.Nodes.Clear();
-
-                        DataSet ds = new DataSet("Todolist");
-                        DataTable dt = new DataTable("Todotable");
-                        dt.Columns.Add("Category");
-                        dt.Columns.Add("Subcat");
-                        dt.Columns.Add("Items");
-                        dt.Columns.Add("Description");
-                        dt.Columns.Add("Complete");//, typeof(bool));
-                        foreach (string line in decryptedstring.Split("\n".ToCharArray(), StringSplitOptions.RemoveEmptyEntries))
-                            if (line.Trim('\t', '\n', '\r', ' ', '\0').Length > 0)
+                            PerformVoidFunctionSeperateThread(() =>
                             {
-                                dt.Rows.Add(line.Split('\t')); ;
-                                AddTabSeperatedLineToTreeview(line);
-                            }
-                        ds.Tables.Add(dt);
-                        dataGridView1.DataSource = ds;
-                        dataGridView1.DataMember = "Todotable";
-
-                        PerformVoidFunctionSeperateThread(() =>
-                        {
-                            //string username = "f";
-                            //string query = PhpEncryption.SimpleTripleDesEncrypt("_att_" + "un=" + Username, tmpkey);
-                            addrequest = (HttpWebRequest)WebRequest.Create(doWorkAddress + "/dotask/" +
-                                PhpEncryption.SimpleTripleDesEncrypt(Username, "123456789abcdefghijklmno") + "/" +
-                                PhpEncryption.SimpleTripleDesEncrypt("addtolist", tmpkey) + "/" +
-                                PhpEncryption.SimpleTripleDesEncrypt("testcatC#\ttestsubC#\ttestitemsC#\ttestdescC#", tmpkey));// + "/");
-                            try
-                            {
+                                //string username = "f";
+                                //string query = PhpEncryption.SimpleTripleDesEncrypt("_att_" + "un=" + Username, tmpkey);
+                                addrequest = (HttpWebRequest)WebRequest.Create(doWorkAddress + "/dotask/" + PhpEncryption.SimpleTripleDesEncrypt(Username, "123456789abcdefghijklmno") + "/" + PhpEncryption.SimpleTripleDesEncrypt("getlist", tmpkey));// + "/");
                                 addresponse = (HttpWebResponse)addrequest.GetResponse();
+
                                 input = new StreamReader(addresponse.GetResponseStream());
                                 encryptedstring = input.ReadToEnd();
 
                                 decryptedstring = PhpEncryption.SimpleTripleDesDecrypt(encryptedstring, tmpkey);
-                                MessageBox.Show(this, decryptedstring);
                                 //textBoxLogs.Text = "";
                                 //appendLogTextbox(decryptedstring);
-                            }
-                            catch (Exception exc) { MessageBox.Show(this, "Exception:" + exc.Message, "Exception", MessageBoxButtons.OK, MessageBoxIcon.Error); }
-                        });
+                            });
+
+                            treeViewTodolist.Nodes.Clear();
+
+                            DataSet ds = new DataSet("Todolist");
+                            DataTable dt = new DataTable("Todotable");
+                            dt.Columns.Add("Category");
+                            dt.Columns.Add("Subcat");
+                            dt.Columns.Add("Items");
+                            dt.Columns.Add("Description");
+                            dt.Columns.Add("Complete");//, typeof(bool));
+                            foreach (string line in decryptedstring.Split("\n".ToCharArray(), StringSplitOptions.RemoveEmptyEntries))
+                                if (line.Trim('\t', '\n', '\r', ' ', '\0').Length > 0)
+                                {
+                                    dt.Rows.Add(line.Split('\t')); ;
+                                    AddTabSeperatedLineToTreeview(line);
+                                }
+                            ds.Tables.Add(dt);
+                            dataGridView1.DataSource = ds;
+                            dataGridView1.DataMember = "Todotable";
+                        }
                     }
-                }
-                catch (Exception exc)
-                {
-                    appendLogTextbox("Obtain php: " + exc.Message);
-                }
-                finally
-                {
-                    if (addresponse != null) addresponse.Close();
-                    if (input != null) input.Close();
+                    catch (Exception exc)
+                    {
+                        appendLogTextbox("Obtain php: " + exc.Message);
+                    }
+                    finally
+                    {
+                        if (addresponse != null) addresponse.Close();
+                        if (input != null) input.Close();
+                    }
                 }
             }
             catch (UriFormatException ex)
@@ -588,6 +583,63 @@ namespace MonitorSystem
             {
                 System.Windows.Forms.MessageBox.Show(ex.Message);
                 return;
+            }
+        }
+
+        private void linkLabel2_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            string tmpkey = GetPrivateKey();
+
+            if (tmpkey != null)
+            {
+                HttpWebRequest addrequest = null;
+                HttpWebResponse addresponse = null;
+                StreamReader input = null;
+
+                try
+                {
+                    if (Username != null && Username.Length > 0
+                                           && tmpkey != null && tmpkey.Length > 0)
+                    {
+                        string encryptedstring;
+                        string decryptedstring = "";
+
+                        AddTodoItem addform = new AddTodoItem();
+                        if (addform.ShowDialog(this) == System.Windows.Forms.DialogResult.OK)
+                        {
+                            string cat = addform.textBoxCategory.Text;
+                            string subcat = addform.textBoxSubcat.Text;
+                            string items = addform.textBoxItems.Text;
+                            string descr = addform.textBoxDescription.Text;
+                            PerformVoidFunctionSeperateThread(() =>
+                            {
+                                addrequest = (HttpWebRequest)WebRequest.Create(doWorkAddress + "/dotask/" +
+                                    PhpEncryption.SimpleTripleDesEncrypt(Username, "123456789abcdefghijklmno") + "/" +
+                                    PhpEncryption.SimpleTripleDesEncrypt("addtolist", tmpkey) + "/" +
+                                    PhpEncryption.SimpleTripleDesEncrypt(cat + "\t" + subcat + "\t" + items + "\t" + descr, tmpkey));// + "/");
+                                try
+                                {
+                                    addresponse = (HttpWebResponse)addrequest.GetResponse();
+                                    input = new StreamReader(addresponse.GetResponseStream());
+                                    encryptedstring = input.ReadToEnd();
+
+                                    decryptedstring = PhpEncryption.SimpleTripleDesDecrypt(encryptedstring, tmpkey);
+                                    MessageBox.Show(this, decryptedstring);
+                                }
+                                catch (Exception exc) { MessageBox.Show(this, "Exception:" + exc.Message, "Exception", MessageBoxButtons.OK, MessageBoxIcon.Error); }
+                            });
+                        }
+                    }
+                }
+                catch (Exception exc)
+                {
+                    appendLogTextbox("Obtain php: " + exc.Message);
+                }
+                finally
+                {
+                    if (addresponse != null) addresponse.Close();
+                    if (input != null) input.Close();
+                }
             }
         }
 
@@ -671,7 +723,7 @@ namespace MonitorSystem
         {
             textBoxDescription.Clear();
             if (e.Node != null && e.Node.Tag != null)
-                textBoxDescription.Text = e.Node.Tag.ToString();
+                textBoxDescription.Text = e.Node.Tag.ToString().Replace("<br>", "\r\n");
         }
     }
 

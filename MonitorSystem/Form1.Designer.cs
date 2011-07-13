@@ -36,13 +36,14 @@
             this.linkLabel1 = new System.Windows.Forms.LinkLabel();
             this.textBoxLogs = new System.Windows.Forms.TextBox();
             this.linkLabel_AddEmailAndPassword = new System.Windows.Forms.LinkLabel();
-            this.linkLabelGetPrivateKey = new System.Windows.Forms.LinkLabel();
+            this.linkLabelGetCurrentTodolist = new System.Windows.Forms.LinkLabel();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabelCurrentStatus = new System.Windows.Forms.ToolStripStatusLabel();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.treeViewTodolist = new System.Windows.Forms.TreeView();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.textBoxDescription = new System.Windows.Forms.TextBox();
+            this.linkLabel2 = new System.Windows.Forms.LinkLabel();
             this.contextMenuStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
@@ -86,8 +87,8 @@
             // 
             // textBoxLogs
             // 
-            this.textBoxLogs.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.textBoxLogs.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.textBoxLogs.Location = new System.Drawing.Point(15, 65);
             this.textBoxLogs.Multiline = true;
             this.textBoxLogs.Name = "textBoxLogs";
@@ -106,17 +107,17 @@
             this.linkLabel_AddEmailAndPassword.Text = "Add email and password";
             this.linkLabel_AddEmailAndPassword.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel_AddEmailAndPassword_LinkClicked);
             // 
-            // linkLabelGetPrivateKey
+            // linkLabelGetCurrentTodolist
             // 
-            this.linkLabelGetPrivateKey.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.linkLabelGetPrivateKey.AutoSize = true;
-            this.linkLabelGetPrivateKey.Location = new System.Drawing.Point(587, 9);
-            this.linkLabelGetPrivateKey.Name = "linkLabelGetPrivateKey";
-            this.linkLabelGetPrivateKey.Size = new System.Drawing.Size(79, 13);
-            this.linkLabelGetPrivateKey.TabIndex = 3;
-            this.linkLabelGetPrivateKey.TabStop = true;
-            this.linkLabelGetPrivateKey.Text = "Get private key";
-            this.linkLabelGetPrivateKey.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabelGetPrivateKey_LinkClicked);
+            this.linkLabelGetCurrentTodolist.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.linkLabelGetCurrentTodolist.AutoSize = true;
+            this.linkLabelGetCurrentTodolist.Location = new System.Drawing.Point(570, 9);
+            this.linkLabelGetCurrentTodolist.Name = "linkLabelGetCurrentTodolist";
+            this.linkLabelGetCurrentTodolist.Size = new System.Drawing.Size(96, 13);
+            this.linkLabelGetCurrentTodolist.TabIndex = 3;
+            this.linkLabelGetCurrentTodolist.TabStop = true;
+            this.linkLabelGetCurrentTodolist.Text = "Get current todolist";
+            this.linkLabelGetCurrentTodolist.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabelGetCurrentTodolist_LinkClicked);
             // 
             // statusStrip1
             // 
@@ -154,9 +155,9 @@
             // 
             // splitContainer1
             // 
-            this.splitContainer1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.splitContainer1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.splitContainer1.FixedPanel = System.Windows.Forms.FixedPanel.Panel1;
             this.splitContainer1.Location = new System.Drawing.Point(15, 186);
             this.splitContainer1.Name = "splitContainer1";
@@ -181,24 +182,37 @@
             this.textBoxDescription.Size = new System.Drawing.Size(419, 179);
             this.textBoxDescription.TabIndex = 0;
             // 
+            // linkLabel2
+            // 
+            this.linkLabel2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.linkLabel2.AutoSize = true;
+            this.linkLabel2.Location = new System.Drawing.Point(594, 34);
+            this.linkLabel2.Name = "linkLabel2";
+            this.linkLabel2.Size = new System.Drawing.Size(72, 13);
+            this.linkLabel2.TabIndex = 8;
+            this.linkLabel2.TabStop = true;
+            this.linkLabel2.Text = "Add todo item";
+            this.linkLabel2.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel2_LinkClicked);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(678, 403);
+            this.Controls.Add(this.linkLabel2);
             this.Controls.Add(this.splitContainer1);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.linkLabel_AddEmailAndPassword);
             this.Controls.Add(this.dataGridView1);
-            this.Controls.Add(this.linkLabelGetPrivateKey);
             this.Controls.Add(this.textBoxLogs);
+            this.Controls.Add(this.linkLabelGetCurrentTodolist);
             this.Controls.Add(this.linkLabel1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MinimumSize = new System.Drawing.Size(432, 334);
             this.Name = "Form1";
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Form1";
+            this.Text = "Monitor System";
             this.TopMost = true;
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             this.Shown += new System.EventHandler(this.Form1_Shown);
@@ -225,13 +239,14 @@
         private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
         private System.Windows.Forms.TextBox textBoxLogs;
         private System.Windows.Forms.LinkLabel linkLabel_AddEmailAndPassword;
-        private System.Windows.Forms.LinkLabel linkLabelGetPrivateKey;
+        private System.Windows.Forms.LinkLabel linkLabelGetCurrentTodolist;
         private System.Windows.Forms.StatusStrip statusStrip1;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabelCurrentStatus;
         private System.Windows.Forms.DataGridView dataGridView1;
         private System.Windows.Forms.TreeView treeViewTodolist;
         private System.Windows.Forms.SplitContainer splitContainer1;
         private System.Windows.Forms.TextBox textBoxDescription;
+        private System.Windows.Forms.LinkLabel linkLabel2;
     }
 }
 
