@@ -14,6 +14,7 @@ using System.Text.RegularExpressions;
 using System.IO;
 using System.Net;
 using System.Security.Cryptography;
+using System.Globalization;
 //using System.Threading;
 
 namespace MonitorSystem
@@ -41,6 +42,8 @@ namespace MonitorSystem
         List<string> currentEmailPasswordAndRegexList = new List<string>();
 
         //Timer timer = new Timer();
+        private const string MySQLdateformat = "yyyy-MM-dd HH:mm:ss";
+        DateTime mindate = new DateTime(1800, 1, 1, 0, 0, 0);
 
         public Form1()
         {
@@ -72,6 +75,9 @@ namespace MonitorSystem
             //snarl.register("127.0.0.1", 8000, "MonitorSystemCS");
             //snarl.addClass("127.0.0.1", 8000, "MonitorSystemCS", "Test", "TestTitle");
             //snarl.notify("127.0.0.1", 8000, "MonitorSystemCS", "Test", "TestTitle", "Text", "1000");
+
+            dateTimePickerDue.MinDate = mindate;
+            dateTimePickerCreated.MinDate = mindate;
         }
 
         private void RefreshRegexList()
@@ -522,7 +528,23 @@ namespace MonitorSystem
 
         private void linkLabelGetCurrentTodolist_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            try
+            GetCurrentTodolist();
+        }
+
+        private void GetCurrentTodolist()
+        {
+            treeViewTodolist.Nodes.Clear();
+            string tmpresult = GetResultOfPerformingDesktopAppDoTask(Username, "getlist", new List<string>());
+            if (tmpresult != null)
+            {
+                foreach (string line in tmpresult.Split("\n".ToCharArray(), StringSplitOptions.RemoveEmptyEntries))
+                if (line.Trim('\t', '\n', '\r', ' ', '\0').Length > 0)
+                {
+                    //dt.Rows.Add(line.Split('\t')); ;
+                    AddTabSeperatedLineToTreeview(line);
+                }
+            }
+            /*try
             {
                 //See App.xaml.cs for bypassing invalid SSL certificates
                 string tmpkey = GetPrivateKey();
@@ -557,22 +579,22 @@ namespace MonitorSystem
 
                             treeViewTodolist.Nodes.Clear();
 
-                            DataSet ds = new DataSet("Todolist");
-                            DataTable dt = new DataTable("Todotable");
-                            dt.Columns.Add("Category");
-                            dt.Columns.Add("Subcat");
-                            dt.Columns.Add("Items");
-                            dt.Columns.Add("Description");
-                            dt.Columns.Add("Complete");//, typeof(bool));
+                            //DataSet ds = new DataSet("Todolist");
+                            //DataTable dt = new DataTable("Todotable");
+                            //dt.Columns.Add("Category");
+                            //dt.Columns.Add("Subcat");
+                            //dt.Columns.Add("Items");
+                            //dt.Columns.Add("Description");
+                            //dt.Columns.Add("Complete");//, typeof(bool));
                             foreach (string line in decryptedstring.Split("\n".ToCharArray(), StringSplitOptions.RemoveEmptyEntries))
                                 if (line.Trim('\t', '\n', '\r', ' ', '\0').Length > 0)
                                 {
-                                    dt.Rows.Add(line.Split('\t')); ;
+                                    //dt.Rows.Add(line.Split('\t')); ;
                                     AddTabSeperatedLineToTreeview(line);
                                 }
-                            ds.Tables.Add(dt);
-                            dataGridView1.DataSource = ds;
-                            dataGridView1.DataMember = "Todotable";
+                            //ds.Tables.Add(dt);
+                            //dataGridView1.DataSource = ds;
+                            //dataGridView1.DataMember = "Todotable";
                         }
                     }
                     catch (Exception exc)
@@ -595,7 +617,7 @@ namespace MonitorSystem
             {
                 System.Windows.Forms.MessageBox.Show(ex.Message);
                 return;
-            }
+            }*/
         }
 
         private void linkLabel2_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
@@ -605,58 +627,24 @@ namespace MonitorSystem
 
         private void AddTodoItemNow(string Category = null, string Subcat = null)
         {
-            string tmpkey = GetPrivateKey();
-
-            if (tmpkey != null)
+            AddTodoItem addform = new AddTodoItem(Category, Subcat);
+            if (addform.ShowDialog(this) == System.Windows.Forms.DialogResult.OK)
             {
-                HttpWebRequest addrequest = null;
-                HttpWebResponse addresponse = null;
-                StreamReader input = null;
-
-                try
+                PerformDesktopAppDoTask(
+                    Username,
+                    "addtolist",
+                    new List<string>()
                 {
-                    if (Username != null && Username.Length > 0
-                                           && tmpkey != null && tmpkey.Length > 0)
-                    {
-                        string encryptedstring;
-                        string decryptedstring = "";
-
-                        AddTodoItem addform = new AddTodoItem(Category, Subcat);
-                        if (addform.ShowDialog(this) == System.Windows.Forms.DialogResult.OK)
-                        {
-                            string cat = addform.textBoxCategory.Text;
-                            string subcat = addform.textBoxSubcat.Text;
-                            string items = addform.textBoxItems.Text;
-                            string descr = addform.textBoxDescription.Text;
-                            PerformVoidFunctionSeperateThread(() =>
-                            {
-                                addrequest = (HttpWebRequest)WebRequest.Create(doWorkAddress + "/dotask/" +
-                                    PhpEncryption.SimpleTripleDesEncrypt(Username, "123456789abcdefghijklmno") + "/" +
-                                    PhpEncryption.SimpleTripleDesEncrypt("addtolist", tmpkey) + "/" +
-                                    PhpEncryption.SimpleTripleDesEncrypt(cat + "\t" + subcat + "\t" + items + "\t" + descr, tmpkey));// + "/");
-                                try
-                                {
-                                    addresponse = (HttpWebResponse)addrequest.GetResponse();
-                                    input = new StreamReader(addresponse.GetResponseStream());
-                                    encryptedstring = input.ReadToEnd();
-
-                                    decryptedstring = PhpEncryption.SimpleTripleDesDecrypt(encryptedstring, tmpkey);
-                                    MessageBox.Show(this, decryptedstring);
-                                }
-                                catch (Exception exc) { MessageBox.Show(this, "Exception:" + exc.Message, "Exception", MessageBoxButtons.OK, MessageBoxIcon.Error); }
-                            });
-                        }
-                    }
-                }
-                catch (Exception exc)
-                {
-                    appendLogTextbox("Obtain php: " + exc.Message);
-                }
-                finally
-                {
-                    if (addresponse != null) addresponse.Close();
-                    if (input != null) input.Close();
-                }
+                    addform.textBoxCategory.Text,
+                    addform.textBoxSubcat.Text,
+                    addform.textBoxItems.Text,
+                    addform.textBoxDescription.Text,
+                    addform.dateTimePickerRemindOn.Value.ToString(MySQLdateformat),
+                    addform.dateTimePickerRemindOn.Checked ? "0" : "1",//This is correct, checbox sais remind but database it is stopsnooze
+                    addform.checkBoxAutosnooze.Checked ? ((int)addform.numericUpDownAutosnoozeInterval.Value).ToString() : "0"
+                },
+                    true,
+                    "1");
             }
         }
 
@@ -668,7 +656,13 @@ namespace MonitorSystem
                 string tmpSubcat = line.Split('\t')[1];
                 string tmpItems = line.Split('\t')[2];
                 string tmpDescription = line.Split('\t')[3];
-                TreeNode tmpItemsNode = new TreeNode(tmpItems) { Tag = tmpDescription };
+                bool tmpCompleted = line.Split('\t')[4] == "1";
+                DateTime tmpDue = line.Split('\t')[5].Length > 0 ? DateTime.ParseExact(line.Split('\t')[5], MySQLdateformat, CultureInfo.InvariantCulture) : mindate;
+                DateTime tmpCreated = line.Split('\t')[6].Length > 0 ? DateTime.ParseExact(line.Split('\t')[6], MySQLdateformat, CultureInfo.InvariantCulture) : mindate;
+                int tmpRemindedCount = Convert.ToInt32(line.Split('\t')[7]);
+                bool tmpStopSnooze = line.Split('\t')[8] == "1";
+                int tmpAutosnoozeInterval = Convert.ToInt32(line.Split('\t')[9]);
+                TreeNode tmpItemsNode = new TreeNode(tmpItems) { Tag = new ItemDetails(tmpDescription, tmpCompleted, tmpDue, tmpCreated, tmpRemindedCount, tmpStopSnooze, tmpAutosnoozeInterval) };
                 tmpItemsNode.ContextMenuStrip = contextMenuStripItemsNode;
                 if (!treeViewTodolist.Nodes.ContainsKey(tmpCategory)) treeViewTodolist.Nodes.Add(tmpCategory, tmpCategory);
                 if (!treeViewTodolist.Nodes[tmpCategory].Nodes.ContainsKey(tmpSubcat)) treeViewTodolist.Nodes[tmpCategory].Nodes.Add(tmpSubcat, tmpSubcat);
@@ -739,112 +733,59 @@ namespace MonitorSystem
 
         private void treeViewTodolist_AfterSelect(object sender, TreeViewEventArgs e)
         {
-            textBoxDescription.Text = null;
-            textBoxDescription.Tag = null;
+            MustHandleCheckChanged = false;
+            MustHandleDueDateChanged = false;
+            MustHandleStopSnoozeChanged = false;
+            MustHandleStopAutosnoozeIntervalChanged = false;
+            ClearAll();
             if (e.Node != null && e.Node.Tag != null)
             {
-                textBoxDescription.Text = e.Node.Tag.ToString().Replace("<br>", "\r\n");
-                textBoxDescription.Tag = e.Node.Tag.ToString().Replace("<br>", "\r\n");
+                numericUpDownRemindedCount.Minimum = 0;
+                numericUpDownAutosnoozeInterval.Minimum = 0;
+
+                ItemDetails details = e.Node.Tag as ItemDetails;
+                textBoxDescription.Text = details.Description.Replace("<br>", "\r\n");
+                textBoxDescription.Tag = details.Description.Replace("<br>", "\r\n");
+                checkBoxComplete.Checked = details.Complete;
+                dateTimePickerDue.Value = details.Due;
+                dateTimePickerCreated.Value = details.Created;
+                numericUpDownRemindedCount.Value = details.RemindedCount;
+                checkBoxStopSnooze.Checked = details.StopSnooze;
+                numericUpDownAutosnoozeInterval.Value = details.AutosnoozeInterval;
             }
+            Application.DoEvents();
+            MustHandleCheckChanged = true;
+            MustHandleDueDateChanged = true;
+            MustHandleStopSnoozeChanged = true;
+            MustHandleStopAutosnoozeIntervalChanged = true;
         }
 
-        private void treeViewTodolist_BeforeSelect(object sender, TreeViewCancelEventArgs e)
+        private void ClearAll()
         {
-            if (treeViewTodolist.SelectedNode != null)
-                if (textBoxDescription.Tag != null && treeViewTodolist.SelectedNode.Tag != null && textBoxDescription.Text.ToString() != textBoxDescription.Tag.ToString())
-                {
-                    appendLogTextbox("Uploading changes made to " + treeViewTodolist.SelectedNode.ToString());
-                    //treeViewTodolist.Enabled = false;
-                    //splitContainer1.Enabled = false;
-                    treeViewTodolist.SelectedNode.Tag = textBoxDescription.Text;
-                    if (UploadChangesMade(treeViewTodolist.SelectedNode))
-                    {
-                        //treeViewTodolist.Enabled = true;
-                        //splitContainer1.Enabled = true;
-                        //treeViewTodolist.Focus();
-                        //treeViewTodolist.SelectedNode = e.Node;
-                        appendLogTextbox("Changes accepted");
-                    }
-                    else
-                    {
-                        treeViewTodolist.SelectedNode.Tag = textBoxDescription.Tag.ToString();
-                        //treeViewTodolist.Enabled = true;
-                        //splitContainer1.Enabled = true;
-                        textBoxDescription.Text = textBoxDescription.Tag.ToString();
-                        appendLogTextbox("Changes rejected");
-                        e.Cancel = true;
-                    }
-                }
-            //e.Cancel = true;
+            textBoxDescription.Text = null;
+            textBoxDescription.Tag = null;
+            checkBoxComplete.Checked = false;
+            dateTimePickerDue.Value = mindate;
+            dateTimePickerCreated.Value = mindate;
+            numericUpDownRemindedCount.Minimum = -1; numericUpDownRemindedCount.Value = -1;
+            checkBoxStopSnooze.Checked = false;
+            numericUpDownAutosnoozeInterval.Minimum = -1; numericUpDownAutosnoozeInterval.Value = -1;
         }
 
         private bool UploadChangesMade(TreeNode node)
         {
-            string tmpkey = GetPrivateKey();
-
-            if (tmpkey != null)
-            {
-                HttpWebRequest addrequest = null;
-                HttpWebResponse addresponse = null;
-                StreamReader input = null;
-
-                try
+            return PerformDesktopAppDoTask(
+                Username, 
+                "updatedescription", 
+                new List<string>()
                 {
-                    if (Username != null && Username.Length > 0
-                                           && tmpkey != null && tmpkey.Length > 0)
-                    {
-                        string encryptedstring;
-                        string decryptedstring = "";
-
-                        string cat = node.Parent.Parent.Text;
-                        string subcat = node.Parent.Text;
-                        string items = node.Text;
-                        string descr = node.Tag.ToString();
-                        bool mustreturntrue = false;
-                        PerformVoidFunctionSeperateThread(() =>
-                        {
-                            addrequest = (HttpWebRequest)WebRequest.Create(doWorkAddress + "/dotask/" +
-                                PhpEncryption.SimpleTripleDesEncrypt(Username, "123456789abcdefghijklmno") + "/" +
-                                PhpEncryption.SimpleTripleDesEncrypt("updatedescription", tmpkey) + "/" +
-                                PhpEncryption.SimpleTripleDesEncrypt(cat + "\t" + subcat + "\t" + items + "\t" + descr, tmpkey));// + "/");
-                            //appendLogTextbox(addrequest.RequestUri.ToString());
-                            try
-                            {
-                                addresponse = (HttpWebResponse)addrequest.GetResponse();
-                                input = new StreamReader(addresponse.GetResponseStream());
-                                encryptedstring = input.ReadToEnd();
-                                //appendLogTextbox("Encrypted response: " + encryptedstring);
-
-                                decryptedstring = PhpEncryption.SimpleTripleDesDecrypt(encryptedstring, tmpkey);
-                                //appendLogTextbox("Decrypted response: " + decryptedstring);
-                                decryptedstring = decryptedstring.Replace("\0", "");
-                                //MessageBox.Show(this, decryptedstring);
-                                if (decryptedstring.Trim() == "1")
-                                    mustreturntrue = true;
-                                else
-                                {
-                                    //appendLogTextbox("Uploading changes failed: " + decryptedstring);
-                                    string s = "";
-                                    foreach (char c in decryptedstring.ToCharArray()) s += (int)c + ",";
-                                    appendLogTextbox("Uploading changes failed: " + s);
-                                }
-                            }
-                            catch (Exception exc) { MessageBox.Show(this, "Exception:" + exc.Message, "Exception", MessageBoxButtons.OK, MessageBoxIcon.Error); }
-                        });
-                        if (mustreturntrue) return true;
-                    }
-                }
-                catch (Exception exc)
-                {
-                    appendLogTextbox("Obtain php: " + exc.Message);
-                }
-                finally
-                {
-                    if (addresponse != null) addresponse.Close();
-                    if (input != null) input.Close();
-                }
-            }
-            return false;
+                    node.Parent.Parent.Text,//category
+                    node.Parent.Text,//subcat
+                    node.Text,//items
+                    (node.Tag as ItemDetails).Description//description
+                },
+                true,
+                "1");
         }
 
         private void treeViewTodolist_MouseDown(object sender, MouseEventArgs e)
@@ -868,6 +809,267 @@ namespace MonitorSystem
         protected override void OnKeyDown(KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Escape) { e.Handled = true; this.Close(); }
+        }
+
+        private bool PerformDesktopAppDoTask(string UsernameIn, string TaskName, List<string> ArgumentList, bool CheckForSpecificResult = false, string SuccessSpecificResult = "", bool MustWriteResultToLogsTextbox = false)
+        {
+            string result = GetResultOfPerformingDesktopAppDoTask(UsernameIn, TaskName, ArgumentList, MustWriteResultToLogsTextbox);
+            if (CheckForSpecificResult && result == SuccessSpecificResult)
+                return true;
+            return false;
+        }
+
+        private string GetResultOfPerformingDesktopAppDoTask(string UsernameIn, string TaskName, List<string> ArgumentList, bool MustWriteResultToLogsTextbox = false)
+        {
+            string tmpkey = GetPrivateKey();
+
+            if (tmpkey != null)
+            {
+                HttpWebRequest addrequest = null;
+                HttpWebResponse addresponse = null;
+                StreamReader input = null;
+
+                try
+                {
+                    if (UsernameIn != null && UsernameIn.Length > 0
+                                           && tmpkey != null && tmpkey.Length > 0)
+                    {
+                        string encryptedstring;
+                        string decryptedstring = "";
+                        bool mustreturn = false;
+                        PerformVoidFunctionSeperateThread(() =>
+                        {
+                            string ArgumentListTabSeperated = "";
+                            foreach (string s in ArgumentList)
+                                ArgumentListTabSeperated += (ArgumentListTabSeperated.Length > 0 ? "\t" : "") + s;
+
+                            addrequest = (HttpWebRequest)WebRequest.Create(doWorkAddress + "/dotask/" +
+                                PhpEncryption.SimpleTripleDesEncrypt(UsernameIn, "123456789abcdefghijklmno") + "/" +
+                                PhpEncryption.SimpleTripleDesEncrypt(TaskName, tmpkey) + "/" +
+                                PhpEncryption.SimpleTripleDesEncrypt(ArgumentListTabSeperated, tmpkey));// + "/");
+                            //appendLogTextbox(addrequest.RequestUri.ToString());
+                            try
+                            {
+                                addresponse = (HttpWebResponse)addrequest.GetResponse();
+                                input = new StreamReader(addresponse.GetResponseStream());
+                                encryptedstring = input.ReadToEnd();
+                                //appendLogTextbox("Encrypted response: " + encryptedstring);
+
+                                decryptedstring = PhpEncryption.SimpleTripleDesDecrypt(encryptedstring, tmpkey);
+                                //appendLogTextbox("Decrypted response: " + decryptedstring);
+                                decryptedstring = decryptedstring.Replace("\0", "").Trim();
+                                //MessageBox.Show(this, decryptedstring);
+                                if (MustWriteResultToLogsTextbox) appendLogTextbox("Result for " + TaskName + ": " + decryptedstring);
+                                mustreturn = true;
+
+                                //else
+                                //{
+                                //    //appendLogTextbox("Uploading changes failed: " + decryptedstring);
+                                //    string s = "";
+                                //    foreach (char c in decryptedstring.ToCharArray()) s += (int)c + ",";
+                                //    appendLogTextbox("Uploading changes failed: " + s);
+                                //}
+                            }
+                            catch (Exception exc) { MessageBox.Show(this, "Exception:" + exc.Message, "Exception", MessageBoxButtons.OK, MessageBoxIcon.Error); }
+                        });
+                        if (mustreturn) return decryptedstring;
+                    }
+                }
+                catch (Exception exc)
+                {
+                    appendLogTextbox("Obtain php: " + exc.Message);
+                }
+                finally
+                {
+                    if (addresponse != null) addresponse.Close();
+                    if (input != null) input.Close();
+                }
+            }
+            return null;
+        }
+
+        private void treeViewTodolist_BeforeSelect(object sender, TreeViewCancelEventArgs e) {
+            if (treeViewTodolist.SelectedNode != null)
+                if (textBoxDescription.Tag != null && treeViewTodolist.SelectedNode.Tag != null && textBoxDescription.Text.ToString() != textBoxDescription.Tag.ToString()) {
+                    appendLogTextbox("Uploading changes made to " + treeViewTodolist.SelectedNode.ToString());
+                    //treeViewTodolist.Enabled = false;
+                    //splitContainer1.Enabled = false;
+                    (treeViewTodolist.SelectedNode.Tag as ItemDetails).Description = textBoxDescription.Text;
+                    if (UploadChangesMade(treeViewTodolist.SelectedNode)) {
+                        //treeViewTodolist.Enabled = true;
+                        //splitContainer1.Enabled = true;
+                        //treeViewTodolist.Focus();
+                        //treeViewTodolist.SelectedNode = e.Node;
+                        appendLogTextbox("Changes accepted");
+                    }
+                    else {
+                        (treeViewTodolist.SelectedNode.Tag as ItemDetails).Description = textBoxDescription.Tag.ToString();
+                        //treeViewTodolist.Enabled = true;
+                        //splitContainer1.Enabled = true;
+                        textBoxDescription.Text = textBoxDescription.Tag.ToString();
+                        appendLogTextbox("Changes rejected");
+                        e.Cancel = true;
+                    }
+                }
+            //e.Cancel = true;
+        }
+
+        bool MustHandleCheckChanged = true;
+        private void checkBoxComplete_CheckedChanged(object sender, EventArgs e) {
+            if (MustHandleCheckChanged) {
+                MustHandleCheckChanged = false;
+
+                checkBoxComplete.Enabled = false;
+                if (treeViewTodolist.SelectedNode != null) {
+                    TreeNode node = treeViewTodolist.SelectedNode;
+                    if (!PerformDesktopAppDoTask(
+                        Username,
+                        "updatecomplete",
+                        new List<string>()
+                        {
+                            node.Parent.Parent.Text,//category
+                            node.Parent.Text,//subcat
+                            node.Text,//items
+                            checkBoxComplete.Checked ? "1" : "0"
+                        },
+                        true,
+                        "1"))
+                        checkBoxComplete.Checked = (node.Tag as ItemDetails).Complete;
+                    else {
+                        appendLogTextbox("Successfully updated completed state for " + node.Text);
+                        (node.Tag as ItemDetails).Complete = checkBoxComplete.Checked;
+                    }
+                }
+                checkBoxComplete.Enabled = true;
+
+                Application.DoEvents();
+                MustHandleCheckChanged = true;
+            }
+        }
+
+        bool MustHandleDueDateChanged = true;
+        private void dateTimePickerDue_ValueChanged(object sender, EventArgs e) {
+            if (MustHandleDueDateChanged) {
+                MustHandleDueDateChanged = false;
+
+                dateTimePickerDue.Enabled = false;
+                if (treeViewTodolist.SelectedNode != null) {
+                    TreeNode node = treeViewTodolist.SelectedNode;
+                    if (!PerformDesktopAppDoTask(
+                        Username,
+                        "updatedate",
+                        new List<string>()
+                        {
+                            node.Parent.Parent.Text,//category
+                            node.Parent.Text,//subcat
+                            node.Text,//items
+                            dateTimePickerDue.Value.ToString(MySQLdateformat)
+                        },
+                        true,
+                        "1"))
+                        dateTimePickerDue.Value = (node.Tag as ItemDetails).Due;
+                    else {
+                        appendLogTextbox("Successfully updated due date for " + node.Text);
+                        (node.Tag as ItemDetails).Due = dateTimePickerDue.Value;
+                    }
+                }
+                dateTimePickerDue.Enabled = true;
+
+                Application.DoEvents();
+                MustHandleDueDateChanged = true;
+            }
+        }
+
+        bool MustHandleStopSnoozeChanged = true;
+        private void checkBoxStopSnooze_CheckedChanged(object sender, EventArgs e) {
+            if (MustHandleStopSnoozeChanged) {
+                MustHandleStopSnoozeChanged = false;
+
+                checkBoxStopSnooze.Enabled = false;
+                if (treeViewTodolist.SelectedNode != null) {
+                    TreeNode node = treeViewTodolist.SelectedNode;
+                    if (!PerformDesktopAppDoTask(
+                        Username,
+                        "updatestopsnooze",
+                        new List<string>()
+                        {
+                            node.Parent.Parent.Text,//category
+                            node.Parent.Text,//subcat
+                            node.Text,//items
+                            checkBoxStopSnooze.Checked ? "1" : "0"
+                        },
+                        true,
+                        "1"))
+                        checkBoxStopSnooze.Checked = (node.Tag as ItemDetails).StopSnooze;
+                    else {
+                        appendLogTextbox("Successfully updated stopsnooze state for " + node.Text);
+                        (node.Tag as ItemDetails).StopSnooze = checkBoxStopSnooze.Checked;
+                    }
+                }
+                checkBoxStopSnooze.Enabled = true;
+
+                Application.DoEvents();
+                MustHandleStopSnoozeChanged = true;
+            }
+        }
+
+        bool MustHandleStopAutosnoozeIntervalChanged = true;
+        private void numericUpDownAutosnoozeInterval_ValueChanged(object sender, EventArgs e) {
+            if (MustHandleStopAutosnoozeIntervalChanged) {
+                MustHandleStopAutosnoozeIntervalChanged = false;
+
+                numericUpDownAutosnoozeInterval.Enabled = false;
+                if (treeViewTodolist.SelectedNode != null) {
+                    TreeNode node = treeViewTodolist.SelectedNode;
+                    if (!PerformDesktopAppDoTask(
+                        Username,
+                        "updateautosnoozeinterval",
+                        new List<string>()
+                        {
+                            node.Parent.Parent.Text,//category
+                            node.Parent.Text,//subcat
+                            node.Text,//items
+                            ((int)numericUpDownAutosnoozeInterval.Value).ToString()
+                        },
+                        true,
+                        "1"))
+                        numericUpDownAutosnoozeInterval.Value = (node.Tag as ItemDetails).AutosnoozeInterval;
+                    else {
+                        appendLogTextbox("Successfully updated autosnooze interval for " + node.Text);
+                        (node.Tag as ItemDetails).AutosnoozeInterval = (int)numericUpDownAutosnoozeInterval.Value;
+                    }
+                }
+                numericUpDownAutosnoozeInterval.Enabled = true;
+
+                Application.DoEvents();
+                MustHandleStopAutosnoozeIntervalChanged = true;
+            }
+        }
+    }
+
+    public class ItemDetails
+    {
+        public string Description;
+        public bool Complete;
+        public DateTime Due;
+        public DateTime Created;
+        public int RemindedCount;
+        public bool StopSnooze;
+        public int AutosnoozeInterval;
+        public ItemDetails(string Description, bool Complete, DateTime Due, DateTime Created, int RemindedCount, bool StopSnooze, int AutosnoozeInterval)
+        {
+            this.Description = Description;
+            this.Complete = Complete;
+            this.Due = Due;
+            this.Created = Created;
+            this.RemindedCount = RemindedCount;
+            this.StopSnooze = StopSnooze;
+            this.AutosnoozeInterval = AutosnoozeInterval;
+        }
+
+        public string DetailsToStringBlock()
+        {
+            return string.Format("Complete: {0}\r\nDue: {1}\r\nCreated: {2}\r\nRemindedCount: {3}\r\nStopSnooze: {4}\r\nAutosnoozeInterval: {5}", Complete, Due, Created, RemindedCount, StopSnooze, AutosnoozeInterval);
         }
     }
 

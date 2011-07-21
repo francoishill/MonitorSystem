@@ -18,6 +18,7 @@ namespace MonitorSystem
             InitializeComponent();
             if (Category != null) { textBoxCategory.Text = Category; ControlToFocusFirst = textBoxSubcat; }
             if (Subcat != null) { textBoxSubcat.Text = Subcat; ControlToFocusFirst = textBoxItems; }
+            dateTimePickerRemindOn.Value = DateTime.Now.AddMinutes(30);
         }
 
         private void buttonAccept_Click(object sender, EventArgs e)
@@ -32,12 +33,14 @@ namespace MonitorSystem
             else if (textBoxItems.Text.Trim().Length == 0) MessageBox.Show("Please enter the items", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             //else if (textBoxDescription.Text.Trim().Length == 0 && MessageBox.Show("Accept a blank description?", "No description", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != System.Windows.Forms.DialogResult.Yes) { }
             else if (textBoxDescription.Text.Trim().Length == 0) MessageBox.Show("Please enter a description", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+
             else this.DialogResult = System.Windows.Forms.DialogResult.OK;
         }
 
         private void AddTodoItem_Shown(object sender, EventArgs e)
         {
             if (ControlToFocusFirst != null) ControlToFocusFirst.Focus();
+
         }
 
         private void textBoxCategory_KeyDown(object sender, KeyEventArgs e)
@@ -59,6 +62,20 @@ namespace MonitorSystem
         {
             if (e.KeyCode == Keys.Enter && (ModifierKeys & Keys.Control) == Keys.Control) { e.Handled = true; AcceptNow(); }
             if (e.KeyCode == Keys.Escape) { e.Handled = true; this.Close(); }
+        }
+
+        private void checkBoxAutosnooze_CheckedChanged(object sender, EventArgs e) {
+            if (checkBoxAutosnooze.Checked) {
+                numericUpDownAutosnoozeInterval.Enabled = true;
+                numericUpDownAutosnoozeInterval.Minimum = 1;
+                label6.Enabled = true;
+                if (numericUpDownAutosnoozeInterval.Value == 0) numericUpDownAutosnoozeInterval.Value = 15;
+            }
+            else {
+                numericUpDownAutosnoozeInterval.Minimum = 0;
+                numericUpDownAutosnoozeInterval.Enabled = false;
+                label6.Enabled = false;
+            }
         }
     }
 }

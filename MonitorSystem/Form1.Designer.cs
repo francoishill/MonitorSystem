@@ -44,9 +44,19 @@
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.textBoxDescription = new System.Windows.Forms.TextBox();
             this.linkLabel2 = new System.Windows.Forms.LinkLabel();
-            this.checkBox1 = new System.Windows.Forms.CheckBox();
+            this.checkBoxAutoUpload = new System.Windows.Forms.CheckBox();
             this.contextMenuStripItemsNode = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.addItemToThisCategoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.checkBoxComplete = new System.Windows.Forms.CheckBox();
+            this.dateTimePickerCreated = new System.Windows.Forms.DateTimePicker();
+            this.dateTimePickerDue = new System.Windows.Forms.DateTimePicker();
+            this.numericUpDownRemindedCount = new System.Windows.Forms.NumericUpDown();
+            this.numericUpDownAutosnoozeInterval = new System.Windows.Forms.NumericUpDown();
+            this.label1 = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
+            this.label4 = new System.Windows.Forms.Label();
+            this.checkBoxStopSnooze = new System.Windows.Forms.CheckBox();
             this.contextMenuStripTrayIcon.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
@@ -55,6 +65,8 @@
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
             this.contextMenuStripItemsNode.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownRemindedCount)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownAutosnoozeInterval)).BeginInit();
             this.SuspendLayout();
             // 
             // notifyIcon1
@@ -91,14 +103,14 @@
             // 
             // textBoxLogs
             // 
-            this.textBoxLogs.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.textBoxLogs.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.textBoxLogs.Location = new System.Drawing.Point(15, 65);
             this.textBoxLogs.Multiline = true;
             this.textBoxLogs.Name = "textBoxLogs";
             this.textBoxLogs.ReadOnly = true;
             this.textBoxLogs.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.textBoxLogs.Size = new System.Drawing.Size(731, 115);
+            this.textBoxLogs.Size = new System.Drawing.Size(780, 115);
             this.textBoxLogs.TabIndex = 1;
             // 
             // linkLabel_AddEmailAndPassword
@@ -116,7 +128,7 @@
             // 
             this.linkLabelGetCurrentTodolist.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.linkLabelGetCurrentTodolist.AutoSize = true;
-            this.linkLabelGetCurrentTodolist.Location = new System.Drawing.Point(650, 9);
+            this.linkLabelGetCurrentTodolist.Location = new System.Drawing.Point(699, 9);
             this.linkLabelGetCurrentTodolist.Name = "linkLabelGetCurrentTodolist";
             this.linkLabelGetCurrentTodolist.Size = new System.Drawing.Size(96, 13);
             this.linkLabelGetCurrentTodolist.TabIndex = 3;
@@ -128,9 +140,9 @@
             // 
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripStatusLabelCurrentStatus});
-            this.statusStrip1.Location = new System.Drawing.Point(0, 493);
+            this.statusStrip1.Location = new System.Drawing.Point(0, 416);
             this.statusStrip1.Name = "statusStrip1";
-            this.statusStrip1.Size = new System.Drawing.Size(758, 22);
+            this.statusStrip1.Size = new System.Drawing.Size(807, 22);
             this.statusStrip1.TabIndex = 4;
             this.statusStrip1.Text = "statusStrip1";
             // 
@@ -155,7 +167,7 @@
             this.treeViewTodolist.HideSelection = false;
             this.treeViewTodolist.Location = new System.Drawing.Point(0, 0);
             this.treeViewTodolist.Name = "treeViewTodolist";
-            this.treeViewTodolist.Size = new System.Drawing.Size(228, 281);
+            this.treeViewTodolist.Size = new System.Drawing.Size(228, 204);
             this.treeViewTodolist.TabIndex = 6;
             this.treeViewTodolist.BeforeSelect += new System.Windows.Forms.TreeViewCancelEventHandler(this.treeViewTodolist_BeforeSelect);
             this.treeViewTodolist.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeViewTodolist_AfterSelect);
@@ -163,9 +175,9 @@
             // 
             // splitContainer1
             // 
-            this.splitContainer1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.splitContainer1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.splitContainer1.FixedPanel = System.Windows.Forms.FixedPanel.Panel1;
             this.splitContainer1.Location = new System.Drawing.Point(15, 186);
             this.splitContainer1.Name = "splitContainer1";
@@ -177,7 +189,7 @@
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.textBoxDescription);
-            this.splitContainer1.Size = new System.Drawing.Size(731, 281);
+            this.splitContainer1.Size = new System.Drawing.Size(547, 204);
             this.splitContainer1.SplitterDistance = 228;
             this.splitContainer1.TabIndex = 7;
             this.splitContainer1.TabStop = false;
@@ -188,7 +200,7 @@
             this.textBoxDescription.Location = new System.Drawing.Point(0, 0);
             this.textBoxDescription.Multiline = true;
             this.textBoxDescription.Name = "textBoxDescription";
-            this.textBoxDescription.Size = new System.Drawing.Size(499, 281);
+            this.textBoxDescription.Size = new System.Drawing.Size(315, 204);
             this.textBoxDescription.TabIndex = 0;
             this.textBoxDescription.KeyDown += new System.Windows.Forms.KeyEventHandler(this.textBoxDescription_KeyDown);
             // 
@@ -196,7 +208,7 @@
             // 
             this.linkLabel2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.linkLabel2.AutoSize = true;
-            this.linkLabel2.Location = new System.Drawing.Point(674, 34);
+            this.linkLabel2.Location = new System.Drawing.Point(723, 34);
             this.linkLabel2.Name = "linkLabel2";
             this.linkLabel2.Size = new System.Drawing.Size(72, 13);
             this.linkLabel2.TabIndex = 8;
@@ -204,21 +216,21 @@
             this.linkLabel2.Text = "Add todo item";
             this.linkLabel2.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel2_LinkClicked);
             // 
-            // checkBox1
+            // checkBoxAutoUpload
             // 
-            this.checkBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.checkBox1.AutoSize = true;
-            this.checkBox1.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.checkBox1.Checked = true;
-            this.checkBox1.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBox1.Enabled = false;
-            this.checkBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.checkBox1.Location = new System.Drawing.Point(620, 473);
-            this.checkBox1.Name = "checkBox1";
-            this.checkBox1.Size = new System.Drawing.Size(126, 17);
-            this.checkBox1.TabIndex = 9;
-            this.checkBox1.Text = "Auto upload changes";
-            this.checkBox1.UseVisualStyleBackColor = true;
+            this.checkBoxAutoUpload.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.checkBoxAutoUpload.AutoSize = true;
+            this.checkBoxAutoUpload.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.checkBoxAutoUpload.Checked = true;
+            this.checkBoxAutoUpload.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBoxAutoUpload.Enabled = false;
+            this.checkBoxAutoUpload.Font = new System.Drawing.Font("Microsoft Sans Serif", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.checkBoxAutoUpload.Location = new System.Drawing.Point(669, 396);
+            this.checkBoxAutoUpload.Name = "checkBoxAutoUpload";
+            this.checkBoxAutoUpload.Size = new System.Drawing.Size(126, 17);
+            this.checkBoxAutoUpload.TabIndex = 9;
+            this.checkBoxAutoUpload.Text = "Auto upload changes";
+            this.checkBoxAutoUpload.UseVisualStyleBackColor = true;
             // 
             // contextMenuStripItemsNode
             // 
@@ -234,12 +246,136 @@
             this.addItemToThisCategoryToolStripMenuItem.Text = "&Add item to this category";
             this.addItemToThisCategoryToolStripMenuItem.Click += new System.EventHandler(this.addItemToThisCategoryToolStripMenuItem_Click);
             // 
+            // checkBoxComplete
+            // 
+            this.checkBoxComplete.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.checkBoxComplete.AutoSize = true;
+            this.checkBoxComplete.Location = new System.Drawing.Point(725, 188);
+            this.checkBoxComplete.Name = "checkBoxComplete";
+            this.checkBoxComplete.Size = new System.Drawing.Size(70, 17);
+            this.checkBoxComplete.TabIndex = 11;
+            this.checkBoxComplete.Text = "Complete";
+            this.checkBoxComplete.UseVisualStyleBackColor = true;
+            this.checkBoxComplete.CheckedChanged += new System.EventHandler(this.checkBoxComplete_CheckedChanged);
+            // 
+            // dateTimePickerCreated
+            // 
+            this.dateTimePickerCreated.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.dateTimePickerCreated.CustomFormat = "yyyy-MM-dd HH:mm:ss";
+            this.dateTimePickerCreated.Enabled = false;
+            this.dateTimePickerCreated.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
+            this.dateTimePickerCreated.Location = new System.Drawing.Point(639, 236);
+            this.dateTimePickerCreated.Name = "dateTimePickerCreated";
+            this.dateTimePickerCreated.Size = new System.Drawing.Size(156, 20);
+            this.dateTimePickerCreated.TabIndex = 13;
+            // 
+            // dateTimePickerDue
+            // 
+            this.dateTimePickerDue.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.dateTimePickerDue.CustomFormat = "yyyy-MM-dd HH:mm:ss";
+            this.dateTimePickerDue.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
+            this.dateTimePickerDue.Location = new System.Drawing.Point(639, 211);
+            this.dateTimePickerDue.Name = "dateTimePickerDue";
+            this.dateTimePickerDue.Size = new System.Drawing.Size(156, 20);
+            this.dateTimePickerDue.TabIndex = 12;
+            this.dateTimePickerDue.ValueChanged += new System.EventHandler(this.dateTimePickerDue_ValueChanged);
+            // 
+            // numericUpDownRemindedCount
+            // 
+            this.numericUpDownRemindedCount.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.numericUpDownRemindedCount.Enabled = false;
+            this.numericUpDownRemindedCount.Location = new System.Drawing.Point(675, 263);
+            this.numericUpDownRemindedCount.Maximum = new decimal(new int[] {
+            276447231,
+            23283,
+            0,
+            0});
+            this.numericUpDownRemindedCount.Name = "numericUpDownRemindedCount";
+            this.numericUpDownRemindedCount.Size = new System.Drawing.Size(120, 20);
+            this.numericUpDownRemindedCount.TabIndex = 14;
+            // 
+            // numericUpDownAutosnoozeInterval
+            // 
+            this.numericUpDownAutosnoozeInterval.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.numericUpDownAutosnoozeInterval.Location = new System.Drawing.Point(675, 312);
+            this.numericUpDownAutosnoozeInterval.Maximum = new decimal(new int[] {
+            276447231,
+            23283,
+            0,
+            0});
+            this.numericUpDownAutosnoozeInterval.Name = "numericUpDownAutosnoozeInterval";
+            this.numericUpDownAutosnoozeInterval.Size = new System.Drawing.Size(120, 20);
+            this.numericUpDownAutosnoozeInterval.TabIndex = 15;
+            this.numericUpDownAutosnoozeInterval.ValueChanged += new System.EventHandler(this.numericUpDownAutosnoozeInterval_ValueChanged);
+            // 
+            // label1
+            // 
+            this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(606, 217);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(27, 13);
+            this.label1.TabIndex = 16;
+            this.label1.Text = "Due";
+            // 
+            // label2
+            // 
+            this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(589, 242);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(44, 13);
+            this.label2.TabIndex = 17;
+            this.label2.Text = "Created";
+            // 
+            // label3
+            // 
+            this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(584, 265);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(85, 13);
+            this.label3.TabIndex = 18;
+            this.label3.Text = "Reminded count";
+            // 
+            // label4
+            // 
+            this.label4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(568, 314);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(101, 13);
+            this.label4.TabIndex = 19;
+            this.label4.Text = "Autosnooze Interval";
+            // 
+            // checkBoxStopSnooze
+            // 
+            this.checkBoxStopSnooze.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.checkBoxStopSnooze.AutoSize = true;
+            this.checkBoxStopSnooze.Location = new System.Drawing.Point(710, 289);
+            this.checkBoxStopSnooze.Name = "checkBoxStopSnooze";
+            this.checkBoxStopSnooze.Size = new System.Drawing.Size(85, 17);
+            this.checkBoxStopSnooze.TabIndex = 20;
+            this.checkBoxStopSnooze.Text = "Stop snooze";
+            this.checkBoxStopSnooze.UseVisualStyleBackColor = true;
+            this.checkBoxStopSnooze.CheckedChanged += new System.EventHandler(this.checkBoxStopSnooze_CheckedChanged);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(758, 515);
-            this.Controls.Add(this.checkBox1);
+            this.ClientSize = new System.Drawing.Size(807, 438);
+            this.Controls.Add(this.checkBoxStopSnooze);
+            this.Controls.Add(this.label4);
+            this.Controls.Add(this.label3);
+            this.Controls.Add(this.label2);
+            this.Controls.Add(this.label1);
+            this.Controls.Add(this.numericUpDownAutosnoozeInterval);
+            this.Controls.Add(this.numericUpDownRemindedCount);
+            this.Controls.Add(this.checkBoxComplete);
+            this.Controls.Add(this.dateTimePickerDue);
+            this.Controls.Add(this.dateTimePickerCreated);
+            this.Controls.Add(this.checkBoxAutoUpload);
             this.Controls.Add(this.linkLabel2);
             this.Controls.Add(this.splitContainer1);
             this.Controls.Add(this.statusStrip1);
@@ -250,7 +386,7 @@
             this.Controls.Add(this.linkLabel1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.KeyPreview = true;
-            this.MinimumSize = new System.Drawing.Size(432, 334);
+            this.MinimumSize = new System.Drawing.Size(691, 365);
             this.Name = "Form1";
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
@@ -268,6 +404,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
             this.contextMenuStripItemsNode.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownRemindedCount)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownAutosnoozeInterval)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -289,9 +427,19 @@
         private System.Windows.Forms.SplitContainer splitContainer1;
         private System.Windows.Forms.TextBox textBoxDescription;
         private System.Windows.Forms.LinkLabel linkLabel2;
-        private System.Windows.Forms.CheckBox checkBox1;
+        private System.Windows.Forms.CheckBox checkBoxAutoUpload;
         private System.Windows.Forms.ContextMenuStrip contextMenuStripItemsNode;
         private System.Windows.Forms.ToolStripMenuItem addItemToThisCategoryToolStripMenuItem;
+        private System.Windows.Forms.CheckBox checkBoxComplete;
+        private System.Windows.Forms.DateTimePicker dateTimePickerCreated;
+        private System.Windows.Forms.DateTimePicker dateTimePickerDue;
+        private System.Windows.Forms.NumericUpDown numericUpDownRemindedCount;
+        private System.Windows.Forms.NumericUpDown numericUpDownAutosnoozeInterval;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.CheckBox checkBoxStopSnooze;
     }
 }
 
