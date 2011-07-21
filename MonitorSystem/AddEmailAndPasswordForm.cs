@@ -34,5 +34,10 @@ namespace MonitorSystem
             if (e.KeyCode == Keys.Enter)
                 this.SelectNextControl((Control)sender, true, true, true, true);
         }
+
+        protected override void OnKeyDown(KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Escape) { e.Handled = true; this.Close(); }
+        }
     }
 }

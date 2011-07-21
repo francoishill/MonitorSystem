@@ -45,8 +45,9 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.textBoxCategory.Location = new System.Drawing.Point(85, 12);
             this.textBoxCategory.Name = "textBoxCategory";
-            this.textBoxCategory.Size = new System.Drawing.Size(126, 20);
+            this.textBoxCategory.Size = new System.Drawing.Size(178, 20);
             this.textBoxCategory.TabIndex = 0;
+            this.textBoxCategory.KeyDown += new System.Windows.Forms.KeyEventHandler(this.textBoxCategory_KeyDown);
             // 
             // textBoxSubcat
             // 
@@ -54,8 +55,9 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.textBoxSubcat.Location = new System.Drawing.Point(85, 38);
             this.textBoxSubcat.Name = "textBoxSubcat";
-            this.textBoxSubcat.Size = new System.Drawing.Size(126, 20);
+            this.textBoxSubcat.Size = new System.Drawing.Size(178, 20);
             this.textBoxSubcat.TabIndex = 1;
+            this.textBoxSubcat.KeyDown += new System.Windows.Forms.KeyEventHandler(this.textBoxCategory_KeyDown);
             // 
             // textBoxItems
             // 
@@ -63,8 +65,9 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.textBoxItems.Location = new System.Drawing.Point(85, 64);
             this.textBoxItems.Name = "textBoxItems";
-            this.textBoxItems.Size = new System.Drawing.Size(178, 20);
+            this.textBoxItems.Size = new System.Drawing.Size(230, 20);
             this.textBoxItems.TabIndex = 2;
+            this.textBoxItems.KeyDown += new System.Windows.Forms.KeyEventHandler(this.textBoxCategory_KeyDown);
             // 
             // textBoxDescription
             // 
@@ -76,8 +79,9 @@
             this.textBoxDescription.Multiline = true;
             this.textBoxDescription.Name = "textBoxDescription";
             this.textBoxDescription.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.textBoxDescription.Size = new System.Drawing.Size(272, 79);
+            this.textBoxDescription.Size = new System.Drawing.Size(324, 119);
             this.textBoxDescription.TabIndex = 3;
+            this.textBoxDescription.KeyDown += new System.Windows.Forms.KeyEventHandler(this.textBoxCategory_KeyDown);
             // 
             // label1
             // 
@@ -118,19 +122,20 @@
             // buttonAccept
             // 
             this.buttonAccept.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonAccept.Location = new System.Drawing.Point(282, 179);
+            this.buttonAccept.Location = new System.Drawing.Point(334, 219);
             this.buttonAccept.Name = "buttonAccept";
             this.buttonAccept.Size = new System.Drawing.Size(75, 23);
             this.buttonAccept.TabIndex = 8;
             this.buttonAccept.Text = "&Accept";
             this.buttonAccept.UseVisualStyleBackColor = true;
             this.buttonAccept.Click += new System.EventHandler(this.buttonAccept_Click);
+            this.buttonAccept.KeyDown += new System.Windows.Forms.KeyEventHandler(this.textBoxCategory_KeyDown);
             // 
             // AddTodoItem
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(369, 214);
+            this.ClientSize = new System.Drawing.Size(421, 254);
             this.Controls.Add(this.buttonAccept);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.label3);
@@ -141,11 +146,13 @@
             this.Controls.Add(this.textBoxSubcat);
             this.Controls.Add(this.textBoxCategory);
             this.DoubleBuffered = true;
+            this.KeyPreview = true;
             this.MinimumSize = new System.Drawing.Size(385, 252);
             this.Name = "AddTodoItem";
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Add todo item";
+            this.Shown += new System.EventHandler(this.AddTodoItem_Shown);
             this.ResumeLayout(false);
             this.PerformLayout();
 

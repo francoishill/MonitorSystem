@@ -31,7 +31,7 @@
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.notifyIcon1 = new System.Windows.Forms.NotifyIcon(this.components);
-            this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.contextMenuStripTrayIcon = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.linkLabel1 = new System.Windows.Forms.LinkLabel();
             this.textBoxLogs = new System.Windows.Forms.TextBox();
@@ -44,28 +44,32 @@
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.textBoxDescription = new System.Windows.Forms.TextBox();
             this.linkLabel2 = new System.Windows.Forms.LinkLabel();
-            this.contextMenuStrip1.SuspendLayout();
+            this.checkBox1 = new System.Windows.Forms.CheckBox();
+            this.contextMenuStripItemsNode = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.addItemToThisCategoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.contextMenuStripTrayIcon.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
+            this.contextMenuStripItemsNode.SuspendLayout();
             this.SuspendLayout();
             // 
             // notifyIcon1
             // 
-            this.notifyIcon1.ContextMenuStrip = this.contextMenuStrip1;
+            this.notifyIcon1.ContextMenuStrip = this.contextMenuStripTrayIcon;
             this.notifyIcon1.Icon = ((System.Drawing.Icon)(resources.GetObject("notifyIcon1.Icon")));
             this.notifyIcon1.Text = "notifyIcon1";
             this.notifyIcon1.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.notifyIcon1_MouseDoubleClick);
             // 
-            // contextMenuStrip1
+            // contextMenuStripTrayIcon
             // 
-            this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.contextMenuStripTrayIcon.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.exitToolStripMenuItem});
-            this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(93, 26);
+            this.contextMenuStripTrayIcon.Name = "contextMenuStrip1";
+            this.contextMenuStripTrayIcon.Size = new System.Drawing.Size(93, 26);
             // 
             // exitToolStripMenuItem
             // 
@@ -92,8 +96,9 @@
             this.textBoxLogs.Location = new System.Drawing.Point(15, 65);
             this.textBoxLogs.Multiline = true;
             this.textBoxLogs.Name = "textBoxLogs";
+            this.textBoxLogs.ReadOnly = true;
             this.textBoxLogs.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.textBoxLogs.Size = new System.Drawing.Size(651, 115);
+            this.textBoxLogs.Size = new System.Drawing.Size(731, 115);
             this.textBoxLogs.TabIndex = 1;
             // 
             // linkLabel_AddEmailAndPassword
@@ -111,7 +116,7 @@
             // 
             this.linkLabelGetCurrentTodolist.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.linkLabelGetCurrentTodolist.AutoSize = true;
-            this.linkLabelGetCurrentTodolist.Location = new System.Drawing.Point(570, 9);
+            this.linkLabelGetCurrentTodolist.Location = new System.Drawing.Point(650, 9);
             this.linkLabelGetCurrentTodolist.Name = "linkLabelGetCurrentTodolist";
             this.linkLabelGetCurrentTodolist.Size = new System.Drawing.Size(96, 13);
             this.linkLabelGetCurrentTodolist.TabIndex = 3;
@@ -123,9 +128,9 @@
             // 
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripStatusLabelCurrentStatus});
-            this.statusStrip1.Location = new System.Drawing.Point(0, 381);
+            this.statusStrip1.Location = new System.Drawing.Point(0, 493);
             this.statusStrip1.Name = "statusStrip1";
-            this.statusStrip1.Size = new System.Drawing.Size(678, 22);
+            this.statusStrip1.Size = new System.Drawing.Size(758, 22);
             this.statusStrip1.TabIndex = 4;
             this.statusStrip1.Text = "statusStrip1";
             // 
@@ -147,11 +152,14 @@
             // treeViewTodolist
             // 
             this.treeViewTodolist.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.treeViewTodolist.HideSelection = false;
             this.treeViewTodolist.Location = new System.Drawing.Point(0, 0);
             this.treeViewTodolist.Name = "treeViewTodolist";
-            this.treeViewTodolist.Size = new System.Drawing.Size(228, 179);
+            this.treeViewTodolist.Size = new System.Drawing.Size(228, 281);
             this.treeViewTodolist.TabIndex = 6;
+            this.treeViewTodolist.BeforeSelect += new System.Windows.Forms.TreeViewCancelEventHandler(this.treeViewTodolist_BeforeSelect);
             this.treeViewTodolist.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeViewTodolist_AfterSelect);
+            this.treeViewTodolist.MouseDown += new System.Windows.Forms.MouseEventHandler(this.treeViewTodolist_MouseDown);
             // 
             // splitContainer1
             // 
@@ -169,9 +177,10 @@
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.textBoxDescription);
-            this.splitContainer1.Size = new System.Drawing.Size(651, 179);
+            this.splitContainer1.Size = new System.Drawing.Size(731, 281);
             this.splitContainer1.SplitterDistance = 228;
             this.splitContainer1.TabIndex = 7;
+            this.splitContainer1.TabStop = false;
             // 
             // textBoxDescription
             // 
@@ -179,14 +188,15 @@
             this.textBoxDescription.Location = new System.Drawing.Point(0, 0);
             this.textBoxDescription.Multiline = true;
             this.textBoxDescription.Name = "textBoxDescription";
-            this.textBoxDescription.Size = new System.Drawing.Size(419, 179);
+            this.textBoxDescription.Size = new System.Drawing.Size(499, 281);
             this.textBoxDescription.TabIndex = 0;
+            this.textBoxDescription.KeyDown += new System.Windows.Forms.KeyEventHandler(this.textBoxDescription_KeyDown);
             // 
             // linkLabel2
             // 
             this.linkLabel2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.linkLabel2.AutoSize = true;
-            this.linkLabel2.Location = new System.Drawing.Point(594, 34);
+            this.linkLabel2.Location = new System.Drawing.Point(674, 34);
             this.linkLabel2.Name = "linkLabel2";
             this.linkLabel2.Size = new System.Drawing.Size(72, 13);
             this.linkLabel2.TabIndex = 8;
@@ -194,11 +204,42 @@
             this.linkLabel2.Text = "Add todo item";
             this.linkLabel2.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel2_LinkClicked);
             // 
+            // checkBox1
+            // 
+            this.checkBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.checkBox1.AutoSize = true;
+            this.checkBox1.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.checkBox1.Checked = true;
+            this.checkBox1.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBox1.Enabled = false;
+            this.checkBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.checkBox1.Location = new System.Drawing.Point(620, 473);
+            this.checkBox1.Name = "checkBox1";
+            this.checkBox1.Size = new System.Drawing.Size(126, 17);
+            this.checkBox1.TabIndex = 9;
+            this.checkBox1.Text = "Auto upload changes";
+            this.checkBox1.UseVisualStyleBackColor = true;
+            // 
+            // contextMenuStripItemsNode
+            // 
+            this.contextMenuStripItemsNode.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.addItemToThisCategoryToolStripMenuItem});
+            this.contextMenuStripItemsNode.Name = "contextMenuStripItemsNode";
+            this.contextMenuStripItemsNode.Size = new System.Drawing.Size(209, 26);
+            // 
+            // addItemToThisCategoryToolStripMenuItem
+            // 
+            this.addItemToThisCategoryToolStripMenuItem.Name = "addItemToThisCategoryToolStripMenuItem";
+            this.addItemToThisCategoryToolStripMenuItem.Size = new System.Drawing.Size(208, 22);
+            this.addItemToThisCategoryToolStripMenuItem.Text = "&Add item to this category";
+            this.addItemToThisCategoryToolStripMenuItem.Click += new System.EventHandler(this.addItemToThisCategoryToolStripMenuItem_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(678, 403);
+            this.ClientSize = new System.Drawing.Size(758, 515);
+            this.Controls.Add(this.checkBox1);
             this.Controls.Add(this.linkLabel2);
             this.Controls.Add(this.splitContainer1);
             this.Controls.Add(this.statusStrip1);
@@ -208,16 +249,16 @@
             this.Controls.Add(this.linkLabelGetCurrentTodolist);
             this.Controls.Add(this.linkLabel1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.KeyPreview = true;
             this.MinimumSize = new System.Drawing.Size(432, 334);
             this.Name = "Form1";
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Monitor System";
-            this.TopMost = true;
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             this.Shown += new System.EventHandler(this.Form1_Shown);
             this.SizeChanged += new System.EventHandler(this.Form1_SizeChanged);
-            this.contextMenuStrip1.ResumeLayout(false);
+            this.contextMenuStripTrayIcon.ResumeLayout(false);
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
@@ -226,6 +267,7 @@
             this.splitContainer1.Panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
+            this.contextMenuStripItemsNode.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -235,7 +277,7 @@
 
         private System.Windows.Forms.NotifyIcon notifyIcon1;
         private System.Windows.Forms.LinkLabel linkLabel1;
-        private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
+        private System.Windows.Forms.ContextMenuStrip contextMenuStripTrayIcon;
         private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
         private System.Windows.Forms.TextBox textBoxLogs;
         private System.Windows.Forms.LinkLabel linkLabel_AddEmailAndPassword;
@@ -247,6 +289,9 @@
         private System.Windows.Forms.SplitContainer splitContainer1;
         private System.Windows.Forms.TextBox textBoxDescription;
         private System.Windows.Forms.LinkLabel linkLabel2;
+        private System.Windows.Forms.CheckBox checkBox1;
+        private System.Windows.Forms.ContextMenuStrip contextMenuStripItemsNode;
+        private System.Windows.Forms.ToolStripMenuItem addItemToThisCategoryToolStripMenuItem;
     }
 }
 

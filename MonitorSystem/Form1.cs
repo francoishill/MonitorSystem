@@ -83,17 +83,29 @@ namespace MonitorSystem
 
         private void RegisterSnarl()
         {
-            System.Diagnostics.Process.Start(@"C:\Program Files (x86)\full phat\Snarl\tools\heysnarl.exe", "register?app-sig=app/" + ThisAppName + "&title=MonitorSystem in C#");
+            try
+            {
+                System.Diagnostics.Process.Start(@"C:\Program Files (x86)\full phat\Snarl\tools\heysnarl.exe", "register?app-sig=app/" + ThisAppName + "&title=MonitorSystem in C#");
+            }
+            catch { }
         }
 
         private void NotifySnarl(string title, string msg)
         {
-            System.Diagnostics.Process.Start(@"C:\Program Files (x86)\full phat\Snarl\tools\heysnarl.exe", "notify?app-sig=app/" + ThisAppName + "&title=" + title + "&text=" + msg);
+            try
+            {
+                System.Diagnostics.Process.Start(@"C:\Program Files (x86)\full phat\Snarl\tools\heysnarl.exe", "notify?app-sig=app/" + ThisAppName + "&title=" + title + "&text=" + msg);
+            }
+            catch { }
         }
 
         private void UnregisterSnarl()
         {
-            System.Diagnostics.Process.Start(@"C:\Program Files (x86)\full phat\Snarl\tools\heysnarl.exe", "unregister?app-sig=app/" + ThisAppName);
+            try
+            {
+                System.Diagnostics.Process.Start(@"C:\Program Files (x86)\full phat\Snarl\tools\heysnarl.exe", "unregister?app-sig=app/" + ThisAppName);
+            }
+            catch { }
         }
 
         private void Form1_Shown(object sender, EventArgs e)
@@ -588,6 +600,11 @@ namespace MonitorSystem
 
         private void linkLabel2_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
+            AddTodoItemNow();
+        }
+
+        private void AddTodoItemNow(string Category = null, string Subcat = null)
+        {
             string tmpkey = GetPrivateKey();
 
             if (tmpkey != null)
@@ -604,7 +621,7 @@ namespace MonitorSystem
                         string encryptedstring;
                         string decryptedstring = "";
 
-                        AddTodoItem addform = new AddTodoItem();
+                        AddTodoItem addform = new AddTodoItem(Category, Subcat);
                         if (addform.ShowDialog(this) == System.Windows.Forms.DialogResult.OK)
                         {
                             string cat = addform.textBoxCategory.Text;
@@ -652,6 +669,7 @@ namespace MonitorSystem
                 string tmpItems = line.Split('\t')[2];
                 string tmpDescription = line.Split('\t')[3];
                 TreeNode tmpItemsNode = new TreeNode(tmpItems) { Tag = tmpDescription };
+                tmpItemsNode.ContextMenuStrip = contextMenuStripItemsNode;
                 if (!treeViewTodolist.Nodes.ContainsKey(tmpCategory)) treeViewTodolist.Nodes.Add(tmpCategory, tmpCategory);
                 if (!treeViewTodolist.Nodes[tmpCategory].Nodes.ContainsKey(tmpSubcat)) treeViewTodolist.Nodes[tmpCategory].Nodes.Add(tmpSubcat, tmpSubcat);
                 treeViewTodolist.Nodes[tmpCategory].Nodes[tmpSubcat].Nodes.Add(tmpItemsNode);
@@ -721,9 +739,135 @@ namespace MonitorSystem
 
         private void treeViewTodolist_AfterSelect(object sender, TreeViewEventArgs e)
         {
-            textBoxDescription.Clear();
+            textBoxDescription.Text = null;
+            textBoxDescription.Tag = null;
             if (e.Node != null && e.Node.Tag != null)
+            {
                 textBoxDescription.Text = e.Node.Tag.ToString().Replace("<br>", "\r\n");
+                textBoxDescription.Tag = e.Node.Tag.ToString().Replace("<br>", "\r\n");
+            }
+        }
+
+        private void treeViewTodolist_BeforeSelect(object sender, TreeViewCancelEventArgs e)
+        {
+            if (treeViewTodolist.SelectedNode != null)
+                if (textBoxDescription.Tag != null && treeViewTodolist.SelectedNode.Tag != null && textBoxDescription.Text.ToString() != textBoxDescription.Tag.ToString())
+                {
+                    appendLogTextbox("Uploading changes made to " + treeViewTodolist.SelectedNode.ToString());
+                    //treeViewTodolist.Enabled = false;
+                    //splitContainer1.Enabled = false;
+                    treeViewTodolist.SelectedNode.Tag = textBoxDescription.Text;
+                    if (UploadChangesMade(treeViewTodolist.SelectedNode))
+                    {
+                        //treeViewTodolist.Enabled = true;
+                        //splitContainer1.Enabled = true;
+                        //treeViewTodolist.Focus();
+                        //treeViewTodolist.SelectedNode = e.Node;
+                        appendLogTextbox("Changes accepted");
+                    }
+                    else
+                    {
+                        treeViewTodolist.SelectedNode.Tag = textBoxDescription.Tag.ToString();
+                        //treeViewTodolist.Enabled = true;
+                        //splitContainer1.Enabled = true;
+                        textBoxDescription.Text = textBoxDescription.Tag.ToString();
+                        appendLogTextbox("Changes rejected");
+                        e.Cancel = true;
+                    }
+                }
+            //e.Cancel = true;
+        }
+
+        private bool UploadChangesMade(TreeNode node)
+        {
+            string tmpkey = GetPrivateKey();
+
+            if (tmpkey != null)
+            {
+                HttpWebRequest addrequest = null;
+                HttpWebResponse addresponse = null;
+                StreamReader input = null;
+
+                try
+                {
+                    if (Username != null && Username.Length > 0
+                                           && tmpkey != null && tmpkey.Length > 0)
+                    {
+                        string encryptedstring;
+                        string decryptedstring = "";
+
+                        string cat = node.Parent.Parent.Text;
+                        string subcat = node.Parent.Text;
+                        string items = node.Text;
+                        string descr = node.Tag.ToString();
+                        bool mustreturntrue = false;
+                        PerformVoidFunctionSeperateThread(() =>
+                        {
+                            addrequest = (HttpWebRequest)WebRequest.Create(doWorkAddress + "/dotask/" +
+                                PhpEncryption.SimpleTripleDesEncrypt(Username, "123456789abcdefghijklmno") + "/" +
+                                PhpEncryption.SimpleTripleDesEncrypt("updatedescription", tmpkey) + "/" +
+                                PhpEncryption.SimpleTripleDesEncrypt(cat + "\t" + subcat + "\t" + items + "\t" + descr, tmpkey));// + "/");
+                            //appendLogTextbox(addrequest.RequestUri.ToString());
+                            try
+                            {
+                                addresponse = (HttpWebResponse)addrequest.GetResponse();
+                                input = new StreamReader(addresponse.GetResponseStream());
+                                encryptedstring = input.ReadToEnd();
+                                //appendLogTextbox("Encrypted response: " + encryptedstring);
+
+                                decryptedstring = PhpEncryption.SimpleTripleDesDecrypt(encryptedstring, tmpkey);
+                                //appendLogTextbox("Decrypted response: " + decryptedstring);
+                                decryptedstring = decryptedstring.Replace("\0", "");
+                                //MessageBox.Show(this, decryptedstring);
+                                if (decryptedstring.Trim() == "1")
+                                    mustreturntrue = true;
+                                else
+                                {
+                                    //appendLogTextbox("Uploading changes failed: " + decryptedstring);
+                                    string s = "";
+                                    foreach (char c in decryptedstring.ToCharArray()) s += (int)c + ",";
+                                    appendLogTextbox("Uploading changes failed: " + s);
+                                }
+                            }
+                            catch (Exception exc) { MessageBox.Show(this, "Exception:" + exc.Message, "Exception", MessageBoxButtons.OK, MessageBoxIcon.Error); }
+                        });
+                        if (mustreturntrue) return true;
+                    }
+                }
+                catch (Exception exc)
+                {
+                    appendLogTextbox("Obtain php: " + exc.Message);
+                }
+                finally
+                {
+                    if (addresponse != null) addresponse.Close();
+                    if (input != null) input.Close();
+                }
+            }
+            return false;
+        }
+
+        private void treeViewTodolist_MouseDown(object sender, MouseEventArgs e)
+        {
+            TreeNode ItemOfContextMenu = treeViewTodolist.GetNodeAt(treeViewTodolist.PointToClient(MousePosition));
+            if (ItemOfContextMenu == null)
+                treeViewTodolist.ContextMenuStrip = null;//contextMenuStrip_ROOT;
+            else treeViewTodolist.SelectedNode = ItemOfContextMenu;
+        }
+
+        private void addItemToThisCategoryToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            AddTodoItemNow(treeViewTodolist.SelectedNode.Parent.Parent.Text, treeViewTodolist.SelectedNode.Parent.Text);
+        }
+        private void textBoxDescription_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.A && ((ModifierKeys & Keys.Control) == Keys.Control))
+                textBoxDescription.SelectAll();
+        }
+
+        protected override void OnKeyDown(KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Escape) { e.Handled = true; this.Close(); }
         }
     }
 
@@ -767,6 +911,11 @@ namespace MonitorSystem
             return hex.Replace("-", "");
         }
 
+        public static string StringToHex(string stringIn)
+        {
+            return PhpEncryption.ByteArrayToString(Encoding.Default.GetBytes(stringIn));
+        }
+
         public static byte[] StringToByteArray(String hex)
         {
             int NumberChars = hex.Length;
@@ -774,6 +923,11 @@ namespace MonitorSystem
             for (int i = 0; i < NumberChars; i += 2)
                 bytes[i / 2] = Convert.ToByte(hex.Substring(i, 2), 16);
             return bytes;
+        }
+
+        public static string HexToString(string hexIn)
+        {
+            return Encoding.Default.GetString(StringToByteArray(hexIn));
         }
     }
 

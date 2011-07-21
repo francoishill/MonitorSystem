@@ -135,6 +135,7 @@
             this.Controls.Add(this.checkBoxHidePassword);
             this.Controls.Add(this.textBoxPassword);
             this.Controls.Add(this.textBoxUsername);
+            this.KeyPreview = true;
             this.MinimumSize = new System.Drawing.Size(434, 185);
             this.Name = "AddEmailAndPasswordForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
