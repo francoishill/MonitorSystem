@@ -200,6 +200,7 @@
             this.textBoxDescription.Location = new System.Drawing.Point(0, 0);
             this.textBoxDescription.Multiline = true;
             this.textBoxDescription.Name = "textBoxDescription";
+            this.textBoxDescription.ScrollBars = System.Windows.Forms.ScrollBars.Both;
             this.textBoxDescription.Size = new System.Drawing.Size(315, 204);
             this.textBoxDescription.TabIndex = 0;
             this.textBoxDescription.KeyDown += new System.Windows.Forms.KeyEventHandler(this.textBoxDescription_KeyDown);
