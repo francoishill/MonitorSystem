@@ -45,7 +45,7 @@
             this.textBoxDescription = new System.Windows.Forms.TextBox();
             this.linkLabel2 = new System.Windows.Forms.LinkLabel();
             this.checkBoxAutoUpload = new System.Windows.Forms.CheckBox();
-            this.contextMenuStripItemsNode = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.contextMenuStripItemsSubcat = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.addItemToThisCategoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.checkBoxComplete = new System.Windows.Forms.CheckBox();
             this.dateTimePickerCreated = new System.Windows.Forms.DateTimePicker();
@@ -57,6 +57,8 @@
             this.label3 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.checkBoxStopSnooze = new System.Windows.Forms.CheckBox();
+            this.contextMenuStripItemsNode = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.deleteThisItemToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.contextMenuStripTrayIcon.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
@@ -64,9 +66,10 @@
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
-            this.contextMenuStripItemsNode.SuspendLayout();
+            this.contextMenuStripItemsSubcat.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownRemindedCount)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownAutosnoozeInterval)).BeginInit();
+            this.contextMenuStripItemsNode.SuspendLayout();
             this.SuspendLayout();
             // 
             // notifyIcon1
@@ -233,12 +236,12 @@
             this.checkBoxAutoUpload.Text = "Auto upload changes";
             this.checkBoxAutoUpload.UseVisualStyleBackColor = true;
             // 
-            // contextMenuStripItemsNode
+            // contextMenuStripItemsSubcat
             // 
-            this.contextMenuStripItemsNode.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.contextMenuStripItemsSubcat.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.addItemToThisCategoryToolStripMenuItem});
-            this.contextMenuStripItemsNode.Name = "contextMenuStripItemsNode";
-            this.contextMenuStripItemsNode.Size = new System.Drawing.Size(209, 26);
+            this.contextMenuStripItemsSubcat.Name = "contextMenuStripItemsNode";
+            this.contextMenuStripItemsSubcat.Size = new System.Drawing.Size(209, 26);
             // 
             // addItemToThisCategoryToolStripMenuItem
             // 
@@ -361,6 +364,20 @@
             this.checkBoxStopSnooze.UseVisualStyleBackColor = true;
             this.checkBoxStopSnooze.CheckedChanged += new System.EventHandler(this.checkBoxStopSnooze_CheckedChanged);
             // 
+            // contextMenuStripItemsNode
+            // 
+            this.contextMenuStripItemsNode.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.deleteThisItemToolStripMenuItem});
+            this.contextMenuStripItemsNode.Name = "contextMenuStripItemsNode";
+            this.contextMenuStripItemsNode.Size = new System.Drawing.Size(157, 48);
+            // 
+            // deleteThisItemToolStripMenuItem
+            // 
+            this.deleteThisItemToolStripMenuItem.Name = "deleteThisItemToolStripMenuItem";
+            this.deleteThisItemToolStripMenuItem.Size = new System.Drawing.Size(156, 22);
+            this.deleteThisItemToolStripMenuItem.Text = "&Delete this item";
+            this.deleteThisItemToolStripMenuItem.Click += new System.EventHandler(this.deleteThisItemToolStripMenuItem_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -404,9 +421,10 @@
             this.splitContainer1.Panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
-            this.contextMenuStripItemsNode.ResumeLayout(false);
+            this.contextMenuStripItemsSubcat.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownRemindedCount)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownAutosnoozeInterval)).EndInit();
+            this.contextMenuStripItemsNode.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -429,7 +447,7 @@
         private System.Windows.Forms.TextBox textBoxDescription;
         private System.Windows.Forms.LinkLabel linkLabel2;
         private System.Windows.Forms.CheckBox checkBoxAutoUpload;
-        private System.Windows.Forms.ContextMenuStrip contextMenuStripItemsNode;
+        private System.Windows.Forms.ContextMenuStrip contextMenuStripItemsSubcat;
         private System.Windows.Forms.ToolStripMenuItem addItemToThisCategoryToolStripMenuItem;
         private System.Windows.Forms.CheckBox checkBoxComplete;
         private System.Windows.Forms.DateTimePicker dateTimePickerCreated;
@@ -441,6 +459,8 @@
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.CheckBox checkBoxStopSnooze;
+        private System.Windows.Forms.ContextMenuStrip contextMenuStripItemsNode;
+        private System.Windows.Forms.ToolStripMenuItem deleteThisItemToolStripMenuItem;
     }
 }
 

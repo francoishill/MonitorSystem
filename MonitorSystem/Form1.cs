@@ -537,6 +537,7 @@ namespace MonitorSystem
             string tmpresult = GetResultOfPerformingDesktopAppDoTask(Username, "getlist", new List<string>());
             if (tmpresult != null)
             {
+                appendLogTextbox("Successfully obtained todo list");
                 foreach (string line in tmpresult.Split("\n".ToCharArray(), StringSplitOptions.RemoveEmptyEntries))
                 if (line.Trim('\t', '\n', '\r', ' ', '\0').Length > 0)
                 {
@@ -630,7 +631,7 @@ namespace MonitorSystem
             AddTodoItem addform = new AddTodoItem(Category, Subcat);
             if (addform.ShowDialog(this) == System.Windows.Forms.DialogResult.OK)
             {
-                PerformDesktopAppDoTask(
+                bool successfulAdd = PerformDesktopAppDoTask(
                     Username,
                     "addtolist",
                     new List<string>()
@@ -645,6 +646,21 @@ namespace MonitorSystem
                 },
                     true,
                     "1");
+                if (successfulAdd)
+                {
+                    appendLogTextbox("Successfully added " + addform.textBoxItems.Text);
+                    AdditemToTreeview(
+                        addform.textBoxCategory.Text,
+                        addform.textBoxSubcat.Text,
+                        addform.textBoxItems.Text,
+                        addform.textBoxDescription.Text,
+                        false,
+                        addform.dateTimePickerRemindOn.Value,
+                        DateTime.Now,
+                        0,
+                        !addform.dateTimePickerRemindOn.Checked,
+                        addform.checkBoxAutosnooze.Checked ? (int)addform.numericUpDownAutosnoozeInterval.Value : 0);
+                }
             }
         }
 
@@ -662,13 +678,19 @@ namespace MonitorSystem
                 int tmpRemindedCount = Convert.ToInt32(line.Split('\t')[7]);
                 bool tmpStopSnooze = line.Split('\t')[8] == "1";
                 int tmpAutosnoozeInterval = Convert.ToInt32(line.Split('\t')[9]);
-                TreeNode tmpItemsNode = new TreeNode(tmpItems) { Tag = new ItemDetails(tmpDescription, tmpCompleted, tmpDue, tmpCreated, tmpRemindedCount, tmpStopSnooze, tmpAutosnoozeInterval) };
-                tmpItemsNode.ContextMenuStrip = contextMenuStripItemsNode;
-                if (!treeViewTodolist.Nodes.ContainsKey(tmpCategory)) treeViewTodolist.Nodes.Add(tmpCategory, tmpCategory);
-                if (!treeViewTodolist.Nodes[tmpCategory].Nodes.ContainsKey(tmpSubcat)) treeViewTodolist.Nodes[tmpCategory].Nodes.Add(tmpSubcat, tmpSubcat);
-                treeViewTodolist.Nodes[tmpCategory].Nodes[tmpSubcat].Nodes.Add(tmpItemsNode);
+                AdditemToTreeview(tmpCategory, tmpSubcat, tmpItems, tmpDescription, tmpCompleted, tmpDue, tmpCreated, tmpRemindedCount, tmpStopSnooze, tmpAutosnoozeInterval);
             }
             else MessageBox.Show("The following line is invalid todo line: " + line);
+        }
+
+        private void AdditemToTreeview(string Category, string Subcat, string Items, string Description, bool Completed, DateTime Due, DateTime Created, int RemindedCount, bool StopSnooze, int AutosnoozeInterval)
+        {
+            TreeNode tmpItemsNode = new TreeNode(Items) { Tag = new ItemDetails(Description, Completed, Due, Created, RemindedCount, StopSnooze, AutosnoozeInterval) };
+            tmpItemsNode.ContextMenuStrip = contextMenuStripItemsNode;
+            if (!treeViewTodolist.Nodes.ContainsKey(Category)) treeViewTodolist.Nodes.Add(Category, Category);
+            if (!treeViewTodolist.Nodes[Category].Nodes.ContainsKey(Subcat)) treeViewTodolist.Nodes[Category].Nodes.Add(Subcat, Subcat);
+            treeViewTodolist.Nodes[Category].Nodes[Subcat].Nodes.Add(tmpItemsNode);
+            tmpItemsNode.Parent.ContextMenuStrip = contextMenuStripItemsSubcat;
         }
 
         /// <summary>
@@ -726,9 +748,15 @@ namespace MonitorSystem
             return vystup;
         }
 
-        private void appendLogTextbox(string str)
+        private void appendLogTextbox(string str, bool mustUpdateStatusText = true)
         {
             textBoxLogs.Text += (textBoxLogs.Text.Length > 0 ? Environment.NewLine : "") + str;
+            if (mustUpdateStatusText) updateStatusText(str);
+        }
+
+        private void updateStatusText(string str)
+        {
+            toolStripStatusLabelCurrentStatus.Text = str;
         }
 
         private void treeViewTodolist_AfterSelect(object sender, TreeViewEventArgs e)
@@ -798,7 +826,7 @@ namespace MonitorSystem
 
         private void addItemToThisCategoryToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            AddTodoItemNow(treeViewTodolist.SelectedNode.Parent.Parent.Text, treeViewTodolist.SelectedNode.Parent.Text);
+            AddTodoItemNow(treeViewTodolist.SelectedNode.Parent.Text, treeViewTodolist.SelectedNode.Text);
         }
         private void textBoxDescription_KeyDown(object sender, KeyEventArgs e)
         {
@@ -1043,6 +1071,26 @@ namespace MonitorSystem
 
                 Application.DoEvents();
                 MustHandleStopAutosnoozeIntervalChanged = true;
+            }
+        }
+
+        private void deleteThisItemToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (MessageBox.Show(this, "Are you sure you want to delete " + treeViewTodolist.SelectedNode.Text + "?", "Confirm delete", MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2) == System.Windows.Forms.DialogResult.Yes)
+            {
+                bool successfulDelete = PerformDesktopAppDoTask(
+                    Username,
+                    "deleteitem",
+                    new List<string>()
+                {
+                    treeViewTodolist.SelectedNode.Parent.Parent.Text,
+                    treeViewTodolist.SelectedNode.Parent.Text,
+                    treeViewTodolist.SelectedNode.Text,
+                },
+                    true,
+                    "1");
+                appendLogTextbox("Successfully deleted item: " + treeViewTodolist.SelectedNode.Text);
+                treeViewTodolist.SelectedNode.Remove();
             }
         }
     }
