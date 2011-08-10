@@ -34,8 +34,10 @@ namespace MonitorSystem
         public static string SavedListFileName = LocalAppDataPath + "\\EmailAndPasswordList.fjset";
 
         //private const string ServerAddress = "http://localhost";
-        private const string ServerAddress = "https://fjh.co.za";
-        private const string doWorkAddress = ServerAddress + "/other/codeigniter/index.php/desktopapp";
+        //private const string ServerAddress = "https://fjh.co.za";
+        private const string ServerAddress = "http://firepuma.com";
+        //private const string doWorkAddress = ServerAddress + "/other/codeigniter/index.php/desktopapp";
+        private const string doWorkAddress = ServerAddress + "/desktopapp";
         private string Username = "f";
         private string Password = "f";
 
