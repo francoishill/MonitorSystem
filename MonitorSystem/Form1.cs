@@ -15,6 +15,7 @@ using System.IO;
 using System.Net;
 using System.Security.Cryptography;
 using System.Globalization;
+using System.Diagnostics;
 //using System.Threading;
 
 namespace MonitorSystem
@@ -541,11 +542,11 @@ namespace MonitorSystem
             {
                 appendLogTextbox("Successfully obtained todo list");
                 foreach (string line in tmpresult.Split("\n".ToCharArray(), StringSplitOptions.RemoveEmptyEntries))
-                if (line.Trim('\t', '\n', '\r', ' ', '\0').Length > 0)
-                {
-                    //dt.Rows.Add(line.Split('\t')); ;
-                    AddTabSeperatedLineToTreeview(line);
-                }
+                    if (line.Trim('\t', '\n', '\r', ' ', '\0').Length > 0)
+                    {
+                        //dt.Rows.Add(line.Split('\t')); ;
+                        AddTabSeperatedLineToTreeview(line);
+                    }
             }
             /*try
             {
@@ -805,8 +806,8 @@ namespace MonitorSystem
         private bool UploadChangesMade(TreeNode node)
         {
             return PerformDesktopAppDoTask(
-                Username, 
-                "updatedescription", 
+                Username,
+                "updatedescription",
                 new List<string>()
                 {
                     node.Parent.Parent.Text,//category
@@ -918,21 +919,25 @@ namespace MonitorSystem
             return null;
         }
 
-        private void treeViewTodolist_BeforeSelect(object sender, TreeViewCancelEventArgs e) {
+        private void treeViewTodolist_BeforeSelect(object sender, TreeViewCancelEventArgs e)
+        {
             if (treeViewTodolist.SelectedNode != null)
-                if (textBoxDescription.Tag != null && treeViewTodolist.SelectedNode.Tag != null && textBoxDescription.Text.ToString() != textBoxDescription.Tag.ToString()) {
+                if (textBoxDescription.Tag != null && treeViewTodolist.SelectedNode.Tag != null && textBoxDescription.Text.ToString() != textBoxDescription.Tag.ToString())
+                {
                     appendLogTextbox("Uploading changes made to " + treeViewTodolist.SelectedNode.ToString());
                     //treeViewTodolist.Enabled = false;
                     //splitContainer1.Enabled = false;
                     (treeViewTodolist.SelectedNode.Tag as ItemDetails).Description = textBoxDescription.Text;
-                    if (UploadChangesMade(treeViewTodolist.SelectedNode)) {
+                    if (UploadChangesMade(treeViewTodolist.SelectedNode))
+                    {
                         //treeViewTodolist.Enabled = true;
                         //splitContainer1.Enabled = true;
                         //treeViewTodolist.Focus();
                         //treeViewTodolist.SelectedNode = e.Node;
                         appendLogTextbox("Changes accepted");
                     }
-                    else {
+                    else
+                    {
                         (treeViewTodolist.SelectedNode.Tag as ItemDetails).Description = textBoxDescription.Tag.ToString();
                         //treeViewTodolist.Enabled = true;
                         //splitContainer1.Enabled = true;
@@ -945,12 +950,15 @@ namespace MonitorSystem
         }
 
         bool MustHandleCheckChanged = true;
-        private void checkBoxComplete_CheckedChanged(object sender, EventArgs e) {
-            if (MustHandleCheckChanged) {
+        private void checkBoxComplete_CheckedChanged(object sender, EventArgs e)
+        {
+            if (MustHandleCheckChanged)
+            {
                 MustHandleCheckChanged = false;
 
                 checkBoxComplete.Enabled = false;
-                if (treeViewTodolist.SelectedNode != null) {
+                if (treeViewTodolist.SelectedNode != null)
+                {
                     TreeNode node = treeViewTodolist.SelectedNode;
                     if (!PerformDesktopAppDoTask(
                         Username,
@@ -965,7 +973,8 @@ namespace MonitorSystem
                         true,
                         "1"))
                         checkBoxComplete.Checked = (node.Tag as ItemDetails).Complete;
-                    else {
+                    else
+                    {
                         appendLogTextbox("Successfully updated completed state for " + node.Text);
                         (node.Tag as ItemDetails).Complete = checkBoxComplete.Checked;
                     }
@@ -978,12 +987,15 @@ namespace MonitorSystem
         }
 
         bool MustHandleDueDateChanged = true;
-        private void dateTimePickerDue_ValueChanged(object sender, EventArgs e) {
-            if (MustHandleDueDateChanged) {
+        private void dateTimePickerDue_ValueChanged(object sender, EventArgs e)
+        {
+            if (MustHandleDueDateChanged)
+            {
                 MustHandleDueDateChanged = false;
 
                 dateTimePickerDue.Enabled = false;
-                if (treeViewTodolist.SelectedNode != null) {
+                if (treeViewTodolist.SelectedNode != null)
+                {
                     TreeNode node = treeViewTodolist.SelectedNode;
                     if (!PerformDesktopAppDoTask(
                         Username,
@@ -998,7 +1010,8 @@ namespace MonitorSystem
                         true,
                         "1"))
                         dateTimePickerDue.Value = (node.Tag as ItemDetails).Due;
-                    else {
+                    else
+                    {
                         appendLogTextbox("Successfully updated due date for " + node.Text);
                         (node.Tag as ItemDetails).Due = dateTimePickerDue.Value;
                     }
@@ -1011,12 +1024,15 @@ namespace MonitorSystem
         }
 
         bool MustHandleStopSnoozeChanged = true;
-        private void checkBoxStopSnooze_CheckedChanged(object sender, EventArgs e) {
-            if (MustHandleStopSnoozeChanged) {
+        private void checkBoxStopSnooze_CheckedChanged(object sender, EventArgs e)
+        {
+            if (MustHandleStopSnoozeChanged)
+            {
                 MustHandleStopSnoozeChanged = false;
 
                 checkBoxStopSnooze.Enabled = false;
-                if (treeViewTodolist.SelectedNode != null) {
+                if (treeViewTodolist.SelectedNode != null)
+                {
                     TreeNode node = treeViewTodolist.SelectedNode;
                     if (!PerformDesktopAppDoTask(
                         Username,
@@ -1031,7 +1047,8 @@ namespace MonitorSystem
                         true,
                         "1"))
                         checkBoxStopSnooze.Checked = (node.Tag as ItemDetails).StopSnooze;
-                    else {
+                    else
+                    {
                         appendLogTextbox("Successfully updated stopsnooze state for " + node.Text);
                         (node.Tag as ItemDetails).StopSnooze = checkBoxStopSnooze.Checked;
                     }
@@ -1044,12 +1061,15 @@ namespace MonitorSystem
         }
 
         bool MustHandleStopAutosnoozeIntervalChanged = true;
-        private void numericUpDownAutosnoozeInterval_ValueChanged(object sender, EventArgs e) {
-            if (MustHandleStopAutosnoozeIntervalChanged) {
+        private void numericUpDownAutosnoozeInterval_ValueChanged(object sender, EventArgs e)
+        {
+            if (MustHandleStopAutosnoozeIntervalChanged)
+            {
                 MustHandleStopAutosnoozeIntervalChanged = false;
 
                 numericUpDownAutosnoozeInterval.Enabled = false;
-                if (treeViewTodolist.SelectedNode != null) {
+                if (treeViewTodolist.SelectedNode != null)
+                {
                     TreeNode node = treeViewTodolist.SelectedNode;
                     if (!PerformDesktopAppDoTask(
                         Username,
@@ -1064,7 +1084,8 @@ namespace MonitorSystem
                         true,
                         "1"))
                         numericUpDownAutosnoozeInterval.Value = (node.Tag as ItemDetails).AutosnoozeInterval;
-                    else {
+                    else
+                    {
                         appendLogTextbox("Successfully updated autosnooze interval for " + node.Text);
                         (node.Tag as ItemDetails).AutosnoozeInterval = (int)numericUpDownAutosnoozeInterval.Value;
                     }
@@ -1094,6 +1115,38 @@ namespace MonitorSystem
                 appendLogTextbox("Successfully deleted item: " + treeViewTodolist.SelectedNode.Text);
                 treeViewTodolist.SelectedNode.Remove();
             }
+        }
+
+        private void timer_PhpCronJob_Tick(object sender, EventArgs e)
+        {
+
+            PerformVoidFunctionSeperateThread(() =>
+            {
+                try
+                {
+                    //StringBuilder Output = new StringBuilder();
+
+                    System.Diagnostics.Process proc = new System.Diagnostics.Process();
+                    proc.StartInfo.FileName = "php";
+                    proc.StartInfo.Arguments = @"""c:\francois\websites\firepuma\cron.php""";
+                    proc.StartInfo.UseShellExecute = false;
+                    proc.StartInfo.RedirectStandardOutput = true;
+                    proc.StartInfo.CreateNoWindow = true;
+                    //proc.OutputDataReceived += delegate(object sendingProcess, DataReceivedEventArgs outLine)
+                    //{
+                    //    if (!String.IsNullOrEmpty(outLine.Data))
+                    //    {
+                    //        Output.Append(Environment.NewLine + outLine.Data);
+                    //    }
+                    //};
+                    proc.Start();
+                    proc.BeginOutputReadLine();
+                    proc.WaitForExit();
+                    proc.Close();
+                    //listBox1.Items.AddRange(Output.ToString().Split('\n'));
+                }
+                catch { }
+            });
         }
     }
 

@@ -59,6 +59,7 @@
             this.checkBoxStopSnooze = new System.Windows.Forms.CheckBox();
             this.contextMenuStripItemsNode = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.deleteThisItemToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.timer_PhpCronJob = new System.Windows.Forms.Timer(this.components);
             this.contextMenuStripTrayIcon.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
@@ -378,6 +379,12 @@
             this.deleteThisItemToolStripMenuItem.Text = "&Delete this item";
             this.deleteThisItemToolStripMenuItem.Click += new System.EventHandler(this.deleteThisItemToolStripMenuItem_Click);
             // 
+            // timer_PhpCronJob
+            // 
+            this.timer_PhpCronJob.Enabled = true;
+            this.timer_PhpCronJob.Interval = 60000;
+            this.timer_PhpCronJob.Tick += new System.EventHandler(this.timer_PhpCronJob_Tick);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -461,6 +468,7 @@
         private System.Windows.Forms.CheckBox checkBoxStopSnooze;
         private System.Windows.Forms.ContextMenuStrip contextMenuStripItemsNode;
         private System.Windows.Forms.ToolStripMenuItem deleteThisItemToolStripMenuItem;
+        private System.Windows.Forms.Timer timer_PhpCronJob;
     }
 }
 
