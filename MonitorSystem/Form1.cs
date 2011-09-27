@@ -30,6 +30,15 @@ namespace MonitorSystem
 		[DllImport("msvcr70.dll", CallingConvention = CallingConvention.Cdecl)]
 		public static extern int _fpreset();
 
+		const int WM_HOTKEY = 786;
+		const int Hotkey1 = 500;
+		const uint MOD_ALT = 1;
+		const uint MOD_CONTROL = 2;
+		const uint MOD_SHIFT = 4;
+		const uint MOD_WIN = 8;
+		[DllImport("user32.dll")]
+		private static extern bool RegisterHotKey(IntPtr hWnd, int id, uint fsModifiers, uint vk);
+
 		private static string ThisAppName = "MonitorSystem";
 		public static readonly string LocalAppDataPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\" + "FJH" + "\\" + ThisAppName;
 		public static string SavedListFileName = LocalAppDataPath + "\\EmailAndPasswordList.fjset";
@@ -125,7 +134,18 @@ namespace MonitorSystem
 			this.WindowState = FormWindowState.Minimized;
 
 			//InitializeHooks(true, true);
-			notifyIcon1.ShowBalloonTip(3000, "Hooks disabled", "Hooks were disabled in code", ToolTipIcon.Info);
+			//notifyIcon1.ShowBalloonTip(3000, "Hooks disabled", "Hooks were disabled in code", ToolTipIcon.Info);
+			if (!RegisterHotKey(this.Handle, Hotkey1, MOD_WIN, (int)Keys.Q)) MessageBox.Show("QuickAccess could not register hotkey WinKey + Q");
+		}
+
+		protected override void WndProc(ref Message m)
+		{
+			if (m.Msg == WM_HOTKEY)
+			{
+				if (m.WParam == new IntPtr(Hotkey1))
+					ShowQueuedMessages();
+			}
+			base.WndProc(ref m);
 		}
 
 		UserActivityHook actHook;
@@ -1174,7 +1194,7 @@ namespace MonitorSystem
 
 		public class FileChangedDetails
 		{
-			public enum QueueStatusEnum { New, Handled, Later };
+			public enum QueueStatusEnum { New, Read, Accepted, Complete };
 			public string FileName;
 			public string Description;
 			public QueueStatusEnum QueueStatus;
@@ -1183,6 +1203,49 @@ namespace MonitorSystem
 				FileName = FileNameIn;
 				Description = DescriptionIn;
 				QueueStatus = QueueStatusIn;
+			}
+
+			private bool IsStringEmpty(string str)
+			{
+				return str == null || str.Trim().Length == 0;
+			}
+
+			public void UpdateNodeFontandcolorFromQueueStatus(TreeNode node)
+			{
+				SetNewQueueStatusAndUpdateNodeFontandcolor(QueueStatus, node);
+			}
+
+			public void SetNewQueueStatusAndUpdateNodeFontandcolor(QueueStatusEnum QueueStatusIn, TreeNode node)
+			{
+				this.QueueStatus = QueueStatusIn;
+				node.ForeColor =
+									IsStringEmpty(Description) && QueueStatusIn == FileChangedDetails.QueueStatusEnum.Read ? Color.Red :
+									QueueStatusIn == FileChangedDetails.QueueStatusEnum.Read ? Color.Green :
+									Color.Black;
+				FontStyle nodeFontStyle =
+					QueueStatusIn == FileChangedDetails.QueueStatusEnum.New ? FontStyle.Underline :
+					QueueStatusIn == FileChangedDetails.QueueStatusEnum.Read ? FontStyle.Regular :
+					QueueStatusIn == FileChangedDetails.QueueStatusEnum.Accepted ? FontStyle.Strikeout :
+					FontStyle.Italic;
+				node.NodeFont = new Font(FontFamily.GenericSansSerif, 8, nodeFontStyle);
+			}
+
+			string dateFormat = @"yyyy MM dd (HH\hmm ss)";
+			private string GetFileNameStart(DateTime lastWriteTime)
+			{
+				return FileName + "_" + lastWriteTime.ToString(dateFormat);
+			}
+
+			string backupExt = ".bac";
+			string descrExt = ".desc";
+			public string GetBackupFileName(DateTime lastWriteTime)
+			{
+				return GetFileNameStart(lastWriteTime) + backupExt;
+			}
+
+			public string GetDescriptionFileName(DateTime lastWriteTime)
+			{
+				return GetFileNameStart(lastWriteTime) + descrExt;
 			}
 		}
 
@@ -1197,15 +1260,29 @@ namespace MonitorSystem
 				DateTime lastWrite = fi.LastWriteTime;
 				lastWrite = new DateTime(lastWrite.Year, lastWrite.Month, lastWrite.Day, lastWrite.Hour, lastWrite.Minute, lastWrite.Second);
 				if (!QueuedFileChanges[e.FullPath].ContainsKey(lastWrite))
-					QueuedFileChanges[e.FullPath].Add(lastWrite, new FileChangedDetails(e.FullPath, null));
+				{
+					FileChangedDetails fcd = new FileChangedDetails(e.FullPath, null);
+					QueuedFileChanges[e.FullPath].Add(lastWrite, fcd);
+					string newFileName = fcd.GetBackupFileName(lastWrite);
+					File.Copy(e.FullPath, newFileName);
+					try
+					{
+						File.SetAttributes(newFileName,  FileAttributes.System | FileAttributes.Hidden);
+					}
+					catch (Exception exc)
+					{
+						ShowBoolloonTipNotification("Exception: " + exc.Message, Title: "Could not set system|hidden attributes", icon: ToolTipIcon.Warning);
+					}
+					ShowFileChangedBalloonTip(fcd);
+				}
 				Application.DoEvents();
-				ShowFileChangedBalloonTip(e.FullPath);
 			}
 		}
 
-		private void ShowFileChangedBalloonTip(string fileName)
+		private void ShowFileChangedBalloonTip(FileChangedDetails fcd)
 		{
-			ShowBoolloonTipNotification(fileName, 3000, "File changed, click to add description", ToolTipIcon.Info, BalloonTipActionEnum.ChangedFileList);
+			ShowBoolloonTipNotification(fcd.FileName, 3000, "File changed, click to add description", ToolTipIcon.Info, BalloonTipActionEnum.ChangedFileList);
+			LastFileChangedDetailsAdded = fcd;
 		}
 
 		private void ShowBoolloonTipNotification(string Description, int duration = 3000, string Title = "Title", ToolTipIcon icon = ToolTipIcon.Info, BalloonTipActionEnum BalloonTipActionIn = BalloonTipActionEnum.None)
@@ -1216,61 +1293,105 @@ namespace MonitorSystem
 
 		enum BalloonTipActionEnum { ChangedFileList, None };
 		private BalloonTipActionEnum BalloonTipAction = BalloonTipActionEnum.None;
+		private FileChangedDetails LastFileChangedDetailsAdded = null;
 		private void notifyIcon1_BalloonTipClicked_1(object sender, EventArgs e)
+		{
+			PerformBalloonTipClick();
+		}
+
+		private void PerformBalloonTipClick()
 		{
 			if (BalloonTipAction == BalloonTipActionEnum.ChangedFileList)
 			{
-				MonitoredFilesChanged formMonitoredFilesChanged = new MonitoredFilesChanged();
+				ShowQueuedMessages();
+			}
+		}
+
+		MonitoredFilesChanged formMonitoredFilesChanged;
+		private void ShowQueuedMessages()
+		{
+			if (formMonitoredFilesChanged == null) formMonitoredFilesChanged = new MonitoredFilesChanged();
+
+			if (!formMonitoredFilesChanged.Modal)
+			{
 				formMonitoredFilesChanged.treeView1.Nodes.Clear();
 				if (QueuedFileChanges != null)
 				{
 					string rootDir = fileSystemWatcher_SqlFiles.Path;
 					while (rootDir.EndsWith("\\")) rootDir = rootDir.Substring(0, rootDir.Length - 1);
 
+					TreeNode nodeToSelect = null;
 					TreeNode rootDirNode = new TreeNode(rootDir + "\\");
+					bool AtleastOneFilechangedNode = false;
 					foreach (string file in QueuedFileChanges.Keys)
 					{
 						TreeNode fileNode = new TreeNode(file.Substring(rootDir.Length + 1) + " (" + QueuedFileChanges[file].Count + ")") { Tag = file, ContextMenuStrip = formMonitoredFilesChanged.contextMenuStrip_TotalFile };// { Tag = QueuedFileChanges[file] };
 						foreach (DateTime date in QueuedFileChanges[file].Keys)
 						{
-							if (QueuedFileChanges[file][date].QueueStatus != FileChangedDetails.QueueStatusEnum.Handled)
+							FileChangedDetails fcd = QueuedFileChanges[file][date];
+							if (fcd.QueueStatus != FileChangedDetails.QueueStatusEnum.Accepted && fcd.QueueStatus != FileChangedDetails.QueueStatusEnum.Complete)
 							{
-								FontStyle nodeFontStyle =
-								QueuedFileChanges[file][date].QueueStatus == FileChangedDetails.QueueStatusEnum.New ? FontStyle.Underline :
-								QueuedFileChanges[file][date].QueueStatus == FileChangedDetails.QueueStatusEnum.Later ? FontStyle.Regular :
-								QueuedFileChanges[file][date].QueueStatus == FileChangedDetails.QueueStatusEnum.Handled ? FontStyle.Strikeout :
-								FontStyle.Italic;
-
-								fileNode.Nodes.Add(new TreeNode(date.ToString("yyyy-MM-dd HH:mm:ss"))
-								{
-									Tag = QueuedFileChanges[file][date],
-									ContextMenuStrip = formMonitoredFilesChanged.contextMenuStrip_FileModification,
-									ForeColor = IsStringEmpty(QueuedFileChanges[file][date].Description) ? Color.Red : Color.Green,
-									NodeFont = new Font(Font, nodeFontStyle)
-								});
+								AtleastOneFilechangedNode = true;
+								TreeNode fileModifiedNode = new TreeNode(date.ToString("yyyy-MM-dd HH:mm:ss"));
+								fileModifiedNode.Tag = fcd;
+								fileModifiedNode.ContextMenuStrip = formMonitoredFilesChanged.contextMenuStrip_FileModification;
+								fcd.UpdateNodeFontandcolorFromQueueStatus(fileModifiedNode);
+								fileNode.Nodes.Add(fileModifiedNode);
+								if (fcd == LastFileChangedDetailsAdded) nodeToSelect = fileModifiedNode;
 							}
 						}
-						rootDirNode.Nodes.Add(fileNode);
-						formMonitoredFilesChanged.treeView1.Nodes.Add(rootDirNode);
-						rootDirNode.ExpandAll();
+						if (AtleastOneFilechangedNode)
+						{
+							rootDirNode.Nodes.Add(fileNode);
+							formMonitoredFilesChanged.treeView1.Nodes.Add(rootDirNode);
+							rootDirNode.ExpandAll();
+						}
+					}
+					formMonitoredFilesChanged.treeView1.SelectedNode = nodeToSelect;
+
+					if (formMonitoredFilesChanged.treeView1.Nodes.Count == 0)
+					{
+						ShowBoolloonTipNotification("No file changes queued");
+						return;
 					}
 
 					formMonitoredFilesChanged.ShowDialog();
+					formMonitoredFilesChanged.textBox1.Enabled = false;
+					formMonitoredFilesChanged.AllowTextchangeCallback = false;
+					formMonitoredFilesChanged.textBox1.Text = null;
+					formMonitoredFilesChanged.AllowTextchangeCallback = true;
 					foreach (string file in QueuedFileChanges.Keys)
 					{
 						Dictionary<DateTime, FileChangedDetails> changes = QueuedFileChanges[file];
-						foreach (DateTime dt in changes.Keys)
+						foreach (DateTime lastWrite in changes.Keys)
 						{
-							FileChangedDetails fcd = changes[dt];
-							if (fcd.QueueStatus == FileChangedDetails.QueueStatusEnum.Handled)
+							FileChangedDetails fcd = changes[lastWrite];
+							if (fcd.QueueStatus == FileChangedDetails.QueueStatusEnum.Accepted)
 							{
+								//Copy file (add datestring at end)
 								//Write file if has description
 								//Delete from List?
 								if (fcd.Description != null && fcd.Description.Trim().Length > 0)
 								{
-									string dateFormat = @"yyyy MM dd (HH\hmm ss fff)";
-									//MessageBox.Show("Write file: " + file + Environment.NewLine + dt.ToString(dateFormat));
-
+									string fileName = fcd.GetDescriptionFileName(lastWrite);
+									StreamWriter sw = new StreamWriter(fileName);
+									try
+									{
+										sw.Write(fcd.Description);
+									}
+									finally
+									{
+										sw.Close();
+										try
+										{
+											File.SetAttributes(fileName, FileAttributes.System | FileAttributes.Hidden);
+										}
+										catch (Exception exc)
+										{
+											ShowBoolloonTipNotification("Exception: " + exc.Message, Title: "Could not set system|hidden attributes", icon: ToolTipIcon.Warning);
+										}
+										fcd.QueueStatus = FileChangedDetails.QueueStatusEnum.Complete;
+									}
 								}
 							}
 						}
@@ -1282,9 +1403,10 @@ namespace MonitorSystem
 			}
 		}
 
-		private bool IsStringEmpty(string str)
+		private void addBackupdescriptionToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			return str == null || str.Trim().Length == 0;
+			AddBackupDescription formAddBackupDescription = new AddBackupDescription();
+			formAddBackupDescription.Show();
 		}
 	}
 

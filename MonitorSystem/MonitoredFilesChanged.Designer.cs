@@ -36,7 +36,7 @@
 			this.clearMessagesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.contextMenuStrip_FileModification = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.clearthisMessageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.keepForlaterToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.dismissToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
 			this.splitContainer1.Panel1.SuspendLayout();
 			this.splitContainer1.Panel2.SuspendLayout();
@@ -63,27 +63,31 @@
 			this.splitContainer1.Size = new System.Drawing.Size(1131, 306);
 			this.splitContainer1.SplitterDistance = 600;
 			this.splitContainer1.TabIndex = 2;
+			this.splitContainer1.TabStop = false;
 			// 
 			// treeView1
 			// 
 			this.treeView1.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.treeView1.HideSelection = false;
 			this.treeView1.Location = new System.Drawing.Point(0, 0);
 			this.treeView1.Name = "treeView1";
 			this.treeView1.Size = new System.Drawing.Size(600, 306);
-			this.treeView1.TabIndex = 1;
+			this.treeView1.TabIndex = 0;
 			this.treeView1.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeView1_AfterSelect);
 			this.treeView1.NodeMouseClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.treeView1_NodeMouseClick);
+			this.treeView1.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler(this.MonitoredFilesChanged_PreviewKeyDown);
 			// 
 			// textBox1
 			// 
 			this.textBox1.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.textBox1.Enabled = false;
 			this.textBox1.Location = new System.Drawing.Point(0, 0);
 			this.textBox1.Multiline = true;
 			this.textBox1.Name = "textBox1";
-			this.textBox1.ReadOnly = true;
 			this.textBox1.Size = new System.Drawing.Size(527, 306);
-			this.textBox1.TabIndex = 2;
+			this.textBox1.TabIndex = 0;
 			this.textBox1.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
+			this.textBox1.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler(this.MonitoredFilesChanged_PreviewKeyDown);
 			// 
 			// contextMenuStrip_TotalFile
 			// 
@@ -102,7 +106,7 @@
 			// 
 			this.contextMenuStrip_FileModification.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.clearthisMessageToolStripMenuItem,
-            this.keepForlaterToolStripMenuItem});
+            this.dismissToolStripMenuItem});
 			this.contextMenuStrip_FileModification.Name = "contextMenuStrip_TotalFile";
 			this.contextMenuStrip_FileModification.Size = new System.Drawing.Size(173, 48);
 			// 
@@ -112,12 +116,12 @@
 			this.clearthisMessageToolStripMenuItem.Size = new System.Drawing.Size(172, 22);
 			this.clearthisMessageToolStripMenuItem.Text = "Clear &this message";
 			// 
-			// keepForlaterToolStripMenuItem
+			// dismissToolStripMenuItem
 			// 
-			this.keepForlaterToolStripMenuItem.Name = "keepForlaterToolStripMenuItem";
-			this.keepForlaterToolStripMenuItem.Size = new System.Drawing.Size(172, 22);
-			this.keepForlaterToolStripMenuItem.Text = "Keep for &later";
-			this.keepForlaterToolStripMenuItem.Click += new System.EventHandler(this.keepForlaterToolStripMenuItem_Click);
+			this.dismissToolStripMenuItem.Name = "dismissToolStripMenuItem";
+			this.dismissToolStripMenuItem.Size = new System.Drawing.Size(172, 22);
+			this.dismissToolStripMenuItem.Text = "&Dismiss";
+			this.dismissToolStripMenuItem.Click += new System.EventHandler(this.dismissToolStripMenuItem_Click);
 			// 
 			// MonitoredFilesChanged
 			// 
@@ -125,8 +129,12 @@
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(1155, 330);
 			this.Controls.Add(this.splitContainer1);
+			this.KeyPreview = true;
 			this.Name = "MonitoredFilesChanged";
+			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
 			this.Text = "MonitoredFilesChanged";
+			this.Shown += new System.EventHandler(this.MonitoredFilesChanged_Shown);
+			this.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler(this.MonitoredFilesChanged_PreviewKeyDown);
 			this.splitContainer1.Panel1.ResumeLayout(false);
 			this.splitContainer1.Panel2.ResumeLayout(false);
 			this.splitContainer1.Panel2.PerformLayout();
@@ -147,6 +155,6 @@
 		public System.Windows.Forms.ContextMenuStrip contextMenuStrip_FileModification;
 		private System.Windows.Forms.ToolStripMenuItem clearMessagesToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem clearthisMessageToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem keepForlaterToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem dismissToolStripMenuItem;
 	}
 }

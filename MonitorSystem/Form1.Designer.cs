@@ -61,6 +61,8 @@
 			this.deleteThisItemToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.timer_PhpCronJob = new System.Windows.Forms.Timer(this.components);
 			this.fileSystemWatcher_SqlFiles = new System.IO.FileSystemWatcher();
+			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+			this.addBackupdescriptionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.contextMenuStripTrayIcon.SuspendLayout();
 			this.statusStrip1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
@@ -86,14 +88,16 @@
 			// contextMenuStripTrayIcon
 			// 
 			this.contextMenuStripTrayIcon.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.addBackupdescriptionToolStripMenuItem,
+            this.toolStripSeparator1,
             this.exitToolStripMenuItem});
 			this.contextMenuStripTrayIcon.Name = "contextMenuStrip1";
-			this.contextMenuStripTrayIcon.Size = new System.Drawing.Size(93, 26);
+			this.contextMenuStripTrayIcon.Size = new System.Drawing.Size(201, 76);
 			// 
 			// exitToolStripMenuItem
 			// 
 			this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-			this.exitToolStripMenuItem.Size = new System.Drawing.Size(92, 22);
+			this.exitToolStripMenuItem.Size = new System.Drawing.Size(200, 22);
 			this.exitToolStripMenuItem.Text = "E&xit";
 			this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
 			// 
@@ -373,7 +377,7 @@
 			this.contextMenuStripItemsNode.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.deleteThisItemToolStripMenuItem});
 			this.contextMenuStripItemsNode.Name = "contextMenuStripItemsNode";
-			this.contextMenuStripItemsNode.Size = new System.Drawing.Size(157, 48);
+			this.contextMenuStripItemsNode.Size = new System.Drawing.Size(157, 26);
 			// 
 			// deleteThisItemToolStripMenuItem
 			// 
@@ -397,6 +401,18 @@
 			this.fileSystemWatcher_SqlFiles.Path = "C:\\ProgramData\\GLS\\ReportSQLqueries";
 			this.fileSystemWatcher_SqlFiles.SynchronizingObject = this;
 			this.fileSystemWatcher_SqlFiles.Changed += new System.IO.FileSystemEventHandler(this.fileSystemWatcher_SqlFiles_Changed);
+			// 
+			// toolStripSeparator1
+			// 
+			this.toolStripSeparator1.Name = "toolStripSeparator1";
+			this.toolStripSeparator1.Size = new System.Drawing.Size(197, 6);
+			// 
+			// addBackupdescriptionToolStripMenuItem
+			// 
+			this.addBackupdescriptionToolStripMenuItem.Name = "addBackupdescriptionToolStripMenuItem";
+			this.addBackupdescriptionToolStripMenuItem.Size = new System.Drawing.Size(200, 22);
+			this.addBackupdescriptionToolStripMenuItem.Text = "Add backup &description";
+			this.addBackupdescriptionToolStripMenuItem.Click += new System.EventHandler(this.addBackupdescriptionToolStripMenuItem_Click);
 			// 
 			// Form1
 			// 
@@ -484,6 +500,8 @@
         private System.Windows.Forms.ToolStripMenuItem deleteThisItemToolStripMenuItem;
 				private System.Windows.Forms.Timer timer_PhpCronJob;
 				private System.IO.FileSystemWatcher fileSystemWatcher_SqlFiles;
+				private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+				private System.Windows.Forms.ToolStripMenuItem addBackupdescriptionToolStripMenuItem;
     }
 }
 
