@@ -57,6 +57,8 @@ namespace MonitorSystem
 		private const string MySQLdateformat = "yyyy-MM-dd HH:mm:ss";
 		DateTime mindate = new DateTime(1800, 1, 1, 0, 0, 0);
 
+		public static string MonitoredAutoBackupPath = "";
+
 		public Form1()
 		{
 			try { _fpreset(); }
@@ -92,6 +94,7 @@ namespace MonitorSystem
 			dateTimePickerCreated.MinDate = mindate;
 
 			//MonitoredFilesClass.RePopulateFilesAndLastModifiedTimesDictionary(@"C:\ProgramData\GLS\ReportSQLqueries", true);
+			MonitoredAutoBackupPath = fileSystemWatcher_SqlFiles.Path;
 		}
 
 		private void RefreshRegexList()
@@ -1230,14 +1233,14 @@ namespace MonitorSystem
 				node.NodeFont = new Font(FontFamily.GenericSansSerif, 8, nodeFontStyle);
 			}
 
-			string dateFormat = @"yyyy MM dd (HH\hmm ss)";
+			public static string dateFormat = @"yyyy MM dd (HH\hmm ss)";
 			private string GetFileNameStart(DateTime lastWriteTime)
 			{
 				return FileName + "_" + lastWriteTime.ToString(dateFormat);
 			}
 
-			string backupExt = ".bac";
-			string descrExt = ".desc";
+			public static string backupExt = ".bac";
+			public static string descrExt = ".desc";
 			public string GetBackupFileName(DateTime lastWriteTime)
 			{
 				return GetFileNameStart(lastWriteTime) + backupExt;
@@ -1249,10 +1252,20 @@ namespace MonitorSystem
 			}
 		}
 
+		private bool IsFileInExtionFilter(string filePath)
+		{
+			foreach (string ex in AutobackupExtensionFilters)
+				if (filePath.ToLower().EndsWith(ex.ToLower()))
+					return true;
+			return false;
+		}
+
+		private readonly string[] AutobackupExtensionFilters = new string[] { ".sql", ".xml" };
 		Dictionary<string, Dictionary<DateTime, FileChangedDetails>> QueuedFileChanges;
 		private void fileSystemWatcher_SqlFiles_Changed(object sender, FileSystemEventArgs e)
 		{
-			if (e.ChangeType == WatcherChangeTypes.Changed)
+			if (e.ChangeType == WatcherChangeTypes.Changed
+				&& IsFileInExtionFilter(e.FullPath))
 			{
 				if (QueuedFileChanges == null) QueuedFileChanges = new Dictionary<string, Dictionary<DateTime, FileChangedDetails>>();
 				if (!QueuedFileChanges.ContainsKey(e.FullPath)) QueuedFileChanges.Add(e.FullPath, new Dictionary<DateTime, FileChangedDetails>());
@@ -1307,11 +1320,52 @@ namespace MonitorSystem
 			}
 		}
 
+		public TreeNode PopulateNodeFromPath(string relativePath, TreeNode node)
+		{
+			TreeNode returnNode = null;
+			while (relativePath.EndsWith("\\")) relativePath = relativePath.Substring(0, relativePath.Length - 1).Trim();
+			while (relativePath.StartsWith("\\")) relativePath = relativePath.Substring(1);
+			TreeNode t = null;
+			if (relativePath.Length > 0)
+			{
+				string nodeText = relativePath;
+				if (relativePath.Contains('\\'))
+				{
+					nodeText = relativePath.Substring(0, relativePath.IndexOf('\\'));
+					t = new TreeNode(nodeText);
+					returnNode = PopulateNodeFromPath(relativePath.Substring(relativePath.IndexOf('\\') + 1), t) ?? t;
+				}
+				else
+				{
+					t = new TreeNode(nodeText);
+					returnNode = t;
+				}
+				node.Nodes.Add(t);
+			}
+			return returnNode;
+		}
+
+		private TreeNode AddFileNode(TreeView tv, string rootPath, string fullFilePath)
+		{
+			while (rootPath.EndsWith("\\")) rootPath = rootPath.Substring(0, rootPath.Length - 1);
+			
+			TreeNode existingRootNode = null;
+			foreach (TreeNode node in tv.Nodes)
+				if (node.Text == rootPath)
+					existingRootNode = node;
+
+			if (existingRootNode == null)
+				existingRootNode = new TreeNode(rootPath);
+
+			string fileDir = fullFilePath.Substring(0, fullFilePath.LastIndexOf('\\'));
+			//PopulateTree(fileDir, 
+			return null;
+		}
+
 		MonitoredFilesChanged formMonitoredFilesChanged;
 		private void ShowQueuedMessages()
 		{
 			if (formMonitoredFilesChanged == null) formMonitoredFilesChanged = new MonitoredFilesChanged();
-
 			if (!formMonitoredFilesChanged.Modal)
 			{
 				formMonitoredFilesChanged.treeView1.Nodes.Clear();
@@ -1325,7 +1379,36 @@ namespace MonitorSystem
 					bool AtleastOneFilechangedNode = false;
 					foreach (string file in QueuedFileChanges.Keys)
 					{
-						TreeNode fileNode = new TreeNode(file.Substring(rootDir.Length + 1) + " (" + QueuedFileChanges[file].Count + ")") { Tag = file, ContextMenuStrip = formMonitoredFilesChanged.contextMenuStrip_TotalFile };// { Tag = QueuedFileChanges[file] };
+						/*TreeNode folderNode = null;
+						string FilePathwithRootfolderDeleted = file.Substring(rootDir.Length + 1);
+						while (FilePathwithRootfolderDeleted.EndsWith("\\")) FilePathwithRootfolderDeleted = FilePathwithRootfolderDeleted.Substring(0, FilePathwithRootfolderDeleted.Length - 1);
+						while (FilePathwithRootfolderDeleted.Contains("\\"))
+						{
+							string tmpFoldername = FilePathwithRootfolderDeleted.Split('\\')[0];
+							if (folderNode == null)
+								folderNode = new TreeNode(tmpFoldername);
+							else
+							{
+								folderNode.Nodes.Add(new TreeNode(tmpFoldername));
+								folderNode = folderNode.Nodes[folderNode.Nodes.Count - 1];
+							}
+							FilePathwithRootfolderDeleted = FilePathwithRootfolderDeleted.Substring(tmpFoldername.Length + 1);
+						}*/
+						//TreeNode fileNode = new TreeNode(file.Substring(rootDir.Length + 1) + " (" + QueuedFileChanges[file].Count + ")") { Tag = file, ContextMenuStrip = formMonitoredFilesChanged.contextMenuStrip_TotalFile };// { Tag = QueuedFileChanges[file] };
+						//TreeNode fileNode = new TreeNode(file.Split('\\')[file.Split('\\').Length - 1] + " (" + QueuedFileChanges[file].Count + ")") { Tag = file, ContextMenuStrip = formMonitoredFilesChanged.contextMenuStrip_TotalFile };// { Tag = QueuedFileChanges[file] };
+						TreeNode fileNode = PopulateNodeFromPath(file.Substring(rootDir.Length + 1), rootDirNode);
+
+						int FileQueuedCount = 0;
+						foreach (DateTime date in QueuedFileChanges[file].Keys)
+						{
+							FileChangedDetails fcd = QueuedFileChanges[file][date];
+							if (fcd.QueueStatus != FileChangedDetails.QueueStatusEnum.Accepted && fcd.QueueStatus != FileChangedDetails.QueueStatusEnum.Complete)
+								FileQueuedCount++;
+						}
+
+						fileNode.Text = file.Split('\\')[file.Split('\\').Length - 1] + " (" + FileQueuedCount + ")";
+						fileNode.Tag = file;
+						fileNode.ContextMenuStrip = formMonitoredFilesChanged.contextMenuStrip_TotalFile;
 						foreach (DateTime date in QueuedFileChanges[file].Keys)
 						{
 							FileChangedDetails fcd = QueuedFileChanges[file][date];
@@ -1337,15 +1420,38 @@ namespace MonitorSystem
 								fileModifiedNode.ContextMenuStrip = formMonitoredFilesChanged.contextMenuStrip_FileModification;
 								fcd.UpdateNodeFontandcolorFromQueueStatus(fileModifiedNode);
 								fileNode.Nodes.Add(fileModifiedNode);
+								string PathExcludingRoot = file.Substring(rootDir.Length + 2);
+								while (PathExcludingRoot.EndsWith("\\")) PathExcludingRoot = PathExcludingRoot.Substring(0, PathExcludingRoot.Length);
+
+								TreeNode NodeToAddFileTo = null;
+								while (PathExcludingRoot.Contains('\\'))
+								{
+									//NodeToAddFileTo = new TreeNode(PathExcludingRoot.Split('\\')[PathExcludingRoot.Split('\\').Length - 1]);
+									string nodeText = PathExcludingRoot.Split('\\')[PathExcludingRoot.Split('\\').Length - 1];
+									TreeNode tmpSubNode = new TreeNode(nodeText);
+									if (NodeToAddFileTo == null) NodeToAddFileTo = tmpSubNode;
+									else
+									{
+										NodeToAddFileTo.Nodes.Add(tmpSubNode);
+										NodeToAddFileTo = tmpSubNode;
+									}
+									PathExcludingRoot = PathExcludingRoot.Substring(nodeText.Length + 1);
+								}
+
 								if (fcd == LastFileChangedDetailsAdded) nodeToSelect = fileModifiedNode;
 							}
 						}
-						if (AtleastOneFilechangedNode)
+						/*if (folderNode == null) rootDirNode.Nodes.Add(fileNode);
+						else
 						{
-							rootDirNode.Nodes.Add(fileNode);
-							formMonitoredFilesChanged.treeView1.Nodes.Add(rootDirNode);
-							rootDirNode.ExpandAll();
-						}
+							folderNode.Nodes.Add(fileNode);
+							rootDirNode.Nodes.Add(folderNode);
+						}*/
+					}
+					if (AtleastOneFilechangedNode)
+					{
+						formMonitoredFilesChanged.treeView1.Nodes.Add(rootDirNode);
+						rootDirNode.ExpandAll();
 					}
 					formMonitoredFilesChanged.treeView1.SelectedNode = nodeToSelect;
 
@@ -1407,6 +1513,102 @@ namespace MonitorSystem
 		{
 			AddBackupDescription formAddBackupDescription = new AddBackupDescription();
 			formAddBackupDescription.Show();
+		}
+
+		ViewBackups formViewBackups;
+		private void viewallBackupsToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			if (formViewBackups == null) formViewBackups = new ViewBackups();
+			if (!formViewBackups.Modal)
+			{
+				formViewBackups.treeView1.Nodes.Clear();
+
+				Dictionary<string, Dictionary<DateTime, FileChangedDetails>> FilesDict = null;// new Dictionary<string, Dictionary<DateTime, FileChangedDetails>>();
+
+				string rootDir = fileSystemWatcher_SqlFiles.Path;
+				while (rootDir.EndsWith("\\")) rootDir = rootDir.Substring(0, rootDir.Length - 1);
+				string[] backupFiles = Directory.GetFiles(rootDir, "*" + FileChangedDetails.backupExt, SearchOption.AllDirectories);
+				foreach (string backupFile in backupFiles)
+				{					
+					//asdads.sql_2011 09 28 (13h29 55).bac
+					//"yyyy MM dd (HH\hmm ss)"
+					string datePartOfFile = backupFile.Substring(backupFile.LastIndexOf('_') + 1);
+					datePartOfFile = datePartOfFile.Substring(0, datePartOfFile.Length - FileChangedDetails.backupExt.Length);
+					DateTime dateOut;
+					if (DateTime.TryParseExact(datePartOfFile, FileChangedDetails.dateFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out dateOut))
+					{
+						string fileText = "";
+						using (StreamReader sr = new StreamReader(backupFile)) { fileText = sr.ReadToEnd(); }
+
+						if (FilesDict == null) FilesDict = new Dictionary<string, Dictionary<DateTime, FileChangedDetails>>();
+						if (!FilesDict.ContainsKey(backupFile)) FilesDict.Add(backupFile, new Dictionary<DateTime, FileChangedDetails>());
+						if (!FilesDict[backupFile].ContainsKey(dateOut))
+							FilesDict[backupFile].Add(dateOut, new FileChangedDetails(backupFile, fileText));
+					}
+				}
+
+				if (FilesDict != null)
+				{
+					TreeNode nodeToSelect = null;
+					TreeNode rootDirNode = new TreeNode(rootDir + "\\");
+					bool AtleastOneFilechangedNode = false;
+					foreach (string file in FilesDict.Keys)
+					{
+						TreeNode fileNode = PopulateNodeFromPath(file.Substring(rootDir.Length + 1), rootDirNode);
+						fileNode.Text = file.Split('\\')[file.Split('\\').Length - 1];
+						fileNode.Tag = file;
+						//fileNode.ContextMenuStrip = formViewBackups.contextMenuStrip_TotalFile;
+						foreach (DateTime date in FilesDict[file].Keys)
+						{
+							FileChangedDetails fcd = FilesDict[file][date];
+							if (fcd.QueueStatus != FileChangedDetails.QueueStatusEnum.Accepted && fcd.QueueStatus != FileChangedDetails.QueueStatusEnum.Complete)
+							{
+								AtleastOneFilechangedNode = true;
+								TreeNode fileModifiedNode = new TreeNode(date.ToString("yyyy-MM-dd HH:mm:ss"));
+								fileModifiedNode.Tag = fcd;
+								//fileModifiedNode.ContextMenuStrip = formViewBackups.contextMenuStrip_FileModification;
+								fcd.UpdateNodeFontandcolorFromQueueStatus(fileModifiedNode);
+								fileNode.Nodes.Add(fileModifiedNode);
+								string PathExcludingRoot = file.Substring(rootDir.Length + 2);
+								while (PathExcludingRoot.EndsWith("\\")) PathExcludingRoot = PathExcludingRoot.Substring(0, PathExcludingRoot.Length);
+
+								TreeNode NodeToAddFileTo = null;
+								while (PathExcludingRoot.Contains('\\'))
+								{
+									string nodeText = PathExcludingRoot.Split('\\')[PathExcludingRoot.Split('\\').Length - 1];
+									TreeNode tmpSubNode = new TreeNode(nodeText);
+									if (NodeToAddFileTo == null) NodeToAddFileTo = tmpSubNode;
+									else
+									{
+										NodeToAddFileTo.Nodes.Add(tmpSubNode);
+										NodeToAddFileTo = tmpSubNode;
+									}
+									PathExcludingRoot = PathExcludingRoot.Substring(nodeText.Length + 1);
+								}
+
+								if (fcd == LastFileChangedDetailsAdded) nodeToSelect = fileModifiedNode;
+							}
+						}
+
+						if (AtleastOneFilechangedNode)
+						{
+							rootDirNode.Nodes.Add(fileNode);
+							formViewBackups.treeView1.Nodes.Add(rootDirNode);
+							rootDirNode.ExpandAll();
+						}
+					}
+					formViewBackups.treeView1.SelectedNode = nodeToSelect;
+
+					if (formViewBackups.treeView1.Nodes.Count == 0)
+					{
+						ShowBoolloonTipNotification("No file changes queued");
+						return;
+					}
+
+					formViewBackups.ShowDialog();
+				}
+				//formViewBackups.ShowDialog();
+			}
 		}
 	}
 
