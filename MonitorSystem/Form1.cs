@@ -65,6 +65,8 @@ namespace MonitorSystem
 			catch { }
 
 			InitializeComponent();
+			if (Directory.Exists(@"C:\ProgramData\GLS\ReportSQLqueries"))
+				fileSystemWatcher_SqlFiles.Path = @"C:\ProgramData\GLS\ReportSQLqueries";
 
 			if (!Directory.Exists(LocalAppDataPath)) Directory.CreateDirectory(LocalAppDataPath);
 
