@@ -33,6 +33,7 @@
 			this.notifyIcon1 = new System.Windows.Forms.NotifyIcon(this.components);
 			this.contextMenuStripTrayIcon = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.addBackupdescriptionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.viewallBackupsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
 			this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.linkLabel1 = new System.Windows.Forms.LinkLabel();
@@ -63,7 +64,6 @@
 			this.deleteThisItemToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.timer_PhpCronJob = new System.Windows.Forms.Timer(this.components);
 			this.fileSystemWatcher_SqlFiles = new System.IO.FileSystemWatcher();
-			this.viewallBackupsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.contextMenuStripTrayIcon.SuspendLayout();
 			this.statusStrip1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
@@ -94,7 +94,7 @@
             this.toolStripSeparator1,
             this.exitToolStripMenuItem});
 			this.contextMenuStripTrayIcon.Name = "contextMenuStrip1";
-			this.contextMenuStripTrayIcon.Size = new System.Drawing.Size(201, 76);
+			this.contextMenuStripTrayIcon.Size = new System.Drawing.Size(201, 98);
 			// 
 			// addBackupdescriptionToolStripMenuItem
 			// 
@@ -102,6 +102,13 @@
 			this.addBackupdescriptionToolStripMenuItem.Size = new System.Drawing.Size(200, 22);
 			this.addBackupdescriptionToolStripMenuItem.Text = "Add backup &description";
 			this.addBackupdescriptionToolStripMenuItem.Click += new System.EventHandler(this.addBackupdescriptionToolStripMenuItem_Click);
+			// 
+			// viewallBackupsToolStripMenuItem
+			// 
+			this.viewallBackupsToolStripMenuItem.Name = "viewallBackupsToolStripMenuItem";
+			this.viewallBackupsToolStripMenuItem.Size = new System.Drawing.Size(200, 22);
+			this.viewallBackupsToolStripMenuItem.Text = "View &all backups";
+			this.viewallBackupsToolStripMenuItem.Click += new System.EventHandler(this.viewallBackupsToolStripMenuItem_Click);
 			// 
 			// toolStripSeparator1
 			// 
@@ -414,13 +421,6 @@
 			this.fileSystemWatcher_SqlFiles.Path = "C:\\ProgramData\\GLS\\ReportSQLqueries";
 			this.fileSystemWatcher_SqlFiles.SynchronizingObject = this;
 			this.fileSystemWatcher_SqlFiles.Changed += new System.IO.FileSystemEventHandler(this.fileSystemWatcher_SqlFiles_Changed);
-			// 
-			// viewallBackupsToolStripMenuItem
-			// 
-			this.viewallBackupsToolStripMenuItem.Name = "viewallBackupsToolStripMenuItem";
-			this.viewallBackupsToolStripMenuItem.Size = new System.Drawing.Size(200, 22);
-			this.viewallBackupsToolStripMenuItem.Text = "View &all backups";
-			this.viewallBackupsToolStripMenuItem.Click += new System.EventHandler(this.viewallBackupsToolStripMenuItem_Click);
 			// 
 			// Form1
 			// 

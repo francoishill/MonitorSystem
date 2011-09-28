@@ -1284,7 +1284,7 @@ namespace MonitorSystem
 					}
 					catch (Exception exc)
 					{
-						ShowBoolloonTipNotification("Exception: " + exc.Message, Title: "Could not set system|hidden attributes", icon: ToolTipIcon.Warning);
+						ShowBalloonTipNotification("Exception: " + exc.Message, Title: "Could not set system|hidden attributes", icon: ToolTipIcon.Warning);
 					}
 					ShowFileChangedBalloonTip(fcd);
 				}
@@ -1294,15 +1294,40 @@ namespace MonitorSystem
 
 		private void ShowFileChangedBalloonTip(FileChangedDetails fcd)
 		{
-			ShowBoolloonTipNotification(fcd.FileName, 3000, "File changed, click to add description", ToolTipIcon.Info, BalloonTipActionEnum.ChangedFileList);
+			//ShowBalloonTipNotification(fcd.FileName, 3000, "File changed, click to add description", ToolTipIcon.Info, BalloonTipActionEnum.ChangedFileList);
+			ShowCustomBalloonTipNotification(fcd.FileName, 500, "File changed, click to add description", ToolTipIcon.Info, BalloonTipActionEnum.ChangedFileList);
 			LastFileChangedDetailsAdded = fcd;
 		}
 
-		private void ShowBoolloonTipNotification(string Description, int duration = 3000, string Title = "Title", ToolTipIcon icon = ToolTipIcon.Info, BalloonTipActionEnum BalloonTipActionIn = BalloonTipActionEnum.None)
+		private void ShowBalloonTipNotification(string Description, int duration = 3000, string Title = "Title", ToolTipIcon icon = ToolTipIcon.Info, BalloonTipActionEnum BalloonTipActionIn = BalloonTipActionEnum.None)
 		{
 			notifyIcon1.ShowBalloonTip(duration, Title, Description, icon);
 			BalloonTipAction = BalloonTipActionIn;
 		}
+
+		private void ShowCustomBalloonTipNotification(string Description, int duration = 3000, string Title = "Title", ToolTipIcon icon = ToolTipIcon.Info, BalloonTipActionEnum BalloonTipActionIn = BalloonTipActionEnum.None)
+		{
+			CustomBalloonTip.IconTypes iconType =
+				icon == ToolTipIcon.Error ? CustomBalloonTip.IconTypes.Error :
+				icon == ToolTipIcon.Info ? CustomBalloonTip.IconTypes.Information :
+				icon == ToolTipIcon.Warning ? CustomBalloonTip.IconTypes.Warning :
+				CustomBalloonTip.IconTypes.None;
+			BalloonTipAction = BalloonTipActionIn;
+			ShowCustomBalloonTip(Title, Description, duration, iconType);
+		}
+
+		//private void tmpShowPopupToolStripMenuItem_Click(object sender, EventArgs e)
+		//{
+		//  ShowCustomBalloonTip(
+		//    "Title",
+		//    "Message 123",
+		//    3000,
+		//    CustomBalloonTip.IconTypes.Shield,
+		//    delegate
+		//    {
+		//      PerformBalloonTipClick();
+		//    });
+		//}
 
 		enum BalloonTipActionEnum { ChangedFileList, None };
 		private BalloonTipActionEnum BalloonTipAction = BalloonTipActionEnum.None;
@@ -1457,7 +1482,7 @@ namespace MonitorSystem
 
 					if (formMonitoredFilesChanged.treeView1.Nodes.Count == 0)
 					{
-						ShowBoolloonTipNotification("No file changes queued");
+						ShowBalloonTipNotification("No file changes queued");
 						return;
 					}
 
@@ -1494,7 +1519,7 @@ namespace MonitorSystem
 										}
 										catch (Exception exc)
 										{
-											ShowBoolloonTipNotification("Exception: " + exc.Message, Title: "Could not set system|hidden attributes", icon: ToolTipIcon.Warning);
+											ShowBalloonTipNotification("Exception: " + exc.Message, Title: "Could not set system|hidden attributes", icon: ToolTipIcon.Warning);
 										}
 										fcd.QueueStatus = FileChangedDetails.QueueStatusEnum.Complete;
 									}
@@ -1601,7 +1626,7 @@ namespace MonitorSystem
 
 					if (formViewBackups.treeView1.Nodes.Count == 0)
 					{
-						ShowBoolloonTipNotification("No file changes queued");
+						ShowBalloonTipNotification("No file changes queued");
 						return;
 					}
 
@@ -1609,6 +1634,14 @@ namespace MonitorSystem
 				}
 				//formViewBackups.ShowDialog();
 			}
+		}
+
+		public delegate void SimpleDelegate();
+		private void ShowCustomBalloonTip(string Title, string Message, int Duration, CustomBalloonTip.IconTypes iconType)
+		{
+			CustomBalloonTip cbt = new CustomBalloonTip(Title, Message, Duration, iconType, delegate { PerformBalloonTipClick(); });
+			cbt.Location = new Point(Screen.PrimaryScreen.WorkingArea.Right - cbt.Width, Screen.PrimaryScreen.WorkingArea.Bottom - cbt.Height);
+			cbt.Show();
 		}
 	}
 
