@@ -41,13 +41,14 @@
 			// 
 			this.button_Close.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.button_Close.BackColor = System.Drawing.Color.Transparent;
+			this.button_Close.Cursor = System.Windows.Forms.Cursors.Hand;
 			this.button_Close.FlatAppearance.BorderSize = 0;
 			this.button_Close.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
 			this.button_Close.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
 			this.button_Close.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.button_Close.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.button_Close.ForeColor = System.Drawing.Color.Red;
-			this.button_Close.Location = new System.Drawing.Point(810, -1);
+			this.button_Close.Location = new System.Drawing.Point(635, -1);
 			this.button_Close.Name = "button_Close";
 			this.button_Close.Size = new System.Drawing.Size(20, 20);
 			this.button_Close.TabIndex = 0;
@@ -57,11 +58,10 @@
 			// 
 			// label_Title
 			// 
-			this.label_Title.AutoSize = true;
 			this.label_Title.FlatStyle = System.Windows.Forms.FlatStyle.System;
-			this.label_Title.Font = new System.Drawing.Font("Comic Sans MS", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.label_Title.ForeColor = System.Drawing.Color.Lime;
-			this.label_Title.Location = new System.Drawing.Point(41, 3);
+			this.label_Title.Font = new System.Drawing.Font("Comic Sans MS", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.label_Title.ForeColor = System.Drawing.Color.Green;
+			this.label_Title.Location = new System.Drawing.Point(25, 1);
 			this.label_Title.Name = "label_Title";
 			this.label_Title.Size = new System.Drawing.Size(31, 15);
 			this.label_Title.TabIndex = 1;
@@ -70,22 +70,22 @@
 			// label_Message
 			// 
 			this.label_Message.FlatStyle = System.Windows.Forms.FlatStyle.System;
-			this.label_Message.Font = new System.Drawing.Font("Comic Sans MS", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel, ((byte)(0)));
-			this.label_Message.ForeColor = System.Drawing.Color.White;
-			this.label_Message.Location = new System.Drawing.Point(41, 18);
+			this.label_Message.Font = new System.Drawing.Font("Comic Sans MS", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel, ((byte)(0)));
+			this.label_Message.Location = new System.Drawing.Point(78, 2);
 			this.label_Message.MaximumSize = new System.Drawing.Size(540, 0);
 			this.label_Message.MinimumSize = new System.Drawing.Size(0, 17);
 			this.label_Message.Name = "label_Message";
 			this.label_Message.Size = new System.Drawing.Size(540, 17);
 			this.label_Message.TabIndex = 2;
 			this.label_Message.Text = "This is the message text, long text should be cut off. Then it should go to next " +
-    "line. Then it should go to next line.";
+					"line. Then it should go to next line.";
 			// 
 			// pictureBox_Icon
 			// 
 			this.pictureBox_Icon.Location = new System.Drawing.Point(3, 3);
 			this.pictureBox_Icon.Name = "pictureBox_Icon";
-			this.pictureBox_Icon.Size = new System.Drawing.Size(32, 32);
+			this.pictureBox_Icon.Size = new System.Drawing.Size(16, 16);
+			this.pictureBox_Icon.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
 			this.pictureBox_Icon.TabIndex = 3;
 			this.pictureBox_Icon.TabStop = false;
 			// 
@@ -93,14 +93,14 @@
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
-			this.ClientSize = new System.Drawing.Size(829, 39);
+			this.BackColor = System.Drawing.SystemColors.Control;
+			this.ClientSize = new System.Drawing.Size(654, 22);
 			this.ControlBox = false;
+			this.Controls.Add(this.button_Close);
 			this.Controls.Add(this.pictureBox_Icon);
 			this.Controls.Add(this.label_Message);
 			this.Controls.Add(this.label_Title);
-			this.Controls.Add(this.button_Close);
-			this.Cursor = System.Windows.Forms.Cursors.Hand;
+			this.Cursor = System.Windows.Forms.Cursors.Cross;
 			this.DoubleBuffered = true;
 			this.Font = new System.Drawing.Font("Comic Sans MS", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow;
@@ -116,7 +116,6 @@
 			this.Resize += new System.EventHandler(this.CustomBalloonTip_Resize);
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox_Icon)).EndInit();
 			this.ResumeLayout(false);
-			this.PerformLayout();
 
 		}
 

@@ -64,6 +64,7 @@
 					this.deleteThisItemToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 					this.timer_PhpCronJob = new System.Windows.Forms.Timer(this.components);
 					this.fileSystemWatcher_SqlFiles = new System.IO.FileSystemWatcher();
+					this.testCustomBalloontipToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 					this.contextMenuStripTrayIcon.SuspendLayout();
 					this.statusStrip1.SuspendLayout();
 					((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
@@ -92,9 +93,10 @@
             this.addBackupdescriptionToolStripMenuItem,
             this.viewallBackupsToolStripMenuItem,
             this.toolStripSeparator1,
-            this.exitToolStripMenuItem});
+            this.exitToolStripMenuItem,
+            this.testCustomBalloontipToolStripMenuItem});
 					this.contextMenuStripTrayIcon.Name = "contextMenuStrip1";
-					this.contextMenuStripTrayIcon.Size = new System.Drawing.Size(201, 76);
+					this.contextMenuStripTrayIcon.Size = new System.Drawing.Size(201, 120);
 					// 
 					// addBackupdescriptionToolStripMenuItem
 					// 
@@ -421,6 +423,13 @@
 					this.fileSystemWatcher_SqlFiles.SynchronizingObject = this;
 					this.fileSystemWatcher_SqlFiles.Changed += new System.IO.FileSystemEventHandler(this.fileSystemWatcher_SqlFiles_Changed);
 					// 
+					// testCustomBalloontipToolStripMenuItem
+					// 
+					this.testCustomBalloontipToolStripMenuItem.Name = "testCustomBalloontipToolStripMenuItem";
+					this.testCustomBalloontipToolStripMenuItem.Size = new System.Drawing.Size(200, 22);
+					this.testCustomBalloontipToolStripMenuItem.Text = "Test custom balloontip";
+					this.testCustomBalloontipToolStripMenuItem.Click += new System.EventHandler(this.testCustomBalloontipToolStripMenuItem_Click);
+					// 
 					// Form1
 					// 
 					this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -510,6 +519,7 @@
 				private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
 				private System.Windows.Forms.ToolStripMenuItem addBackupdescriptionToolStripMenuItem;
 				private System.Windows.Forms.ToolStripMenuItem viewallBackupsToolStripMenuItem;
+				private System.Windows.Forms.ToolStripMenuItem testCustomBalloontipToolStripMenuItem;
     }
 }
 

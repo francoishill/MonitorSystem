@@ -35,6 +35,31 @@ namespace MonitorSystem
 			AddDelgateToRelevantControls(VoidDelegateToRunOnClick);
 		}
 
+		protected override bool ShowWithoutActivation
+		{
+			get
+			{
+				return true;
+				//return base.ShowWithoutActivation;
+			}
+		}
+
+		//const int WS_EX_NOACTIVATE = 0x08000000;
+		//const int WS_EX_TOOLWINDOW = 0x00000080;
+		//protected override CreateParams CreateParams
+		//{
+		//  get
+		//  {
+		//    //return base.CreateParams;
+		//    CreateParams baseParams = base.CreateParams;
+
+		//    baseParams.ExStyle |= (int)(
+		//      WS_EX_NOACTIVATE | WS_EX_TOOLWINDOW);
+
+		//    return baseParams;
+		//  }
+		//}
+
 		Control[] controls;
 		private void AddDelgateToRelevantControls(Form1.SimpleDelegate VoidDelegateToRunOnClick)
 		{
@@ -54,49 +79,44 @@ namespace MonitorSystem
 		delegate void DecreaseOpacityCallback();
 		private void CustomBalloonTip_Shown(object sender, EventArgs e)
 		{
+			StartTimerForClosing();
+		}
+
+		public void StartTimerForClosing()
+		{
 			if (timer_ShowDuration.Interval != 0)
 			{
 				timer_ShowDuration.Tick += delegate
 				{
 					Rectangle bounds = new Rectangle(this.Location, this.Size);
-					PerformVoidFunctionSeperateThread(() =>
+					Form1.PerformVoidFunctionSeperateThread(() =>
+					{
+						for (int i = 0; i <= 10; i++)
 						{
-							for (int i = 0; i <= 10; i++)
+							Thread.Sleep(30);
+							Rectangle checkRectangle = new Rectangle(bounds.X - 15, bounds.Y - 15, bounds.Width + 30, bounds.Height + 30);
+							while (checkRectangle.Contains(MousePosition))
+								Thread.Sleep(1);
+							if (this.InvokeRequired)
 							{
-								Thread.Sleep(30);
-								while (Bounds.Contains(MousePosition))
-									Thread.Sleep(1);
-								if (this.InvokeRequired)
-								{
-									DecreaseOpacityCallback d = new DecreaseOpacityCallback(delegate
-									{
-										this.Opacity -= 0.1;
-									});
-									this.Invoke(d, new object[] { });
-								}
-								else
+								DecreaseOpacityCallback d = new DecreaseOpacityCallback(delegate
 								{
 									this.Opacity -= 0.1;
-								}
+								});
+								this.Invoke(d, new object[] { });
 							}
-						});
+							else
+							{
+								this.Opacity -= 0.1;
+							}
+						}
+					});
 
 					//TODO: Should implement to NOT close if mouse is inside form
 					this.Close();
 				};
 				timer_ShowDuration.Start();
 			}
-		}
-
-		public static void PerformVoidFunctionSeperateThread(MethodInvoker method)
-		{
-			System.Threading.Thread th = new System.Threading.Thread(() =>
-			{
-				method.Invoke();
-			});
-			th.Start();
-			//th.Join();
-			while (th.IsAlive) { Application.DoEvents(); }
 		}
 
 		private void CustomBalloonTip_Resize(object sender, EventArgs e)

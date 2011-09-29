@@ -22,6 +22,22 @@ namespace MonitorSystem
 {
 	public partial class Form1 : Form
 	{
+		private const int SW_SHOWNOACTIVATE = 4;
+		private const int HWND_TOPMOST = -1;
+		private const uint SWP_NOACTIVATE = 0x0010;
+
+		[DllImport("user32.dll", EntryPoint = "SetWindowPos")]
+		static extern bool SetWindowPos(
+				 int hWnd,           // window handle
+				 int hWndInsertAfter,    // placement-order handle
+				 int X,          // horizontal position
+				 int Y,          // vertical position
+				 int cx,         // width
+				 int cy,         // height
+				 uint uFlags);       // window positioning flags
+
+		[DllImport("user32.dll")]
+		static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
 		/// <summary>The GetForegroundWindow function returns a handle to the foreground window.</summary>
 		[DllImport("user32.dll")]
 		private static extern IntPtr GetForegroundWindow();
@@ -59,14 +75,25 @@ namespace MonitorSystem
 
 		public static string MonitoredAutoBackupPath = "";
 
+		public static string AutoBackupDir
+		{
+			get
+			{
+				if (Directory.Exists(@"C:\ProgramData\GLS\ReportSQLqueries"))
+					return @"C:\ProgramData\GLS\ReportSQLqueries";
+				else if (Directory.Exists(@"C:\Francois\other\Test\SqlFilesAutobackup"))
+					return @"C:\Francois\other\Test\SqlFilesAutobackup";
+				else return @"c:\windows\system32";
+			}
+		}
+
 		public Form1()
 		{
 			try { _fpreset(); }
 			catch { }
 
 			InitializeComponent();
-			if (Directory.Exists(@"C:\ProgramData\GLS\ReportSQLqueries"))
-				fileSystemWatcher_SqlFiles.Path = @"C:\ProgramData\GLS\ReportSQLqueries";
+			fileSystemWatcher_SqlFiles.Path = AutoBackupDir;
 
 			if (!Directory.Exists(LocalAppDataPath)) Directory.CreateDirectory(LocalAppDataPath);
 
@@ -519,7 +546,7 @@ namespace MonitorSystem
 		}
 
 		//PerformVoidFunctionSeperateThread(() => { MessageBox.Show("Test"); MessageBox.Show("Test1"); });
-		public void PerformVoidFunctionSeperateThread(MethodInvoker method)
+		public static void PerformVoidFunctionSeperateThread(MethodInvoker method, bool WaitUntilFinish = true)
 		{
 			System.Threading.Thread th = new System.Threading.Thread(() =>
 			{
@@ -527,7 +554,8 @@ namespace MonitorSystem
 			});
 			th.Start();
 			//th.Join();
-			while (th.IsAlive) { Application.DoEvents(); }
+			if (WaitUntilFinish)
+				while (th.IsAlive) { Application.DoEvents(); }
 		}
 
 		private string GetPrivateKey()
@@ -1297,7 +1325,7 @@ namespace MonitorSystem
 		private void ShowFileChangedBalloonTip(FileChangedDetails fcd)
 		{
 			//ShowBalloonTipNotification(fcd.FileName, 3000, "File changed, click to add description", ToolTipIcon.Info, BalloonTipActionEnum.ChangedFileList);
-			ShowCustomBalloonTipNotification(fcd.FileName, 500, "File changed, click to add description", ToolTipIcon.Info, BalloonTipActionEnum.ChangedFileList);
+			ShowCustomBalloonTipNotification(fcd.FileName, 4000, "File changed, click to add description", ToolTipIcon.Info, BalloonTipActionEnum.ChangedFileList);
 			LastFileChangedDetailsAdded = fcd;
 		}
 
@@ -1639,11 +1667,68 @@ namespace MonitorSystem
 		}
 
 		public delegate void SimpleDelegate();
+		//delegate void MoveWindowUpCallback();
+		List<CustomBalloonTip> VisibleBalloonTipForms = new List<CustomBalloonTip>();
 		private void ShowCustomBalloonTip(string Title, string Message, int Duration, CustomBalloonTip.IconTypes iconType)
 		{
 			CustomBalloonTip cbt = new CustomBalloonTip(Title, Message, Duration, iconType, delegate { PerformBalloonTipClick(); });
-			cbt.Location = new Point(Screen.PrimaryScreen.WorkingArea.Right - cbt.Width, Screen.PrimaryScreen.WorkingArea.Bottom - cbt.Height);
+			//this.Location = new Point(Screen.PrimaryScreen.WorkingArea.Right - this.Width, Screen.PrimaryScreen.WorkingArea.Bottom - this.Height);
+			int TopStart = 0;
+			foreach (CustomBalloonTip tmpVisibleFrms in VisibleBalloonTipForms)
+				if (tmpVisibleFrms != null && tmpVisibleFrms.Visible)
+					TopStart += tmpVisibleFrms.Height;
+			int gapFromSide = 100;
+			cbt.Location = new Point(Screen.PrimaryScreen.WorkingArea.Left + gapFromSide, Screen.PrimaryScreen.WorkingArea.Top + TopStart);
+			cbt.Width = Screen.PrimaryScreen.WorkingArea.Width - gapFromSide * 2;
+			cbt.FormClosed += delegate
+			{
+				if (VisibleBalloonTipForms.Contains(cbt))
+				{
+					int indexOfRemoved = VisibleBalloonTipForms.IndexOf(cbt);
+					int cbtHeight = cbt.Height;
+					for (int i = indexOfRemoved + 1; i < VisibleBalloonTipForms.Count; i++)
+					{
+						CustomBalloonTip tmpForm = VisibleBalloonTipForms[i];
+						PerformVoidFunctionSeperateThread(() =>
+						{
+							//int StartPoint = VisibleBalloonTipForms[i].Top;
+							int EndPoint = tmpForm.Top - cbtHeight;
+							while (tmpForm.Top > EndPoint)
+							{
+								System.Threading.Thread.Sleep(30);
+								Action MoveUpAction = (Action)(() =>
+									{
+										if (tmpForm.Top - 5 > EndPoint) tmpForm.Top -= 5;
+										else tmpForm.Top = EndPoint;
+									});
+								if (tmpForm.InvokeRequired)
+									tmpForm.Invoke(MoveUpAction, new object[] { });
+								else MoveUpAction.Invoke();
+								//VisibleBalloonTipForms[i].Top -= 5;
+							}
+						}, false);
+						//VisibleBalloonTipForms[i].Top -= cbt.Height;
+					}
+					VisibleBalloonTipForms.Remove(cbt);
+					//foreach (
+				}
+			};
+			VisibleBalloonTipForms.Add(cbt);
 			cbt.Show();
+			//ShowInactiveTopmost(cbt);
+			//cbt.StartTimerForClosing();
+			//cbt.Show();
+		}
+
+		private static void ShowInactiveTopmost(Form frm)
+		{
+			ShowWindow(frm.Handle, SW_SHOWNOACTIVATE);
+			SetWindowPos(frm.Handle.ToInt32(), HWND_TOPMOST, frm.Left, frm.Top, frm.Width, frm.Height, SWP_NOACTIVATE);
+		}
+
+		private void testCustomBalloontipToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			ShowCustomBalloonTip("Hallo", "This is a custom balloon tip for 3 seconds...", 3000, CustomBalloonTip.IconTypes.Shield);
 		}
 	}
 
