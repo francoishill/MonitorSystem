@@ -19,7 +19,8 @@ namespace MonitorSystem
 
 			this.label_Title.Text = Title;
 			this.label_Message.Text = Message;
-			this.timer_ShowDuration.Interval = Duration;
+			if (Duration > 0) this.timer_ShowDuration.Interval = Duration;
+			else this.timer_ShowDuration.Tag = -1;
 			switch (iconType)
 			{
 				case IconTypes.Error: this.pictureBox_Icon.Image = SystemIcons.Error.ToBitmap(); break;
@@ -30,7 +31,7 @@ namespace MonitorSystem
 				default: break;
 			}
 
-			controls = new Control[] { this, label_Title, label_Message, pictureBox_Icon };
+			controls = new Component[] { this, label_Title, label_Message, pictureBox_Icon };
 
 			AddDelgateToRelevantControls(VoidDelegateToRunOnClick);
 		}
@@ -60,15 +61,24 @@ namespace MonitorSystem
 		//  }
 		//}
 
-		Control[] controls;
+		Component[] controls;
 		private void AddDelgateToRelevantControls(Form1.SimpleDelegate VoidDelegateToRunOnClick)
 		{
-			foreach (Control c in controls)
-				c.Click += delegate
-				{
-					this.Close();
-					VoidDelegateToRunOnClick.Invoke();
-				};
+			foreach (object c in controls)
+			{
+				if (c is Control)
+					((Control)c).Click += delegate
+					{
+						this.Close();
+						VoidDelegateToRunOnClick.Invoke();
+					};
+				else if (c is ToolStripItem)
+					((ToolStripItem)c).Click += delegate
+					{
+						this.Close();
+						VoidDelegateToRunOnClick.Invoke();
+					};
+			}
 		}
 
 		private void button1_Click(object sender, EventArgs e)
@@ -84,16 +94,40 @@ namespace MonitorSystem
 
 		public void StartTimerForClosing()
 		{
-			if (timer_ShowDuration.Interval != 0)
+			Form1.PerformVoidFunctionSeperateThread(() =>
+			{
+				int EndTop = this.Top + this.Height;
+				while (this.Top < EndTop)
+				{
+					Thread.Sleep(10);
+					Form1.UpdateGuiFromThread(this, () =>
+						{
+							if (this.Top + 5 > EndTop) this.Top = EndTop;
+							else this.Top += 5;
+						});
+					//Action SlideDown = (Action)(() =>
+					//{
+					//  if (this.Top + 5 > EndTop) this.Top = EndTop;
+					//  else this.Top += 5;
+					//});
+					//if (this.InvokeRequired)
+					//  this.Invoke(SlideDown, new object[] { });
+					//else
+					//  SlideDown.Invoke();
+				}
+			});
+
+			if (timer_ShowDuration.Interval != 0 && (timer_ShowDuration.Tag == null || timer_ShowDuration.Tag.ToString() != "-1"))
 			{
 				timer_ShowDuration.Tick += delegate
 				{
+					timer_ShowDuration.Stop();
 					Rectangle bounds = new Rectangle(this.Location, this.Size);
 					Form1.PerformVoidFunctionSeperateThread(() =>
 					{
 						for (int i = 0; i <= 10; i++)
 						{
-							Thread.Sleep(30);
+							Thread.Sleep(20);
 							Rectangle checkRectangle = new Rectangle(bounds.X - 15, bounds.Y - 15, bounds.Width + 30, bounds.Height + 30);
 							while (checkRectangle.Contains(MousePosition))
 								Thread.Sleep(1);
@@ -103,6 +137,7 @@ namespace MonitorSystem
 								{
 									this.Opacity -= 0.1;
 								});
+								
 								this.Invoke(d, new object[] { });
 							}
 							else
@@ -121,8 +156,8 @@ namespace MonitorSystem
 
 		private void CustomBalloonTip_Resize(object sender, EventArgs e)
 		{
-			label_Message.MaximumSize = new System.Drawing.Size(this.Width - label_Message.Location.X - button_Close.Width, label_Message.MaximumSize.Height);
-			label_Message.Width = this.Width - label_Message.Location.X - button_Close.Width;
+			//label_Message.MaximumSize = new System.Drawing.Size(this.Width - label_Message.Location.X - button_Close.Width, label_Message.MaximumSize.Height);
+			//label_Message.Width = this.Width - label_Message.Location.X - button_Close.Width;
 		}
 	}
 }

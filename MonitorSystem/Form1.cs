@@ -1325,13 +1325,13 @@ namespace MonitorSystem
 		private void ShowFileChangedBalloonTip(FileChangedDetails fcd)
 		{
 			//ShowBalloonTipNotification(fcd.FileName, 3000, "File changed, click to add description", ToolTipIcon.Info, BalloonTipActionEnum.ChangedFileList);
-			ShowCustomBalloonTipNotification(fcd.FileName, 4000, "File changed, click to add description", ToolTipIcon.Info, BalloonTipActionEnum.ChangedFileList);
-			ShowCustomBalloonTipNotification(fcd.FileName, 1000, "File changed, click to add description", ToolTipIcon.Info, BalloonTipActionEnum.ChangedFileList);
-			ShowCustomBalloonTipNotification(fcd.FileName, 2000, "File changed, click to add description", ToolTipIcon.Info, BalloonTipActionEnum.ChangedFileList);
-			ShowCustomBalloonTipNotification(fcd.FileName, 10000, "File changed, click to add description", ToolTipIcon.Info, BalloonTipActionEnum.ChangedFileList);
 			ShowCustomBalloonTipNotification(fcd.FileName, 3000, "File changed, click to add description", ToolTipIcon.Info, BalloonTipActionEnum.ChangedFileList);
-			ShowCustomBalloonTipNotification(fcd.FileName, 500, "File changed, click to add description", ToolTipIcon.Info, BalloonTipActionEnum.ChangedFileList);
-			ShowCustomBalloonTipNotification(fcd.FileName, 1000, "File changed, click to add description", ToolTipIcon.Info, BalloonTipActionEnum.ChangedFileList);
+			//ShowCustomBalloonTipNotification(fcd.FileName, 1000, "File changed, click to add description", ToolTipIcon.Info, BalloonTipActionEnum.ChangedFileList);
+			//ShowCustomBalloonTipNotification(fcd.FileName, 2000, "File changed, click to add description", ToolTipIcon.Info, BalloonTipActionEnum.ChangedFileList);
+			//ShowCustomBalloonTipNotification(fcd.FileName, 10000, "File changed, click to add description", ToolTipIcon.Info, BalloonTipActionEnum.ChangedFileList);
+			//ShowCustomBalloonTipNotification(fcd.FileName, 3000, "File changed, click to add description", ToolTipIcon.Info, BalloonTipActionEnum.ChangedFileList);
+			//ShowCustomBalloonTipNotification(fcd.FileName, 500, "File changed, click to add description", ToolTipIcon.Info, BalloonTipActionEnum.ChangedFileList);
+			//ShowCustomBalloonTipNotification(fcd.FileName, 1000, "File changed, click to add description", ToolTipIcon.Info, BalloonTipActionEnum.ChangedFileList);
 			LastFileChangedDetailsAdded = fcd;
 		}
 
@@ -1672,6 +1672,13 @@ namespace MonitorSystem
 			}
 		}
 
+		public static void UpdateGuiFromThread(Control controlToUpdate, Action action)
+		{
+			if (controlToUpdate.InvokeRequired)
+				controlToUpdate.Invoke(action, new object[] { });
+			else action.Invoke();
+		}
+
 		public delegate void SimpleDelegate();
 		//delegate void MoveWindowUpCallback();
 		List<CustomBalloonTip> VisibleBalloonTipForms = new List<CustomBalloonTip>();
@@ -1684,7 +1691,7 @@ namespace MonitorSystem
 				if (tmpVisibleFrms != null && tmpVisibleFrms.Visible)
 					TopStart += tmpVisibleFrms.Height;
 			int gapFromSide = 100;
-			cbt.Location = new Point(Screen.PrimaryScreen.WorkingArea.Left + gapFromSide, Screen.PrimaryScreen.WorkingArea.Top + TopStart);
+			cbt.Location = new Point(Screen.PrimaryScreen.WorkingArea.Left + gapFromSide, Screen.PrimaryScreen.WorkingArea.Top + TopStart - cbt.Height);
 			cbt.Width = Screen.PrimaryScreen.WorkingArea.Width - gapFromSide * 2;
 			cbt.FormClosed += delegate
 			{
@@ -1701,15 +1708,19 @@ namespace MonitorSystem
 							int EndPoint = tmpForm.Top - cbtHeight;
 							while (tmpForm.Top > EndPoint)
 							{
-								System.Threading.Thread.Sleep(30);
-								Action MoveUpAction = (Action)(() =>
-									{
-										if (tmpForm.Top - 5 > EndPoint) tmpForm.Top -= 5;
-										else tmpForm.Top = EndPoint;
-									});
-								if (tmpForm.InvokeRequired)
-									tmpForm.Invoke(MoveUpAction, new object[] { });
-								else MoveUpAction.Invoke();
+								System.Threading.Thread.Sleep(10);
+								UpdateGuiFromThread(tmpForm, () => {
+									if (tmpForm.Top - 5 > EndPoint) tmpForm.Top -= 5;
+									else tmpForm.Top = EndPoint;
+								});
+								//Action SlideUpAction = (Action)(() =>
+								//{
+								//  if (tmpForm.Top - 5 > EndPoint) tmpForm.Top -= 5;
+								//  else tmpForm.Top = EndPoint;
+								//});
+								//if (tmpForm.InvokeRequired)
+								//  tmpForm.Invoke(SlideUpAction, new object[] { });
+								//else SlideUpAction.Invoke();
 								//VisibleBalloonTipForms[i].Top -= 5;
 							}
 						}, false);
