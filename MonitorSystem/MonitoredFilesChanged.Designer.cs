@@ -36,7 +36,9 @@
 			this.clearMessagesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.contextMenuStrip_FileModification = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.clearthisMessageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.dismissToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.acceptToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.discardToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.discardemptyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
 			this.splitContainer1.Panel1.SuspendLayout();
 			this.splitContainer1.Panel2.SuspendLayout();
@@ -92,9 +94,10 @@
 			// contextMenuStrip_TotalFile
 			// 
 			this.contextMenuStrip_TotalFile.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.clearMessagesToolStripMenuItem});
+            this.clearMessagesToolStripMenuItem,
+            this.discardemptyToolStripMenuItem});
 			this.contextMenuStrip_TotalFile.Name = "contextMenuStrip_TotalFile";
-			this.contextMenuStrip_TotalFile.Size = new System.Drawing.Size(156, 26);
+			this.contextMenuStrip_TotalFile.Size = new System.Drawing.Size(156, 70);
 			// 
 			// clearMessagesToolStripMenuItem
 			// 
@@ -106,9 +109,10 @@
 			// 
 			this.contextMenuStrip_FileModification.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.clearthisMessageToolStripMenuItem,
-            this.dismissToolStripMenuItem});
+            this.acceptToolStripMenuItem,
+            this.discardToolStripMenuItem});
 			this.contextMenuStrip_FileModification.Name = "contextMenuStrip_TotalFile";
-			this.contextMenuStrip_FileModification.Size = new System.Drawing.Size(173, 48);
+			this.contextMenuStrip_FileModification.Size = new System.Drawing.Size(173, 70);
 			// 
 			// clearthisMessageToolStripMenuItem
 			// 
@@ -116,12 +120,26 @@
 			this.clearthisMessageToolStripMenuItem.Size = new System.Drawing.Size(172, 22);
 			this.clearthisMessageToolStripMenuItem.Text = "Clear &this message";
 			// 
-			// dismissToolStripMenuItem
+			// acceptToolStripMenuItem
 			// 
-			this.dismissToolStripMenuItem.Name = "dismissToolStripMenuItem";
-			this.dismissToolStripMenuItem.Size = new System.Drawing.Size(172, 22);
-			this.dismissToolStripMenuItem.Text = "&Dismiss";
-			this.dismissToolStripMenuItem.Click += new System.EventHandler(this.dismissToolStripMenuItem_Click);
+			this.acceptToolStripMenuItem.Name = "acceptToolStripMenuItem";
+			this.acceptToolStripMenuItem.Size = new System.Drawing.Size(172, 22);
+			this.acceptToolStripMenuItem.Text = "&Accept";
+			this.acceptToolStripMenuItem.Click += new System.EventHandler(this.acceptToolStripMenuItem_Click_1);
+			// 
+			// discardToolStripMenuItem
+			// 
+			this.discardToolStripMenuItem.Name = "discardToolStripMenuItem";
+			this.discardToolStripMenuItem.Size = new System.Drawing.Size(172, 22);
+			this.discardToolStripMenuItem.Text = "Dis&card";
+			this.discardToolStripMenuItem.Click += new System.EventHandler(this.discardToolStripMenuItem_Click);
+			// 
+			// discardemptyToolStripMenuItem
+			// 
+			this.discardemptyToolStripMenuItem.Name = "discardemptyToolStripMenuItem";
+			this.discardemptyToolStripMenuItem.Size = new System.Drawing.Size(155, 22);
+			this.discardemptyToolStripMenuItem.Text = "Discard &empty";
+			this.discardemptyToolStripMenuItem.Click += new System.EventHandler(this.discardemptyToolStripMenuItem_Click);
 			// 
 			// MonitoredFilesChanged
 			// 
@@ -155,6 +173,8 @@
 		public System.Windows.Forms.ContextMenuStrip contextMenuStrip_FileModification;
 		private System.Windows.Forms.ToolStripMenuItem clearMessagesToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem clearthisMessageToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem dismissToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem acceptToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem discardToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem discardemptyToolStripMenuItem;
 	}
 }

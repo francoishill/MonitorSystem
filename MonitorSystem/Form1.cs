@@ -16,6 +16,7 @@ using System.Net;
 using System.Security.Cryptography;
 using System.Globalization;
 using System.Diagnostics;
+using System.IO.Compression;
 //using System.Threading;
 
 namespace MonitorSystem
@@ -425,13 +426,38 @@ namespace MonitorSystem
 				this.WindowState = FormWindowState.Minimized;
 				e.Cancel = true;
 			}
+			else RequestApplicationQuit();
 		}
 
 		private void exitToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			this.notifyIcon1.Visible = false;
-			Application.DoEvents();
-			Application.Exit();
+			RequestApplicationQuit();
+		}
+
+		private bool QueueFileChangesHasUnprocessedItems()
+		{
+			if (QueuedFileChanges == null || QueuedFileChanges.Count == 0) return false;
+			foreach (string key in QueuedFileChanges.Keys)
+			{
+				if (QueuedFileChanges[key] == null || QueuedFileChanges[key].Count == 0)
+					continue;
+				foreach (DateTime date in QueuedFileChanges[key].Keys)
+					if (QueuedFileChanges[key][date].QueueStatus != FileChangedDetails.QueueStatusEnum.Complete)
+						return true;
+			}
+			return false;
+		}
+
+		private void RequestApplicationQuit()
+		{
+			if (QueueFileChangesHasUnprocessedItems())
+				ShowBalloonTipNotification("Please process unread notifications", BalloonTipActionIn: BalloonTipActionEnum.ChangedFileList);
+			else
+			{
+				this.notifyIcon1.Visible = false;
+				Application.DoEvents();
+				Application.Exit();
+			}
 		}
 
 		private void linkLabel_AddEmailAndPassword_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
@@ -1227,7 +1253,7 @@ namespace MonitorSystem
 
 		public class FileChangedDetails
 		{
-			public enum QueueStatusEnum { New, Read, Accepted, Complete };
+			public enum QueueStatusEnum { New, Read, Accepted, Discard, Complete };
 			public string FileName;
 			public string Description;
 			public QueueStatusEnum QueueStatus;
@@ -1254,11 +1280,14 @@ namespace MonitorSystem
 				node.ForeColor =
 									IsStringEmpty(Description) && QueueStatusIn == FileChangedDetails.QueueStatusEnum.Read ? Color.Red :
 									QueueStatusIn == FileChangedDetails.QueueStatusEnum.Read ? Color.Green :
+									QueueStatusIn == FileChangedDetails.QueueStatusEnum.Accepted ? Color.Green :
+									QueueStatusIn == FileChangedDetails.QueueStatusEnum.Discard ? Color.Red :
 									Color.Black;
 				FontStyle nodeFontStyle =
 					QueueStatusIn == FileChangedDetails.QueueStatusEnum.New ? FontStyle.Underline :
 					QueueStatusIn == FileChangedDetails.QueueStatusEnum.Read ? FontStyle.Regular :
 					QueueStatusIn == FileChangedDetails.QueueStatusEnum.Accepted ? FontStyle.Strikeout :
+					QueueStatusIn == FileChangedDetails.QueueStatusEnum.Discard ? FontStyle.Strikeout | FontStyle.Italic :
 					FontStyle.Italic;
 				node.NodeFont = new Font(FontFamily.GenericSansSerif, 8, nodeFontStyle);
 			}
@@ -1291,13 +1320,13 @@ namespace MonitorSystem
 		}
 
 		private readonly string[] AutobackupExtensionFilters = new string[] { ".sql", ".xml" };
-		Dictionary<string, Dictionary<DateTime, FileChangedDetails>> QueuedFileChanges;
+		Dictionary<string, Dictionary<DateTime, FileChangedDetails>> QueuedFileChanges = new Dictionary<string,Dictionary<DateTime,FileChangedDetails>>();
 		private void fileSystemWatcher_SqlFiles_Changed(object sender, FileSystemEventArgs e)
 		{
 			if (e.ChangeType == WatcherChangeTypes.Changed
 				&& IsFileInExtionFilter(e.FullPath))
 			{
-				if (QueuedFileChanges == null) QueuedFileChanges = new Dictionary<string, Dictionary<DateTime, FileChangedDetails>>();
+				//if (QueuedFileChanges == null) QueuedFileChanges = new Dictionary<string, Dictionary<DateTime, FileChangedDetails>>();
 				if (!QueuedFileChanges.ContainsKey(e.FullPath)) QueuedFileChanges.Add(e.FullPath, new Dictionary<DateTime, FileChangedDetails>());
 				FileInfo fi = new FileInfo(e.FullPath);
 				DateTime lastWrite = fi.LastWriteTime;
@@ -1307,9 +1336,9 @@ namespace MonitorSystem
 					FileChangedDetails fcd = new FileChangedDetails(e.FullPath, null);
 					QueuedFileChanges[e.FullPath].Add(lastWrite, fcd);
 					string newFileName = fcd.GetBackupFileName(lastWrite);
-					File.Copy(e.FullPath, newFileName);
 					try
 					{
+						File.Copy(e.FullPath, newFileName);
 						File.SetAttributes(newFileName,  FileAttributes.System | FileAttributes.Hidden);
 					}
 					catch (Exception exc)
@@ -1463,7 +1492,7 @@ namespace MonitorSystem
 						foreach (DateTime date in QueuedFileChanges[file].Keys)
 						{
 							FileChangedDetails fcd = QueuedFileChanges[file][date];
-							if (fcd.QueueStatus != FileChangedDetails.QueueStatusEnum.Accepted && fcd.QueueStatus != FileChangedDetails.QueueStatusEnum.Complete)
+							if (fcd.QueueStatus != FileChangedDetails.QueueStatusEnum.Accepted && fcd.QueueStatus != FileChangedDetails.QueueStatusEnum.Complete && fcd.QueueStatus != FileChangedDetails.QueueStatusEnum.Discard)
 								FileQueuedCount++;
 						}
 
@@ -1473,7 +1502,7 @@ namespace MonitorSystem
 						foreach (DateTime date in QueuedFileChanges[file].Keys)
 						{
 							FileChangedDetails fcd = QueuedFileChanges[file][date];
-							if (fcd.QueueStatus != FileChangedDetails.QueueStatusEnum.Accepted && fcd.QueueStatus != FileChangedDetails.QueueStatusEnum.Complete)
+							if (fcd.QueueStatus != FileChangedDetails.QueueStatusEnum.Accepted && fcd.QueueStatus != FileChangedDetails.QueueStatusEnum.Complete && fcd.QueueStatus != FileChangedDetails.QueueStatusEnum.Discard)
 							{
 								AtleastOneFilechangedNode = true;
 								TreeNode fileModifiedNode = new TreeNode(date.ToString("yyyy-MM-dd HH:mm:ss"));
@@ -1561,11 +1590,82 @@ namespace MonitorSystem
 									}
 								}
 							}
+							else if (fcd.QueueStatus == FileChangedDetails.QueueStatusEnum.Discard)
+							{
+								try
+								{
+									File.Delete(fcd.GetBackupFileName(lastWrite));
+									fcd.QueueStatus = FileChangedDetails.QueueStatusEnum.Complete;
+								}
+								catch (Exception exc)
+								{
+									ShowBalloonTipNotification(exc.Message, 3000, "Exception delete file", ToolTipIcon.Warning);
+								}
+							}
 						}
 					}
 					/*if (formMonitoredFilesChanged.ShowDialog() == System.Windows.Forms.DialogResult.OK)
 					{
 					}*/
+				}
+			}
+		}
+
+		public static void Compress(FileInfo fi)
+		{
+			// Get the stream of the source file.
+			using (FileStream inFile = fi.OpenRead())
+			{
+				// Prevent compressing hidden and 
+				// already compressed files.
+				if ((File.GetAttributes(fi.FullName)
+					& FileAttributes.Hidden)
+					!= FileAttributes.Hidden & fi.Extension != ".gz")
+				{
+					// Create the compressed file.
+					using (FileStream outFile = 
+                    			File.Create(fi.FullName + ".gz"))
+					{
+						using (GZipStream Compress = 
+                        	new GZipStream(outFile,
+							CompressionMode.Compress))
+						{
+							// Copy the source file into 
+							// the compression stream.
+							inFile.CopyTo(Compress);
+
+							Console.WriteLine("Compressed {0} from {1} to {2} bytes.",
+									fi.Name, fi.Length.ToString(), outFile.Length.ToString());
+						}
+					}
+				}
+			}
+		}
+
+		public static void Decompress(FileInfo fi)
+		{
+			// Get the stream of the source file.
+			using (FileStream inFile = fi.OpenRead())
+			{
+				// Get original file extension, for example
+				// "doc" from report.doc.gz.
+				string curFile = fi.FullName;
+				string origName = curFile.Remove(curFile.Length -
+						fi.Extension.Length);
+
+				//Create the decompressed file.
+				using (FileStream outFile = File.Create(origName))
+				{
+					using (GZipStream Decompress = new GZipStream(inFile,
+									CompressionMode.Decompress))
+					{
+						// Copy the decompression stream 
+						// into the output file.
+						Decompress.CopyTo(outFile);
+
+						Console.WriteLine("Decompressed: {0}", fi.Name);
+
+					}
 				}
 			}
 		}

@@ -64,15 +64,6 @@ namespace MonitorSystem
 			treeView1.SelectedNode = e.Node;
 		}
 
-		private void dismissToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			if (treeView1.SelectedNode != null && treeView1.SelectedNode.Tag is Form1.FileChangedDetails)
-			{
-				Form1.FileChangedDetails details =  treeView1.SelectedNode.Tag as Form1.FileChangedDetails;
-				details.SetNewQueueStatusAndUpdateNodeFontandcolor(Form1.FileChangedDetails.QueueStatusEnum.Accepted, treeView1.SelectedNode);
-			}
-		}
-
 		private void MonitoredFilesChanged_Shown(object sender, EventArgs e)
 		{
 			this.TopMost = true;
@@ -86,6 +77,43 @@ namespace MonitorSystem
 		private void MonitoredFilesChanged_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
 		{
 			if (e.KeyCode == Keys.Escape) this.Close();
+		}
+
+		private void acceptToolStripMenuItem_Click_1(object sender, EventArgs e)
+		{
+			if (treeView1.SelectedNode != null && treeView1.SelectedNode.Tag is Form1.FileChangedDetails)
+			{
+				Form1.FileChangedDetails details =  treeView1.SelectedNode.Tag as Form1.FileChangedDetails;
+				details.SetNewQueueStatusAndUpdateNodeFontandcolor(Form1.FileChangedDetails.QueueStatusEnum.Accepted, treeView1.SelectedNode);
+			}
+		}
+
+		private void discardToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			DiscardItem(treeView1.SelectedNode);
+		}
+
+		private void DiscardItem(TreeNode fileChangedNode)
+		{
+			if (fileChangedNode != null && fileChangedNode.Tag is Form1.FileChangedDetails)
+			{
+				Form1.FileChangedDetails details =  fileChangedNode.Tag as Form1.FileChangedDetails;
+				details.SetNewQueueStatusAndUpdateNodeFontandcolor(Form1.FileChangedDetails.QueueStatusEnum.Discard, fileChangedNode);
+			}
+		}
+
+		private void discardemptyToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			if (treeView1.SelectedNode != null)
+			{
+				foreach (TreeNode subnode in treeView1.SelectedNode.Nodes)
+					if (subnode.Tag is Form1.FileChangedDetails)
+					{
+						Form1.FileChangedDetails details = subnode.Tag as Form1.FileChangedDetails;
+						if (details.Description == null || details.Description.Trim().Length == 0)
+							DiscardItem(subnode);
+					}
+			}
 		}
 	}
 }
