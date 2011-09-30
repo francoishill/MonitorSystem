@@ -42,7 +42,6 @@ namespace MonitorSystem
 		public bool AllowTextchangeCallback = true;
 		private void textBox1_TextChanged(object sender, EventArgs e)
 		{
-			//TODO: Eventually add functionality to delete files (according to date, empty description, timeafter previous backup, etc)
 			if (AllowTextchangeCallback)
 			{
 				if (treeView1.SelectedNode != null && treeView1.SelectedNode.Tag is Form1.FileChangedDetails)

@@ -1633,6 +1633,7 @@ namespace MonitorSystem
 							{
 								try
 								{
+									//TODO: Eventually add functionality to delete files (according to date, empty description, timeafter previous backup, etc)
 									File.Delete(fcd.GetBackupFileName(lastWrite));
 									fcd.QueueStatus = FileChangedDetails.QueueStatusEnum.Complete;
 								}

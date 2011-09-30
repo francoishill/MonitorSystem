@@ -147,7 +147,7 @@ namespace MonitorSystem
 						}
 					});
 
-					//TODO: Should implement to NOT close if mouse is inside form
+					//DONE TODO: Should implement to NOT close if mouse is inside form
 					this.Close();
 				};
 				timer_ShowDuration.Start();
