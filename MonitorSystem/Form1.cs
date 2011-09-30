@@ -17,6 +17,7 @@ using System.Security.Cryptography;
 using System.Globalization;
 using System.Diagnostics;
 using System.IO.Compression;
+using Microsoft.VisualBasic;
 //using System.Threading;
 
 namespace MonitorSystem
@@ -426,7 +427,18 @@ namespace MonitorSystem
 				this.WindowState = FormWindowState.Minimized;
 				e.Cancel = true;
 			}
-			else RequestApplicationQuit();
+			else if (!MayApplicationQuit())
+			{
+				e.Cancel = true;
+				this.Show();
+				this.WindowState = FormWindowState.Normal;
+				//This code prevents shutdown
+				//TODO: Should reload the "state" again (and notifying user) on next startup instead of preventing shutdown, i.e. reload the QueuedFileChanges Dictionary
+				bool ShouldRatherSaveThis_State_AndReloadOnPcStartupAgain_AndNotifyUser;
+				this.Activate();
+				//System.Diagnostics.Process.Start("shutdown", "-a");
+				//Interaction.Shell("shutdown -a", AppWinStyle.MinimizedFocus, false, -1);
+			}
 		}
 
 		private void exitToolStripMenuItem_Click(object sender, EventArgs e)
@@ -448,16 +460,22 @@ namespace MonitorSystem
 			return false;
 		}
 
-		private void RequestApplicationQuit()
+		private bool MayApplicationQuit()
 		{
-			if (QueueFileChangesHasUnprocessedItems())
-				ShowBalloonTipNotification("Please process unread notifications", BalloonTipActionIn: BalloonTipActionEnum.ChangedFileList);
-			else
+			return !QueueFileChangesHasUnprocessedItems();
+		}
+
+		private bool RequestApplicationQuit()
+		{
+			if (MayApplicationQuit())
 			{
 				this.notifyIcon1.Visible = false;
 				Application.DoEvents();
 				Application.Exit();
 			}
+			else
+				ShowBalloonTipNotification("Please process unread notifications", BalloonTipActionIn: BalloonTipActionEnum.ChangedFileList);
+			return false;
 		}
 
 		private void linkLabel_AddEmailAndPassword_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
