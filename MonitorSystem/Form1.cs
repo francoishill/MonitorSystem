@@ -1336,9 +1336,30 @@ namespace MonitorSystem
 					FileChangedDetails fcd = new FileChangedDetails(e.FullPath, null);
 					QueuedFileChanges[e.FullPath].Add(lastWrite, fcd);
 					string newFileName = fcd.GetBackupFileName(lastWrite);
+
+					bool successfullyCopied = false;
+					int unsuccessfulCount = 0;
+					while (!successfullyCopied)
+					{
+						try
+						{
+							File.Copy(e.FullPath, newFileName);
+							PerformVoidFunctionSeperateThread(() => { System.Threading.Thread.Sleep(500); }, true);
+							successfullyCopied = true;
+						}
+						catch (Exception exc)
+						{
+							unsuccessfulCount++;
+							if (unsuccessfulCount >= 5)
+							{
+								ShowBalloonTipNotification(exc.Message, Title: "Copy failed 5x", icon: ToolTipIcon.Error);
+								break;
+							}
+						}
+					}
+
 					try
 					{
-						File.Copy(e.FullPath, newFileName);
 						File.SetAttributes(newFileName,  FileAttributes.System | FileAttributes.Hidden);
 					}
 					catch (Exception exc)
