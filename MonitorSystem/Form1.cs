@@ -104,11 +104,11 @@ namespace MonitorSystem
 
 			notifyIcon1.BalloonTipClicked += new EventHandler(notifyIcon1_BalloonTipClicked);
 
-			if (!System.Diagnostics.Debugger.IsAttached && Environment.GetCommandLineArgs()[0].ToUpper().Contains("Apps\\2.0".ToUpper()))
+			/*if (!System.Diagnostics.Debugger.IsAttached && Environment.GetCommandLineArgs()[0].ToUpper().Contains("Apps\\2.0".ToUpper()))
 			{
 				Microsoft.Win32.RegistryKey regkeyRUN = Microsoft.Win32.Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
 				regkeyRUN.SetValue(ThisAppName, "\"" + System.Windows.Forms.Application.ExecutablePath + "\"", Microsoft.Win32.RegistryValueKind.String);
-			}
+			}*/
 
 			RegisterSnarl();
 			//NotifySnarl("Halo", "How are you");
