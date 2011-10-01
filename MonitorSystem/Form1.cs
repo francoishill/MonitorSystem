@@ -60,6 +60,7 @@ namespace MonitorSystem
 		private static string ThisAppName = "MonitorSystem";
 		public static readonly string LocalAppDataPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\" + "FJH" + "\\" + ThisAppName;
 		public static string SavedListFileName = LocalAppDataPath + "\\EmailAndPasswordList.fjset";
+		public static string LastAutobackupStateFileName =  LocalAppDataPath + "\\LastAutobackupState.fjset";
 
 		//private const string ServerAddress = "http://localhost";
 		//private const string ServerAddress = "https://fjh.co.za";
@@ -128,6 +129,48 @@ namespace MonitorSystem
 			MonitoredAutoBackupPath = fileSystemWatcher_SqlFiles.Path;
 		}
 
+		private void ReadLastQueuedStatusIfFileExist()
+		{
+			if (File.Exists(LastAutobackupStateFileName))
+			{
+				bool success = true;
+				using (StreamReader sr = new StreamReader(LastAutobackupStateFileName))
+				{
+					while (!sr.EndOfStream)
+					{
+						string line = sr.ReadLine();
+						string fullPath = line.Split('|')[0];
+						DateTime lastWrite;
+						if (!DateTime.TryParseExact(line.Split('|')[1], FileChangedDetails.SavetofileDateFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out lastWrite))
+						{
+							MessageBox.Show("Could not get date from pipesplit 1: " + line);
+							success = false;
+							continue;
+						}
+						FileChangedDetails.QueueStatusEnum queueStatus;
+						if (!Enum.TryParse(line.Split('|')[2], true, out queueStatus))
+						{
+							MessageBox.Show("Could not get QueueStatus from pipesplit 2: " + line);
+							success = false;
+							continue;
+						}
+						if (!QueuedFileChanges.ContainsKey(fullPath)) QueuedFileChanges.Add(fullPath, new Dictionary<DateTime, FileChangedDetails>());
+						FileInfo fi = new FileInfo(fullPath);
+						lastWrite = new DateTime(lastWrite.Year, lastWrite.Month, lastWrite.Day, lastWrite.Hour, lastWrite.Minute, lastWrite.Second);
+						if (!QueuedFileChanges[fullPath].ContainsKey(lastWrite))
+						{
+							FileChangedDetails fcd = new FileChangedDetails(fullPath, null);
+							fcd.QueueStatus = queueStatus;
+							QueuedFileChanges[fullPath].Add(lastWrite, fcd);
+						}
+					}
+				}
+				if (success)
+					File.Delete(LastAutobackupStateFileName);
+				ShowQueuedMessages();
+			}
+		}
+
 		private void RefreshRegexList()
 		{
 			List<string> tmpList = new List<string>();
@@ -170,6 +213,8 @@ namespace MonitorSystem
 			//InitializeHooks(true, true);
 			//notifyIcon1.ShowBalloonTip(3000, "Hooks disabled", "Hooks were disabled in code", ToolTipIcon.Info);
 			if (!RegisterHotKey(this.Handle, Hotkey1, MOD_WIN, (int)Keys.Q)) MessageBox.Show("QuickAccess could not register hotkey WinKey + Q");
+
+			ReadLastQueuedStatusIfFileExist();
 		}
 
 		protected override void WndProc(ref Message m)
@@ -433,9 +478,34 @@ namespace MonitorSystem
 				this.Show();
 				this.WindowState = FormWindowState.Normal;
 				//This code prevents shutdown
-				//TODO: Should reload the "state" again (and notifying user) on next startup instead of preventing shutdown, i.e. reload the QueuedFileChanges Dictionary
+				//DONE TODO: Should reload the "state" again (and notifying user) on next startup instead of preventing shutdown, i.e. reload the QueuedFileChanges Dictionary
 				bool ShouldRatherSaveThis_State_AndReloadOnPcStartupAgain_AndNotifyUser;
 				this.Activate();
+				toolStripStatusLabelCurrentStatus.Text = "Saving current state, please wait...";
+				PerformVoidFunctionSeperateThread(() =>
+				{
+					using (StreamWriter sw = new StreamWriter(LastAutobackupStateFileName))
+					{
+						List<string> keys = QueuedFileChanges.Keys.ToList();
+						foreach (string key in keys)
+						{
+							if (QueuedFileChanges[key] == null || QueuedFileChanges[key].Count == 0)
+								continue;
+							List<DateTime> dates = QueuedFileChanges[key].Keys.ToList();
+							foreach (DateTime date in dates)
+								if (QueuedFileChanges[key][date].QueueStatus != FileChangedDetails.QueueStatusEnum.Complete)
+								{
+									sw.WriteLine(
+										key + "|" +
+										date.ToString(FileChangedDetails.SavetofileDateFormat) + "|" +
+										QueuedFileChanges[key][date].QueueStatus.ToString());
+									QueuedFileChanges[key].Remove(date);
+									if (QueuedFileChanges[key].Count == 0) QueuedFileChanges.Remove(key);
+								}
+						}
+					}
+				}, true);
+				e.Cancel = false;
 				//System.Diagnostics.Process.Start("shutdown", "-a");
 				//Interaction.Shell("shutdown -a", AppWinStyle.MinimizedFocus, false, -1);
 			}
@@ -1311,6 +1381,7 @@ namespace MonitorSystem
 			}
 
 			public static string dateFormat = @"yyyy MM dd (HH\hmm ss)";
+			public static string SavetofileDateFormat = "yyyyMMddHHmmss";
 			private string GetFileNameStart(DateTime lastWriteTime)
 			{
 				return FileName + "_" + lastWriteTime.ToString(dateFormat);
@@ -1362,12 +1433,12 @@ namespace MonitorSystem
 						try
 						{
 							File.Copy(e.FullPath, newFileName);
-							PerformVoidFunctionSeperateThread(() => { System.Threading.Thread.Sleep(500); }, true);
 							successfullyCopied = true;
 						}
 						catch (Exception exc)
 						{
 							unsuccessfulCount++;
+							PerformVoidFunctionSeperateThread(() => { System.Threading.Thread.Sleep(500); }, true);
 							if (unsuccessfulCount >= 5)
 							{
 								ShowBalloonTipNotification(exc.Message, Title: "Copy failed 5x", icon: ToolTipIcon.Error);
