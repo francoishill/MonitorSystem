@@ -27,7 +27,7 @@
     <ProductName>MonitorSystem</ProductName>
     <PublisherName>Francois Hill</PublisherName>
     <SuiteName>Own applications</SuiteName>
-    <ApplicationRevision>41</ApplicationRevision>
+    <ApplicationRevision>42</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -83,6 +83,35 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\SharedClasses\CustomBalloonTip.cs">
+      <Link>CustomBalloonTip.cs</Link>
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="..\..\SharedClasses\CustomBalloonTip.designer.cs">
+      <Link>CustomBalloonTip.designer.cs</Link>
+      <DependentUpon>CustomBalloonTip.cs</DependentUpon>
+    </Compile>
+    <Compile Include="..\..\SharedClasses\Logging.cs">
+      <Link>Logging.cs</Link>
+    </Compile>
+    <Compile Include="..\..\SharedClasses\PhpInterop.cs">
+      <Link>PhpInterop.cs</Link>
+    </Compile>
+    <Compile Include="..\..\SharedClasses\TextFilesInterop.cs">
+      <Link>TextFilesInterop.cs</Link>
+    </Compile>
+    <Compile Include="..\..\SharedClasses\ThreadingInterop.cs">
+      <Link>ThreadingInterop.cs</Link>
+    </Compile>
+    <Compile Include="..\..\SharedClasses\UserActivityHook.cs">
+      <Link>UserActivityHook.cs</Link>
+    </Compile>
+    <Compile Include="..\..\SharedClasses\Win32Api.cs">
+      <Link>Win32Api.cs</Link>
+    </Compile>
+    <Compile Include="..\..\SharedClasses\WindowsInterop.cs">
+      <Link>WindowsInterop.cs</Link>
+    </Compile>
     <Compile Include="AddBackupDescription.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -101,12 +130,6 @@
     <Compile Include="AddTodoItem.Designer.cs">
       <DependentUpon>AddTodoItem.cs</DependentUpon>
     </Compile>
-    <Compile Include="CustomBalloonTip.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="CustomBalloonTip.Designer.cs">
-      <DependentUpon>CustomBalloonTip.cs</DependentUpon>
-    </Compile>
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -121,14 +144,16 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SnarlNetwork.cs" />
-    <Compile Include="UserActivityHook.cs" />
     <Compile Include="ViewBackups.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="ViewBackups.Designer.cs">
       <DependentUpon>ViewBackups.cs</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="..\..\SharedClasses\CustomBalloonTip.resx">
+      <Link>CustomBalloonTip.resx</Link>
+      <DependentUpon>CustomBalloonTip.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="AddBackupDescription.resx">
       <DependentUpon>AddBackupDescription.cs</DependentUpon>
     </EmbeddedResource>
@@ -137,9 +162,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="AddTodoItem.resx">
       <DependentUpon>AddTodoItem.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CustomBalloonTip.resx">
-      <DependentUpon>CustomBalloonTip.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>

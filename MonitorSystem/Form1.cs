@@ -1,74 +1,34 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Windows.Forms;
-using System.Runtime.InteropServices;
-using System.Reflection;
-using System.Drawing.Imaging;
-using Microsoft.Win32;
-using System.Text.RegularExpressions;
-using System.IO;
-using System.Net;
-using System.Security.Cryptography;
 using System.Globalization;
-using System.Diagnostics;
+using System.IO;
 using System.IO.Compression;
-using Microsoft.VisualBasic;
+using System.Linq;
+using System.Net;
+using System.Runtime.InteropServices;
+using System.Security.Cryptography;
+using System.Text;
+using System.Text.RegularExpressions;
+using System.Windows.Forms;
 //using System.Threading;
 
 namespace MonitorSystem
 {
 	public partial class Form1 : Form
 	{
-		private const int SW_SHOWNOACTIVATE = 4;
-		private const int HWND_TOPMOST = -1;
-		private const uint SWP_NOACTIVATE = 0x0010;
-
-		[DllImport("user32.dll", EntryPoint = "SetWindowPos")]
-		static extern bool SetWindowPos(
-				 int hWnd,           // window handle
-				 int hWndInsertAfter,    // placement-order handle
-				 int X,          // horizontal position
-				 int Y,          // vertical position
-				 int cx,         // width
-				 int cy,         // height
-				 uint uFlags);       // window positioning flags
-
-		[DllImport("user32.dll")]
-		static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
-		/// <summary>The GetForegroundWindow function returns a handle to the foreground window.</summary>
-		[DllImport("user32.dll")]
-		private static extern IntPtr GetForegroundWindow();
-		[DllImport("user32.dll")]
-		static extern int GetWindowText(IntPtr hWnd, StringBuilder text, int count);
-		[DllImport("msvcr70.dll", CallingConvention = CallingConvention.Cdecl)]
-		public static extern int _fpreset();
-
-		const int WM_HOTKEY = 786;
-		const int Hotkey1 = 500;
-		const uint MOD_ALT = 1;
-		const uint MOD_CONTROL = 2;
-		const uint MOD_SHIFT = 4;
-		const uint MOD_WIN = 8;
-		[DllImport("user32.dll")]
-		private static extern bool RegisterHotKey(IntPtr hWnd, int id, uint fsModifiers, uint vk);
-
 		private static string ThisAppName = "MonitorSystem";
-		public static readonly string LocalAppDataPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\" + "FJH" + "\\" + ThisAppName;
-		public static string SavedListFileName = LocalAppDataPath + "\\EmailAndPasswordList.fjset";
-		public static string LastAutobackupStateFileName =  LocalAppDataPath + "\\LastAutobackupState.fjset";
+		//public static readonly string LocalAppDataPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\" + "FJH" + "\\" + ThisAppName;
+		public static string SavedListFileName = WindowsInterop.LocalAppDataPath + "\\EmailAndPasswordList.fjset";
+		public static string LastAutobackupStateFileName =  WindowsInterop.LocalAppDataPath + "\\LastAutobackupState.fjset";
 
-		//private const string ServerAddress = "http://localhost";
-		//private const string ServerAddress = "https://fjh.co.za";
-		private const string ServerAddress = "http://firepuma.com";
-		//private const string doWorkAddress = ServerAddress + "/other/codeigniter/index.php/desktopapp";
-		private const string doWorkAddress = ServerAddress + "/desktopapp";
-		private string Username = "f";
-		private string Password = "f";
+		////private const string ServerAddress = "http://localhost";
+		////private const string ServerAddress = "https://fjh.co.za";
+		//private const string ServerAddress = "http://firepuma.com";
+		////private const string doWorkAddress = ServerAddress + "/other/codeigniter/index.php/desktopapp";
+		//private const string doWorkAddress = ServerAddress + "/desktopapp";
+		//private string Username = "f";
+		//private string Password = "f";
 
 		List<string> currentEmailPasswordAndRegexList = new List<string>();
 
@@ -92,13 +52,13 @@ namespace MonitorSystem
 
 		public Form1()
 		{
-			try { _fpreset(); }
+			try { Win32Api._fpreset(); }
 			catch { }
 
 			InitializeComponent();
 			fileSystemWatcher_SqlFiles.Path = AutoBackupDir;
 
-			if (!Directory.Exists(LocalAppDataPath)) Directory.CreateDirectory(LocalAppDataPath);
+			if (!Directory.Exists(WindowsInterop.LocalAppDataPath)) Directory.CreateDirectory(WindowsInterop.LocalAppDataPath);
 
 			//timer.Interval = 10000;
 			//timer.Start();
@@ -197,7 +157,7 @@ namespace MonitorSystem
 		private void RefreshRegexList()
 		{
 			List<string> tmpList = new List<string>();
-			tmpList = GetLinesFromTextFile(SavedListFileName);
+			tmpList = TextFilesInterop.GetLinesFromTextFile(SavedListFileName);
 			if (tmpList.Count > 0) currentEmailPasswordAndRegexList = tmpList;
 		}
 
@@ -235,7 +195,7 @@ namespace MonitorSystem
 
 			//InitializeHooks(true, true);
 			//notifyIcon1.ShowBalloonTip(3000, "Hooks disabled", "Hooks were disabled in code", ToolTipIcon.Info);
-			if (!RegisterHotKey(this.Handle, Hotkey1, MOD_WIN, (int)Keys.Q)) MessageBox.Show("QuickAccess could not register hotkey WinKey + Q");
+			if (!Win32Api.RegisterHotKey(this.Handle, Win32Api.Hotkey1, Win32Api.MOD_WIN, (int)Keys.Q)) MessageBox.Show("QuickAccess could not register hotkey WinKey + Q");
 
 			ReadLastQueuedStatusIfFileExist();
 
@@ -244,9 +204,9 @@ namespace MonitorSystem
 
 		protected override void WndProc(ref Message m)
 		{
-			if (m.Msg == WM_HOTKEY)
+			if (m.Msg == Win32Api.WM_HOTKEY)
 			{
-				if (m.WParam == new IntPtr(Hotkey1))
+				if (m.WParam == new IntPtr(Win32Api.Hotkey1))
 					ShowQueuedMessages();
 			}
 			base.WndProc(ref m);
@@ -434,8 +394,8 @@ namespace MonitorSystem
 			const int nChars = 256;
 			IntPtr handle = IntPtr.Zero;
 			StringBuilder Buff = new StringBuilder(nChars);
-			handle = GetForegroundWindow();
-			if (GetWindowText(handle, Buff, nChars) > 0)
+			handle = Win32Api.GetForegroundWindow();
+			if (Win32Api.GetWindowText(handle, Buff, nChars) > 0)
 			{
 				return Buff.ToString();
 			}
@@ -570,11 +530,11 @@ namespace MonitorSystem
 
 		private void linkLabel_AddEmailAndPassword_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
 		{
-			currentEmailPasswordAndRegexList = GetLinesFromTextFile(SavedListFileName);
+			currentEmailPasswordAndRegexList = TextFilesInterop.GetLinesFromTextFile(SavedListFileName);
 			string NewRegexEmailAndPasswordString = GetNewEmailAndPassword();
 			if (NewRegexEmailAndPasswordString != null)
 				currentEmailPasswordAndRegexList.Add(EncodeStringHex(NewRegexEmailAndPasswordString.Split('\t')[0]) + "|" + EncodeStringHex(NewRegexEmailAndPasswordString.Split('\t')[1]) + "|" + EncodeStringHex(NewRegexEmailAndPasswordString.Split('\t')[2]));
-			WriteLinesToTextFile(SavedListFileName, currentEmailPasswordAndRegexList);
+			TextFilesInterop.WriteLinesToTextFile(SavedListFileName, currentEmailPasswordAndRegexList);
 			RefreshRegexList();
 			foreach (string RegexUsernamePassword in currentEmailPasswordAndRegexList)
 			{
@@ -628,43 +588,6 @@ namespace MonitorSystem
 			return tmpstr;
 		}
 
-		public static List<string> GetLinesFromTextFile(string FullFilePath, Boolean ShowErrorMessage = true)
-		{
-			if (System.IO.File.Exists(FullFilePath))
-			{
-				try
-				{
-					List<string> tmpList = new List<string>();
-					using (System.IO.StreamReader reader = new System.IO.StreamReader(FullFilePath))
-					{
-						string line;
-						while ((line = reader.ReadLine()) != null) tmpList.Add(line);
-						reader.Close();
-					}
-					return tmpList;
-				}
-				catch (Exception exc)
-				{
-					if (ShowErrorMessage) System.Windows.Forms.MessageBox.Show("Error occurred when reading file " + FullFilePath + Environment.NewLine + "Error: " + exc.Message, "File read error", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error);
-					return new List<string>();
-				}
-			}
-			else
-			{
-				//if (ShowErrorMessage) System.Windows.Forms.MessageBox.Show("The file does not exist: " + FullFilePath, "File not found", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error);
-				return new List<string>();
-			}
-		}
-
-		public static void WriteLinesToTextFile(string FullFilePath, List<string> LinesToWrite)
-		{
-			using (StreamWriter writer = new StreamWriter(FullFilePath))
-			{
-				foreach (string s in LinesToWrite)
-					writer.WriteLine(s);
-			}
-		}
-
 		//PerformFunctionSeperateThread((Func<int, string>)delegate(int i) { return ""; }, null);
 		public object PerformFunctionSeperateThread(Delegate method, object[] param)
 		{
@@ -701,7 +624,7 @@ namespace MonitorSystem
 
 				PerformVoidFunctionSeperateThread(() =>
 				{
-					tmpkey = PostPHP(ServerAddress + "/generateprivatekey.php", "username=" + Username + "&password=" + Password);
+					tmpkey = PostPHP(PhpInterop.ServerAddress + "/generateprivatekey.php", "username=" + PhpInterop.Username + "&password=" + PhpInterop.Password);
 				});
 
 				string tmpSuccessKeyString = "Success: Key=";
@@ -727,7 +650,7 @@ namespace MonitorSystem
 		private void GetCurrentTodolist()
 		{
 			treeViewTodolist.Nodes.Clear();
-			string tmpresult = GetResultOfPerformingDesktopAppDoTask(Username, "getlist", new List<string>());
+			string tmpresult = GetResultOfPerformingDesktopAppDoTask(PhpInterop.Username, "getlist", new List<string>());
 			if (tmpresult != null)
 			{
 				appendLogTextbox("Successfully obtained todo list");
@@ -825,7 +748,7 @@ namespace MonitorSystem
 			if (addform.ShowDialog(this) == System.Windows.Forms.DialogResult.OK)
 			{
 				bool successfulAdd = PerformDesktopAppDoTask(
-						Username,
+						PhpInterop.Username,
 						"addtolist",
 						new List<string>()
                 {
@@ -996,7 +919,7 @@ namespace MonitorSystem
 		private bool UploadChangesMade(TreeNode node)
 		{
 			return PerformDesktopAppDoTask(
-					Username,
+					PhpInterop.Username,
 					"updatedescription",
 					new List<string>()
                 {
@@ -1060,7 +983,7 @@ namespace MonitorSystem
 							foreach (string s in ArgumentList)
 								ArgumentListTabSeperated += (ArgumentListTabSeperated.Length > 0 ? "\t" : "") + s;
 
-							addrequest = (HttpWebRequest)WebRequest.Create(doWorkAddress + "/dotask/" +
+							addrequest = (HttpWebRequest)WebRequest.Create(PhpInterop.doWorkAddress + "/dotask/" +
 									PhpEncryption.SimpleTripleDesEncrypt(UsernameIn, "123456789abcdefghijklmno") + "/" +
 									PhpEncryption.SimpleTripleDesEncrypt(TaskName, tmpkey) + "/" +
 									PhpEncryption.SimpleTripleDesEncrypt(ArgumentListTabSeperated, tmpkey));// + "/");
@@ -1147,7 +1070,7 @@ namespace MonitorSystem
 				{
 					TreeNode node = treeViewTodolist.SelectedNode;
 					if (!PerformDesktopAppDoTask(
-							Username,
+							PhpInterop.Username,
 							"updatecomplete",
 							new List<string>()
                         {
@@ -1184,7 +1107,7 @@ namespace MonitorSystem
 				{
 					TreeNode node = treeViewTodolist.SelectedNode;
 					if (!PerformDesktopAppDoTask(
-							Username,
+							PhpInterop.Username,
 							"updatedate",
 							new List<string>()
                         {
@@ -1221,7 +1144,7 @@ namespace MonitorSystem
 				{
 					TreeNode node = treeViewTodolist.SelectedNode;
 					if (!PerformDesktopAppDoTask(
-							Username,
+							PhpInterop.Username,
 							"updatestopsnooze",
 							new List<string>()
                         {
@@ -1258,7 +1181,7 @@ namespace MonitorSystem
 				{
 					TreeNode node = treeViewTodolist.SelectedNode;
 					if (!PerformDesktopAppDoTask(
-							Username,
+							PhpInterop.Username,
 							"updateautosnoozeinterval",
 							new List<string>()
                         {
@@ -1405,7 +1328,7 @@ namespace MonitorSystem
 		}
 
 		private readonly string[] AutobackupExtensionFilters = new string[] { ".sql", ".xml" };
-		Dictionary<string, Dictionary<DateTime, FileChangedDetails>> QueuedFileChanges = new Dictionary<string,Dictionary<DateTime,FileChangedDetails>>();
+		Dictionary<string, Dictionary<DateTime, FileChangedDetails>> QueuedFileChanges = new Dictionary<string, Dictionary<DateTime, FileChangedDetails>>();
 		private void fileSystemWatcher_SqlFiles_Changed(object sender, FileSystemEventArgs e)
 		{
 			if (e.ChangeType == WatcherChangeTypes.Changed
@@ -1445,7 +1368,7 @@ namespace MonitorSystem
 
 					try
 					{
-						File.SetAttributes(newFileName,  FileAttributes.System | FileAttributes.Hidden);
+						File.SetAttributes(newFileName, FileAttributes.System | FileAttributes.Hidden);
 					}
 					catch (Exception exc)
 					{
@@ -1544,7 +1467,7 @@ namespace MonitorSystem
 		private TreeNode AddFileNode(TreeView tv, string rootPath, string fullFilePath)
 		{
 			while (rootPath.EndsWith("\\")) rootPath = rootPath.Substring(0, rootPath.Length - 1);
-			
+
 			TreeNode existingRootNode = null;
 			foreach (TreeNode node in tv.Nodes)
 				if (node.Text == rootPath)
@@ -1910,7 +1833,8 @@ namespace MonitorSystem
 							while (tmpForm.Top > EndPoint)
 							{
 								System.Threading.Thread.Sleep(10);
-								UpdateGuiFromThread(tmpForm, () => {
+								UpdateGuiFromThread(tmpForm, () =>
+								{
 									if (tmpForm.Top - 5 > EndPoint) tmpForm.Top -= 5;
 									else tmpForm.Top = EndPoint;
 								});
@@ -1940,8 +1864,8 @@ namespace MonitorSystem
 
 		private static void ShowInactiveTopmost(Form frm)
 		{
-			ShowWindow(frm.Handle, SW_SHOWNOACTIVATE);
-			SetWindowPos(frm.Handle.ToInt32(), HWND_TOPMOST, frm.Left, frm.Top, frm.Width, frm.Height, SWP_NOACTIVATE);
+			Win32Api.ShowWindow(frm.Handle, Win32Api.SW_SHOWNOACTIVATE);
+			Win32Api.SetWindowPos(frm.Handle.ToInt32(), Win32Api.HWND_TOPMOST, frm.Left, frm.Top, frm.Width, frm.Height, Win32Api.SWP_NOACTIVATE);
 		}
 
 		private void menuItem_DeleteThisItem_Click(object sender, EventArgs e)
@@ -1949,7 +1873,7 @@ namespace MonitorSystem
 			if (MessageBox.Show(this, "Are you sure you want to delete " + treeViewTodolist.SelectedNode.Text + "?", "Confirm delete", MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2) == System.Windows.Forms.DialogResult.Yes)
 			{
 				bool successfulDelete = PerformDesktopAppDoTask(
-						Username,
+						PhpInterop.Username,
 						"deleteitem",
 						new List<string>()
                 {
