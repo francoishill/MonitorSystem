@@ -28,23 +28,20 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.components = new System.ComponentModel.Container();
 			this.splitContainer1 = new System.Windows.Forms.SplitContainer();
 			this.treeView1 = new System.Windows.Forms.TreeView();
 			this.textBox1 = new System.Windows.Forms.TextBox();
-			this.contextMenuStrip_TotalFile = new System.Windows.Forms.ContextMenuStrip(this.components);
-			this.clearMessagesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.contextMenuStrip_FileModification = new System.Windows.Forms.ContextMenuStrip(this.components);
-			this.clearthisMessageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.acceptToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.discardToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.discardemptyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.contextMenu_TotalFile = new System.Windows.Forms.ContextMenu();
+			this.menuItem_ClearMessages = new System.Windows.Forms.MenuItem();
+			this.menuItem_DiscardEmpty = new System.Windows.Forms.MenuItem();
+			this.contextMenu_FileModification = new System.Windows.Forms.ContextMenu();
+			this.menuItem_ClearThisMessage = new System.Windows.Forms.MenuItem();
+			this.menuItem_Accept = new System.Windows.Forms.MenuItem();
+			this.menuItem_Discard = new System.Windows.Forms.MenuItem();
 			((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
 			this.splitContainer1.Panel1.SuspendLayout();
 			this.splitContainer1.Panel2.SuspendLayout();
 			this.splitContainer1.SuspendLayout();
-			this.contextMenuStrip_TotalFile.SuspendLayout();
-			this.contextMenuStrip_FileModification.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// splitContainer1
@@ -91,55 +88,49 @@
 			this.textBox1.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
 			this.textBox1.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler(this.MonitoredFilesChanged_PreviewKeyDown);
 			// 
-			// contextMenuStrip_TotalFile
+			// contextMenu_TotalFile
 			// 
-			this.contextMenuStrip_TotalFile.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.clearMessagesToolStripMenuItem,
-            this.discardemptyToolStripMenuItem});
-			this.contextMenuStrip_TotalFile.Name = "contextMenuStrip_TotalFile";
-			this.contextMenuStrip_TotalFile.Size = new System.Drawing.Size(156, 70);
+			this.contextMenu_TotalFile.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
+            this.menuItem_ClearMessages,
+            this.menuItem_DiscardEmpty});
 			// 
-			// clearMessagesToolStripMenuItem
+			// menuItem_ClearMessages
 			// 
-			this.clearMessagesToolStripMenuItem.Name = "clearMessagesToolStripMenuItem";
-			this.clearMessagesToolStripMenuItem.Size = new System.Drawing.Size(155, 22);
-			this.clearMessagesToolStripMenuItem.Text = "&Clear messages";
+			this.menuItem_ClearMessages.Checked = true;
+			this.menuItem_ClearMessages.Index = 0;
+			this.menuItem_ClearMessages.Text = "&Clear messages";
+			this.menuItem_ClearMessages.Click += new System.EventHandler(this.menuItem_ClearMessages_Click);
 			// 
-			// contextMenuStrip_FileModification
+			// menuItem_DiscardEmpty
 			// 
-			this.contextMenuStrip_FileModification.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.clearthisMessageToolStripMenuItem,
-            this.acceptToolStripMenuItem,
-            this.discardToolStripMenuItem});
-			this.contextMenuStrip_FileModification.Name = "contextMenuStrip_TotalFile";
-			this.contextMenuStrip_FileModification.Size = new System.Drawing.Size(173, 70);
+			this.menuItem_DiscardEmpty.Index = 1;
+			this.menuItem_DiscardEmpty.Text = "Discard &empty";
+			this.menuItem_DiscardEmpty.Click += new System.EventHandler(this.menuItem_DiscardEmpty_Click);
 			// 
-			// clearthisMessageToolStripMenuItem
+			// contextMenu_FileModification
 			// 
-			this.clearthisMessageToolStripMenuItem.Name = "clearthisMessageToolStripMenuItem";
-			this.clearthisMessageToolStripMenuItem.Size = new System.Drawing.Size(172, 22);
-			this.clearthisMessageToolStripMenuItem.Text = "Clear &this message";
+			this.contextMenu_FileModification.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
+            this.menuItem_ClearThisMessage,
+            this.menuItem_Accept,
+            this.menuItem_Discard});
 			// 
-			// acceptToolStripMenuItem
+			// menuItem_ClearThisMessage
 			// 
-			this.acceptToolStripMenuItem.Name = "acceptToolStripMenuItem";
-			this.acceptToolStripMenuItem.Size = new System.Drawing.Size(172, 22);
-			this.acceptToolStripMenuItem.Text = "&Accept";
-			this.acceptToolStripMenuItem.Click += new System.EventHandler(this.acceptToolStripMenuItem_Click_1);
+			this.menuItem_ClearThisMessage.Index = 0;
+			this.menuItem_ClearThisMessage.Text = "Clear &this message";
+			this.menuItem_ClearThisMessage.Click += new System.EventHandler(this.menuItem_ClearThisMessage_Click);
 			// 
-			// discardToolStripMenuItem
+			// menuItem_Accept
 			// 
-			this.discardToolStripMenuItem.Name = "discardToolStripMenuItem";
-			this.discardToolStripMenuItem.Size = new System.Drawing.Size(172, 22);
-			this.discardToolStripMenuItem.Text = "Dis&card";
-			this.discardToolStripMenuItem.Click += new System.EventHandler(this.discardToolStripMenuItem_Click);
+			this.menuItem_Accept.Index = 1;
+			this.menuItem_Accept.Text = "&Accept";
+			this.menuItem_Accept.Click += new System.EventHandler(this.menuItem_Accept_Click);
 			// 
-			// discardemptyToolStripMenuItem
+			// menuItem_Discard
 			// 
-			this.discardemptyToolStripMenuItem.Name = "discardemptyToolStripMenuItem";
-			this.discardemptyToolStripMenuItem.Size = new System.Drawing.Size(155, 22);
-			this.discardemptyToolStripMenuItem.Text = "Discard &empty";
-			this.discardemptyToolStripMenuItem.Click += new System.EventHandler(this.discardemptyToolStripMenuItem_Click);
+			this.menuItem_Discard.Index = 2;
+			this.menuItem_Discard.Text = "Dis&card";
+			this.menuItem_Discard.Click += new System.EventHandler(this.menuItem_Discard_Click);
 			// 
 			// MonitoredFilesChanged
 			// 
@@ -158,8 +149,6 @@
 			this.splitContainer1.Panel2.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
 			this.splitContainer1.ResumeLayout(false);
-			this.contextMenuStrip_TotalFile.ResumeLayout(false);
-			this.contextMenuStrip_FileModification.ResumeLayout(false);
 			this.ResumeLayout(false);
 
 		}
@@ -169,12 +158,12 @@
 		private System.Windows.Forms.SplitContainer splitContainer1;
 		public System.Windows.Forms.TreeView treeView1;
 		public System.Windows.Forms.TextBox textBox1;
-		public System.Windows.Forms.ContextMenuStrip contextMenuStrip_TotalFile;
-		public System.Windows.Forms.ContextMenuStrip contextMenuStrip_FileModification;
-		private System.Windows.Forms.ToolStripMenuItem clearMessagesToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem clearthisMessageToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem acceptToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem discardToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem discardemptyToolStripMenuItem;
+		private System.Windows.Forms.MenuItem menuItem_ClearMessages;
+		private System.Windows.Forms.MenuItem menuItem_DiscardEmpty;
+		public System.Windows.Forms.ContextMenu contextMenu_TotalFile;
+		public System.Windows.Forms.ContextMenu contextMenu_FileModification;
+		private System.Windows.Forms.MenuItem menuItem_ClearThisMessage;
+		private System.Windows.Forms.MenuItem menuItem_Accept;
+		private System.Windows.Forms.MenuItem menuItem_Discard;
 	}
 }

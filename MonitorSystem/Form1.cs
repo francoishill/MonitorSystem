@@ -127,6 +127,29 @@ namespace MonitorSystem
 
 			//MonitoredFilesClass.RePopulateFilesAndLastModifiedTimesDictionary(@"C:\ProgramData\GLS\ReportSQLqueries", true);
 			MonitoredAutoBackupPath = fileSystemWatcher_SqlFiles.Path;
+
+			PopulateNotifyIconContextMenu();
+		}
+
+		private void PopulateNotifyIconContextMenu()
+		{
+			MenuItem addBackupDescriptionMenuItem = new MenuItem("Add backup &description", delegate
+				{
+					AddBackupDescription formAddBackupDescription = new AddBackupDescription();
+					formAddBackupDescription.Show();
+				});
+			MenuItem exitMenuItem = new MenuItem("E&xit", delegate { RequestApplicationQuit(); });
+			MenuItem viewallbackupsMenuItem = new MenuItem("View &all backups", delegate { ViewAllBackupsNow(); });
+			MenuItem testcustomballoontipMenuItem = new MenuItem("Test &custom balloontip", delegate { ShowCustomBalloonTip("Hallo", "This is a custom balloon tip for 3 seconds...", 3000, CustomBalloonTip.IconTypes.Shield); });
+
+			notifyIcon1.ContextMenu = new ContextMenu(new MenuItem[]
+			{
+				addBackupDescriptionMenuItem,
+				viewallbackupsMenuItem,
+				new MenuItem("-"),
+				exitMenuItem,				
+				testcustomballoontipMenuItem
+			});
 		}
 
 		private void ReadLastQueuedStatusIfFileExist()
@@ -511,11 +534,6 @@ namespace MonitorSystem
 			}
 		}
 
-		private void exitToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			RequestApplicationQuit();
-		}
-
 		private bool QueueFileChangesHasUnprocessedItems()
 		{
 			if (QueuedFileChanges == null || QueuedFileChanges.Count == 0) return false;
@@ -859,11 +877,11 @@ namespace MonitorSystem
 		private void AdditemToTreeview(string Category, string Subcat, string Items, string Description, bool Completed, DateTime Due, DateTime Created, int RemindedCount, bool StopSnooze, int AutosnoozeInterval)
 		{
 			TreeNode tmpItemsNode = new TreeNode(Items) { Tag = new ItemDetails(Description, Completed, Due, Created, RemindedCount, StopSnooze, AutosnoozeInterval) };
-			tmpItemsNode.ContextMenuStrip = contextMenuStripItemsNode;
+			tmpItemsNode.ContextMenu = contextMenuItemsNode;
 			if (!treeViewTodolist.Nodes.ContainsKey(Category)) treeViewTodolist.Nodes.Add(Category, Category);
 			if (!treeViewTodolist.Nodes[Category].Nodes.ContainsKey(Subcat)) treeViewTodolist.Nodes[Category].Nodes.Add(Subcat, Subcat);
 			treeViewTodolist.Nodes[Category].Nodes[Subcat].Nodes.Add(tmpItemsNode);
-			tmpItemsNode.Parent.ContextMenuStrip = contextMenuStripItemsSubcat;
+			tmpItemsNode.Parent.ContextMenu = contextMenuItemsSubcat;
 		}
 
 		/// <summary>
@@ -997,10 +1015,6 @@ namespace MonitorSystem
 			else treeViewTodolist.SelectedNode = ItemOfContextMenu;
 		}
 
-		private void addItemToThisCategoryToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			AddTodoItemNow(treeViewTodolist.SelectedNode.Parent.Text, treeViewTodolist.SelectedNode.Text);
-		}
 		private void textBoxDescription_KeyDown(object sender, KeyEventArgs e)
 		{
 			if (e.KeyCode == Keys.A && ((ModifierKeys & Keys.Control) == Keys.Control))
@@ -1264,26 +1278,6 @@ namespace MonitorSystem
 
 				Application.DoEvents();
 				MustHandleStopAutosnoozeIntervalChanged = true;
-			}
-		}
-
-		private void deleteThisItemToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			if (MessageBox.Show(this, "Are you sure you want to delete " + treeViewTodolist.SelectedNode.Text + "?", "Confirm delete", MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2) == System.Windows.Forms.DialogResult.Yes)
-			{
-				bool successfulDelete = PerformDesktopAppDoTask(
-						Username,
-						"deleteitem",
-						new List<string>()
-                {
-                    treeViewTodolist.SelectedNode.Parent.Parent.Text,
-                    treeViewTodolist.SelectedNode.Parent.Text,
-                    treeViewTodolist.SelectedNode.Text,
-                },
-						true,
-						"1");
-				appendLogTextbox("Successfully deleted item: " + treeViewTodolist.SelectedNode.Text);
-				treeViewTodolist.SelectedNode.Remove();
 			}
 		}
 
@@ -1608,7 +1602,7 @@ namespace MonitorSystem
 
 						fileNode.Text = file.Split('\\')[file.Split('\\').Length - 1] + " (" + FileQueuedCount + ")";
 						fileNode.Tag = file;
-						fileNode.ContextMenuStrip = formMonitoredFilesChanged.contextMenuStrip_TotalFile;
+						fileNode.ContextMenu = formMonitoredFilesChanged.contextMenu_TotalFile;
 						foreach (DateTime date in QueuedFileChanges[file].Keys)
 						{
 							FileChangedDetails fcd = QueuedFileChanges[file][date];
@@ -1617,7 +1611,7 @@ namespace MonitorSystem
 								AtleastOneFilechangedNode = true;
 								TreeNode fileModifiedNode = new TreeNode(date.ToString("yyyy-MM-dd HH:mm:ss"));
 								fileModifiedNode.Tag = fcd;
-								fileModifiedNode.ContextMenuStrip = formMonitoredFilesChanged.contextMenuStrip_FileModification;
+								fileModifiedNode.ContextMenu = formMonitoredFilesChanged.contextMenu_FileModification;
 								fcd.UpdateNodeFontandcolorFromQueueStatus(fileModifiedNode);
 								fileNode.Nodes.Add(fileModifiedNode);
 								string PathExcludingRoot = file.Substring(rootDir.Length + 2);
@@ -1781,14 +1775,8 @@ namespace MonitorSystem
 			}
 		}
 
-		private void addBackupdescriptionToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			AddBackupDescription formAddBackupDescription = new AddBackupDescription();
-			formAddBackupDescription.Show();
-		}
-
 		ViewBackups formViewBackups;
-		private void viewallBackupsToolStripMenuItem_Click(object sender, EventArgs e)
+		private void ViewAllBackupsNow()
 		{
 			if (formViewBackups == null) formViewBackups = new ViewBackups();
 			if (!formViewBackups.Modal)
@@ -1801,7 +1789,7 @@ namespace MonitorSystem
 				while (rootDir.EndsWith("\\")) rootDir = rootDir.Substring(0, rootDir.Length - 1);
 				string[] backupFiles = Directory.GetFiles(rootDir, "*" + FileChangedDetails.backupExt, SearchOption.AllDirectories);
 				foreach (string backupFile in backupFiles)
-				{					
+				{
 					//asdads.sql_2011 09 28 (13h29 55).bac
 					//"yyyy MM dd (HH\hmm ss)"
 					string datePartOfFile = backupFile.Substring(backupFile.LastIndexOf('_') + 1);
@@ -1954,9 +1942,29 @@ namespace MonitorSystem
 			SetWindowPos(frm.Handle.ToInt32(), HWND_TOPMOST, frm.Left, frm.Top, frm.Width, frm.Height, SWP_NOACTIVATE);
 		}
 
-		private void testCustomBalloontipToolStripMenuItem_Click(object sender, EventArgs e)
+		private void menuItem_DeleteThisItem_Click(object sender, EventArgs e)
 		{
-			ShowCustomBalloonTip("Hallo", "This is a custom balloon tip for 3 seconds...", 3000, CustomBalloonTip.IconTypes.Shield);
+			if (MessageBox.Show(this, "Are you sure you want to delete " + treeViewTodolist.SelectedNode.Text + "?", "Confirm delete", MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2) == System.Windows.Forms.DialogResult.Yes)
+			{
+				bool successfulDelete = PerformDesktopAppDoTask(
+						Username,
+						"deleteitem",
+						new List<string>()
+                {
+                    treeViewTodolist.SelectedNode.Parent.Parent.Text,
+                    treeViewTodolist.SelectedNode.Parent.Text,
+                    treeViewTodolist.SelectedNode.Text,
+                },
+						true,
+						"1");
+				appendLogTextbox("Successfully deleted item: " + treeViewTodolist.SelectedNode.Text);
+				treeViewTodolist.SelectedNode.Remove();
+			}
+		}
+
+		private void menuItem_AddItemToThisCategory_Click(object sender, EventArgs e)
+		{
+			AddTodoItemNow(treeViewTodolist.SelectedNode.Parent.Text, treeViewTodolist.SelectedNode.Text);
 		}
 	}
 
@@ -1983,6 +1991,53 @@ namespace MonitorSystem
 		public string DetailsToStringBlock()
 		{
 			return string.Format("Complete: {0}\r\nDue: {1}\r\nCreated: {2}\r\nRemindedCount: {3}\r\nStopSnooze: {4}\r\nAutosnoozeInterval: {5}", Complete, Due, Created, RemindedCount, StopSnooze, AutosnoozeInterval);
+		}
+	}
+
+	public class StylingInterop
+	{
+		public const int TV_FIRST = 0x1100;
+		public const int TVM_SETEXTENDEDSTYLE = TV_FIRST + 44;
+		public const int TVM_GETEXTENDEDSTYLE = TV_FIRST + 45;
+		public const int TVS_EX_AUTOHSCROLL = 0x0020;
+		public const int TVS_EX_FADEINOUTEXPANDOS = 0x0040;
+
+		[DllImport("user32.dll", CharSet = CharSet.Unicode)]
+		internal static extern int SendMessage(IntPtr hWnd, UInt32 Msg, int wParam, int lParam);
+
+		[DllImport("uxtheme.dll", CharSet = CharSet.Unicode)]
+		public extern static int SetWindowTheme(IntPtr hWnd, string pszSubAppName, string pszSubIdList);
+
+		public static void SetVistaStyleOnControlHandle(IntPtr ControlHandle)
+		{
+			SetWindowTheme(ControlHandle, "explorer", null);
+		}
+
+		public static void SetTreeviewVistaStyle(TreeView treeview)
+		{
+			if (Environment.OSVersion.Platform == PlatformID.Win32NT && Environment.OSVersion.Version.Major >= 6)
+			{
+				Func<TreeView, bool> SetTreeviewVistaStyleNow = new Func<TreeView, bool>((tv) =>
+				{
+					int dw = SendMessage(tv.Handle, TVM_GETEXTENDEDSTYLE, 0, 0);
+
+					// Update style
+					dw |= TVS_EX_AUTOHSCROLL;       // autoscroll horizontaly
+					//dw |= TVS_EX_FADEINOUTEXPANDOS; // auto hide the +/- signs
+
+					// set style
+					SendMessage(tv.Handle, TVM_SETEXTENDEDSTYLE, 0, dw);
+
+					// little black/empty arrows and blue highlight on treenodes
+					SetVistaStyleOnControlHandle(tv.Handle);
+					return true;
+				});
+
+				if (treeview.Handle != IntPtr.Zero)
+					SetTreeviewVistaStyleNow.Invoke(treeview);
+				else
+					treeview.HandleCreated += delegate { SetTreeviewVistaStyleNow(treeview); };
+			}
 		}
 	}
 

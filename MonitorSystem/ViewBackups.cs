@@ -14,6 +14,8 @@ namespace MonitorSystem
 		public ViewBackups()
 		{
 			InitializeComponent();
+
+			StylingInterop.SetTreeviewVistaStyle(treeView1);
 		}
 
 		public bool AllowTextchangeCallback = true;

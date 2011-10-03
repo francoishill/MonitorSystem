@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using System.Runtime.InteropServices;
 
 namespace MonitorSystem
 {
@@ -71,6 +72,8 @@ namespace MonitorSystem
 			if (treeView1.SelectedNode != null && treeView1.SelectedNode.Tag is Form1.FileChangedDetails)
 				textBox1.Focus();
 			else treeView1.Focus();
+
+			StylingInterop.SetTreeviewVistaStyle(treeView1);
 		}
 
 		private void MonitoredFilesChanged_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
@@ -78,18 +81,13 @@ namespace MonitorSystem
 			if (e.KeyCode == Keys.Escape) this.Close();
 		}
 
-		private void acceptToolStripMenuItem_Click_1(object sender, EventArgs e)
+		private void AcceptSelectedItem()
 		{
 			if (treeView1.SelectedNode != null && treeView1.SelectedNode.Tag is Form1.FileChangedDetails)
 			{
 				Form1.FileChangedDetails details =  treeView1.SelectedNode.Tag as Form1.FileChangedDetails;
 				details.SetNewQueueStatusAndUpdateNodeFontandcolor(Form1.FileChangedDetails.QueueStatusEnum.Accepted, treeView1.SelectedNode);
 			}
-		}
-
-		private void discardToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			DiscardItem(treeView1.SelectedNode);
 		}
 
 		private void DiscardItem(TreeNode fileChangedNode)
@@ -101,7 +99,7 @@ namespace MonitorSystem
 			}
 		}
 
-		private void discardemptyToolStripMenuItem_Click(object sender, EventArgs e)
+		private void DiscardEmptySubnodes()
 		{
 			if (treeView1.SelectedNode != null)
 			{
@@ -113,6 +111,31 @@ namespace MonitorSystem
 							DiscardItem(subnode);
 					}
 			}
+		}
+
+		private void menuItem_ClearMessages_Click(object sender, EventArgs e)
+		{
+			MessageBox.Show("Function not incorporated yet");
+		}
+
+		private void menuItem_DiscardEmpty_Click(object sender, EventArgs e)
+		{
+			DiscardEmptySubnodes();
+		}
+
+		private void menuItem_ClearThisMessage_Click(object sender, EventArgs e)
+		{
+			MessageBox.Show("Function not incorporated yet");
+		}
+
+		private void menuItem_Accept_Click(object sender, EventArgs e)
+		{
+			AcceptSelectedItem();
+		}
+
+		private void menuItem_Discard_Click(object sender, EventArgs e)
+		{
+			DiscardItem(treeView1.SelectedNode);
 		}
 	}
 }
