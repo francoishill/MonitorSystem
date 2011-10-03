@@ -1296,7 +1296,7 @@ namespace MonitorSystem
 					QueueStatusIn == FileChangedDetails.QueueStatusEnum.Accepted ? FontStyle.Strikeout :
 					QueueStatusIn == FileChangedDetails.QueueStatusEnum.Discard ? FontStyle.Strikeout | FontStyle.Italic :
 					FontStyle.Italic;
-				node.NodeFont = new Font(FontFamily.GenericSansSerif, 8, nodeFontStyle);
+				node.NodeFont = new Font(FontFamily.GenericSansSerif, 12, nodeFontStyle);
 			}
 
 			public static string dateFormat = @"yyyy MM dd (HH\hmm ss)";
