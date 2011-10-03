@@ -152,6 +152,7 @@
 			// 
 			this.treeViewTodolist.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.treeViewTodolist.HideSelection = false;
+			this.treeViewTodolist.HotTracking = true;
 			this.treeViewTodolist.Location = new System.Drawing.Point(0, 0);
 			this.treeViewTodolist.Name = "treeViewTodolist";
 			this.treeViewTodolist.Size = new System.Drawing.Size(228, 204);

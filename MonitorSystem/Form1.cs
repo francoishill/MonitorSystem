@@ -238,6 +238,8 @@ namespace MonitorSystem
 			if (!RegisterHotKey(this.Handle, Hotkey1, MOD_WIN, (int)Keys.Q)) MessageBox.Show("QuickAccess could not register hotkey WinKey + Q");
 
 			ReadLastQueuedStatusIfFileExist();
+
+			StylingInterop.SetTreeviewVistaStyle(treeViewTodolist);
 		}
 
 		protected override void WndProc(ref Message m)
