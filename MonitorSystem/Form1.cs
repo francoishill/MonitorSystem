@@ -984,9 +984,9 @@ namespace MonitorSystem
 								ArgumentListTabSeperated += (ArgumentListTabSeperated.Length > 0 ? "\t" : "") + s;
 
 							addrequest = (HttpWebRequest)WebRequest.Create(PhpInterop.doWorkAddress + "/dotask/" +
-									PhpEncryption.SimpleTripleDesEncrypt(UsernameIn, "123456789abcdefghijklmno") + "/" +
-									PhpEncryption.SimpleTripleDesEncrypt(TaskName, tmpkey) + "/" +
-									PhpEncryption.SimpleTripleDesEncrypt(ArgumentListTabSeperated, tmpkey));// + "/");
+									PhpInterop.PhpEncryption.SimpleTripleDesEncrypt(UsernameIn, "123456789abcdefghijklmno") + "/" +
+									PhpInterop.PhpEncryption.SimpleTripleDesEncrypt(TaskName, tmpkey) + "/" +
+									PhpInterop.PhpEncryption.SimpleTripleDesEncrypt(ArgumentListTabSeperated, tmpkey));// + "/");
 							//appendLogTextbox(addrequest.RequestUri.ToString());
 							try
 							{
@@ -995,7 +995,7 @@ namespace MonitorSystem
 								encryptedstring = input.ReadToEnd();
 								//appendLogTextbox("Encrypted response: " + encryptedstring);
 
-								decryptedstring = PhpEncryption.SimpleTripleDesDecrypt(encryptedstring, tmpkey);
+								decryptedstring = PhpInterop.PhpEncryption.SimpleTripleDesDecrypt(encryptedstring, tmpkey);
 								//appendLogTextbox("Decrypted response: " + decryptedstring);
 								decryptedstring = decryptedstring.Replace("\0", "").Trim();
 								//MessageBox.Show(this, decryptedstring);
@@ -1276,12 +1276,12 @@ namespace MonitorSystem
 				return str == null || str.Trim().Length == 0;
 			}
 
-			public void UpdateNodeFontandcolorFromQueueStatus(TreeNode node)
+			public void UpdateNodeFontandcolorFromQueueStatus(TreeNode node, Font fontPrototype = null)
 			{
-				SetNewQueueStatusAndUpdateNodeFontandcolor(QueueStatus, node);
+				SetNewQueueStatusAndUpdateNodeFontandcolor(QueueStatus, node, fontPrototype);
 			}
 
-			public void SetNewQueueStatusAndUpdateNodeFontandcolor(QueueStatusEnum QueueStatusIn, TreeNode node)
+			public void SetNewQueueStatusAndUpdateNodeFontandcolor(QueueStatusEnum QueueStatusIn, TreeNode node, Font fontPrototype = null)
 			{
 				this.QueueStatus = QueueStatusIn;
 				node.ForeColor =
@@ -1296,26 +1296,40 @@ namespace MonitorSystem
 					QueueStatusIn == FileChangedDetails.QueueStatusEnum.Accepted ? FontStyle.Strikeout :
 					QueueStatusIn == FileChangedDetails.QueueStatusEnum.Discard ? FontStyle.Strikeout | FontStyle.Italic :
 					FontStyle.Italic;
-				node.NodeFont = new Font(FontFamily.GenericSansSerif, 12, nodeFontStyle);
+				if (fontPrototype == null)
+					node.NodeFont = new Font(FontFamily.GenericSansSerif, 12, nodeFontStyle);
+				else
+					node.NodeFont = new Font(fontPrototype, nodeFontStyle);
 			}
 
 			public static string dateFormat = @"yyyy MM dd (HH\hmm ss)";
 			public static string SavetofileDateFormat = "yyyyMMddHHmmss";
-			private string GetFileNameStart(DateTime lastWriteTime)
+
+			private static string GetFileNameAppendStringForDate(DateTime lastWriteTime)
 			{
-				return FileName + "_" + lastWriteTime.ToString(dateFormat);
+				return "_" + lastWriteTime.ToString(dateFormat);
 			}
 
 			public static string backupExt = ".bac";
 			public static string descrExt = ".desc";
 			public string GetBackupFileName(DateTime lastWriteTime)
 			{
-				return GetFileNameStart(lastWriteTime) + backupExt;
+				return FileName + GetFileNameAppendStringForDate(lastWriteTime) + backupExt;
 			}
 
 			public string GetDescriptionFileName(DateTime lastWriteTime)
 			{
-				return GetFileNameStart(lastWriteTime) + descrExt;
+				return FileName + GetFileNameAppendStringForDate(lastWriteTime) + descrExt;
+			}
+
+			public static string GetDescriptionFileNameFromBackupFilename(string backupFileName)
+			{
+				return backupFileName.Substring(0, backupFileName.Length - backupExt.Length) + descrExt;
+			}
+
+			public static string GetOriginalNameFromBackupFile(string backupFileName)
+			{
+				return backupFileName.Substring(0, backupFileName.Length - GetFileNameAppendStringForDate(new DateTime()).Length - backupExt.Length);
 			}
 		}
 
@@ -1439,7 +1453,27 @@ namespace MonitorSystem
 			}
 		}
 
-		public TreeNode PopulateNodeFromPath(string relativePath, TreeNode node)
+		private static TreeNode PopulateTreeNode(string path, TreeNode rootnode)
+		{
+			TreeNode lastNode = null;
+			string subPathAgg;
+			subPathAgg = string.Empty;
+			foreach (string subPath in path.Split('\\'))
+			{
+				subPathAgg += subPath + '\\';
+				TreeNode[] nodes = rootnode.Nodes.Find(subPathAgg, true);
+				if (nodes.Length == 0)
+					if (lastNode == null)
+						lastNode = rootnode.Nodes.Add(subPathAgg, subPath);
+					else
+						lastNode = lastNode.Nodes.Add(subPathAgg, subPath);
+				else
+					lastNode = nodes[0];
+			}
+			return lastNode;
+		}
+
+		/*public TreeNode PopulateNodeFromPath(string relativePath, TreeNode node)
 		{
 			TreeNode returnNode = null;
 			while (relativePath.EndsWith("\\")) relativePath = relativePath.Substring(0, relativePath.Length - 1).Trim();
@@ -1450,19 +1484,22 @@ namespace MonitorSystem
 				string nodeText = relativePath;
 				if (relativePath.Contains('\\'))
 				{
-					nodeText = relativePath.Substring(0, relativePath.IndexOf('\\'));
+					nodeText = relativePath.Substring(0, relativePath.LastIndexOf('\\'));
 					t = new TreeNode(nodeText);
+					//t.Nodes.Add(node);
 					returnNode = PopulateNodeFromPath(relativePath.Substring(relativePath.IndexOf('\\') + 1), t) ?? t;
+					returnNode.Nodes.Add(node);
 				}
 				else
 				{
 					t = new TreeNode(nodeText);
+					//t.Nodes.Add(node);
 					returnNode = t;
 				}
 				node.Nodes.Add(t);
 			}
 			return returnNode;
-		}
+		}*/
 
 		private TreeNode AddFileNode(TreeView tv, string rootPath, string fullFilePath)
 		{
@@ -1515,7 +1552,8 @@ namespace MonitorSystem
 						}*/
 						//TreeNode fileNode = new TreeNode(file.Substring(rootDir.Length + 1) + " (" + QueuedFileChanges[file].Count + ")") { Tag = file, ContextMenuStrip = formMonitoredFilesChanged.contextMenuStrip_TotalFile };// { Tag = QueuedFileChanges[file] };
 						//TreeNode fileNode = new TreeNode(file.Split('\\')[file.Split('\\').Length - 1] + " (" + QueuedFileChanges[file].Count + ")") { Tag = file, ContextMenuStrip = formMonitoredFilesChanged.contextMenuStrip_TotalFile };// { Tag = QueuedFileChanges[file] };
-						TreeNode fileNode = PopulateNodeFromPath(file.Substring(rootDir.Length + 1), rootDirNode);
+						//TreeNode fileNode = PopulateNodeFromPath(file.Substring(rootDir.Length + 1), rootDirNode);
+						TreeNode fileNode = PopulateTreeNode(file.Substring(rootDir.Length + 1), rootDirNode);
 
 						int FileQueuedCount = 0;
 						foreach (DateTime date in QueuedFileChanges[file].Keys)
@@ -1708,7 +1746,7 @@ namespace MonitorSystem
 			{
 				formViewBackups.treeView1.Nodes.Clear();
 
-				Dictionary<string, Dictionary<DateTime, FileChangedDetails>> FilesDict = null;// new Dictionary<string, Dictionary<DateTime, FileChangedDetails>>();
+				Dictionary<string, Dictionary<DateTime, FileChangedDetails>> OriginalFilenamesWithModificationsDict = null;// new Dictionary<string, Dictionary<DateTime, FileChangedDetails>>();
 
 				string rootDir = fileSystemWatcher_SqlFiles.Path;
 				while (rootDir.EndsWith("\\")) rootDir = rootDir.Substring(0, rootDir.Length - 1);
@@ -1722,42 +1760,58 @@ namespace MonitorSystem
 					DateTime dateOut;
 					if (DateTime.TryParseExact(datePartOfFile, FileChangedDetails.dateFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out dateOut))
 					{
-						string fileText = "";
-						using (StreamReader sr = new StreamReader(backupFile)) { fileText = sr.ReadToEnd(); }
+						string fileDescription = "";
+						string descriptionFileName = FileChangedDetails.GetDescriptionFileNameFromBackupFilename(backupFile);
+						if (File.Exists(descriptionFileName))
+							using (StreamReader sr = new StreamReader(descriptionFileName)) { fileDescription = sr.ReadToEnd(); }
 
-						if (FilesDict == null) FilesDict = new Dictionary<string, Dictionary<DateTime, FileChangedDetails>>();
-						if (!FilesDict.ContainsKey(backupFile)) FilesDict.Add(backupFile, new Dictionary<DateTime, FileChangedDetails>());
-						if (!FilesDict[backupFile].ContainsKey(dateOut))
-							FilesDict[backupFile].Add(dateOut, new FileChangedDetails(backupFile, fileText));
+						string originalFileName = FileChangedDetails.GetOriginalNameFromBackupFile(backupFile);
+						if (OriginalFilenamesWithModificationsDict == null) OriginalFilenamesWithModificationsDict = new Dictionary<string, Dictionary<DateTime, FileChangedDetails>>();
+						if (!OriginalFilenamesWithModificationsDict.ContainsKey(originalFileName)) OriginalFilenamesWithModificationsDict.Add(originalFileName, new Dictionary<DateTime, FileChangedDetails>());
+						if (!OriginalFilenamesWithModificationsDict[originalFileName].ContainsKey(dateOut))
+							OriginalFilenamesWithModificationsDict[originalFileName].Add(dateOut, new FileChangedDetails(backupFile, fileDescription));
 					}
 				}
 
-				if (FilesDict != null)
+				if (OriginalFilenamesWithModificationsDict != null)
 				{
 					TreeNode nodeToSelect = null;
 					TreeNode rootDirNode = new TreeNode(rootDir + "\\");
-					bool AtleastOneFilechangedNode = false;
-					foreach (string file in FilesDict.Keys)
+					bool AtleastOneFile = false;
+					foreach (string file in OriginalFilenamesWithModificationsDict.Keys)
 					{
-						TreeNode fileNode = PopulateNodeFromPath(file.Substring(rootDir.Length + 1), rootDirNode);
-						fileNode.Text = file.Split('\\')[file.Split('\\').Length - 1];
+						string originalFileName = file.Split('\\')[file.Split('\\').Length - 1];// FileChangedDetails.GetOriginalNameFromBackupFile(file.Split('\\')[file.Split('\\').Length - 1]);
+						TreeNode fileNode;
+						/*if (rootDirNode.Nodes.ContainsKey(originalFileName)) fileNode = rootDirNode.Nodes[rootDirNode.Nodes.IndexOfKey(originalFileName)];
+						else
+						{*/
+						fileNode = new TreeNode();
+						fileNode = PopulateTreeNode(file.Substring(rootDir.Length + 1), rootDirNode);
+						//fileNode.NodeFont = new System.Drawing.Font(this.Font.FontFamily, 12, this.Font.Style);
+						fileNode.Name = originalFileName;
+						fileNode.Text = originalFileName;
 						fileNode.Tag = file;
+						/*}*/
 						//fileNode.ContextMenuStrip = formViewBackups.contextMenuStrip_TotalFile;
-						foreach (DateTime date in FilesDict[file].Keys)
+						bool AtleastOneFileModification = false;
+						foreach (DateTime date in OriginalFilenamesWithModificationsDict[file].Keys)
 						{
-							FileChangedDetails fcd = FilesDict[file][date];
+							FileChangedDetails fcd = OriginalFilenamesWithModificationsDict[file][date];
 							if (fcd.QueueStatus != FileChangedDetails.QueueStatusEnum.Accepted && fcd.QueueStatus != FileChangedDetails.QueueStatusEnum.Complete)
 							{
-								AtleastOneFilechangedNode = true;
+								AtleastOneFile = true;
+								AtleastOneFileModification = true;
 								TreeNode fileModifiedNode = new TreeNode(date.ToString("yyyy-MM-dd HH:mm:ss"));
 								fileModifiedNode.Tag = fcd;
+								fileModifiedNode.ForeColor = fcd.Description != null && fcd.Description.Length > 0 ? Color.Green : Color.LightGray;
+
 								//fileModifiedNode.ContextMenuStrip = formViewBackups.contextMenuStrip_FileModification;
-								fcd.UpdateNodeFontandcolorFromQueueStatus(fileModifiedNode);
+								//fcd.UpdateNodeFontandcolorFromQueueStatus(fileModifiedNode, this.Font);
 								fileNode.Nodes.Add(fileModifiedNode);
 								string PathExcludingRoot = file.Substring(rootDir.Length + 2);
 								while (PathExcludingRoot.EndsWith("\\")) PathExcludingRoot = PathExcludingRoot.Substring(0, PathExcludingRoot.Length);
 
-								TreeNode NodeToAddFileTo = null;
+								/*TreeNode NodeToAddFileTo = null;
 								while (PathExcludingRoot.Contains('\\'))
 								{
 									string nodeText = PathExcludingRoot.Split('\\')[PathExcludingRoot.Split('\\').Length - 1];
@@ -1769,18 +1823,23 @@ namespace MonitorSystem
 										NodeToAddFileTo = tmpSubNode;
 									}
 									PathExcludingRoot = PathExcludingRoot.Substring(nodeText.Length + 1);
-								}
+								}*/
 
 								if (fcd == LastFileChangedDetailsAdded) nodeToSelect = fileModifiedNode;
 							}
 						}
 
-						if (AtleastOneFilechangedNode)
+						if (AtleastOneFileModification)
 						{
-							rootDirNode.Nodes.Add(fileNode);
-							formViewBackups.treeView1.Nodes.Add(rootDirNode);
-							rootDirNode.ExpandAll();
+							fileNode.Text = fileNode.Name + " (" + fileNode.GetNodeCount(false) + ")";
+							/*if (!rootDirNode.Nodes.ContainsKey(originalFileName)) */
+							//rootDirNode.Nodes.Add(fileNode);
 						}
+					}
+					if (AtleastOneFile)
+					{
+						formViewBackups.treeView1.Nodes.Add(rootDirNode);
+						rootDirNode.Expand();//.ExpandAll);
 					}
 					formViewBackups.treeView1.SelectedNode = nodeToSelect;
 
@@ -1918,162 +1977,5 @@ namespace MonitorSystem
 		{
 			return string.Format("Complete: {0}\r\nDue: {1}\r\nCreated: {2}\r\nRemindedCount: {3}\r\nStopSnooze: {4}\r\nAutosnoozeInterval: {5}", Complete, Due, Created, RemindedCount, StopSnooze, AutosnoozeInterval);
 		}
-	}
-
-	public class StylingInterop
-	{
-		public const int TV_FIRST = 0x1100;
-		public const int TVM_SETEXTENDEDSTYLE = TV_FIRST + 44;
-		public const int TVM_GETEXTENDEDSTYLE = TV_FIRST + 45;
-		public const int TVS_EX_AUTOHSCROLL = 0x0020;
-		public const int TVS_EX_FADEINOUTEXPANDOS = 0x0040;
-
-		[DllImport("user32.dll", CharSet = CharSet.Unicode)]
-		internal static extern int SendMessage(IntPtr hWnd, UInt32 Msg, int wParam, int lParam);
-
-		[DllImport("uxtheme.dll", CharSet = CharSet.Unicode)]
-		public extern static int SetWindowTheme(IntPtr hWnd, string pszSubAppName, string pszSubIdList);
-
-		public static void SetVistaStyleOnControlHandle(IntPtr ControlHandle)
-		{
-			SetWindowTheme(ControlHandle, "explorer", null);
-		}
-
-		public static void SetTreeviewVistaStyle(TreeView treeview)
-		{
-			if (Environment.OSVersion.Platform == PlatformID.Win32NT && Environment.OSVersion.Version.Major >= 6)
-			{
-				Func<TreeView, bool> SetTreeviewVistaStyleNow = new Func<TreeView, bool>((tv) =>
-				{
-					int dw = SendMessage(tv.Handle, TVM_GETEXTENDEDSTYLE, 0, 0);
-
-					// Update style
-					dw |= TVS_EX_AUTOHSCROLL;       // autoscroll horizontaly
-					//dw |= TVS_EX_FADEINOUTEXPANDOS; // auto hide the +/- signs
-
-					// set style
-					SendMessage(tv.Handle, TVM_SETEXTENDEDSTYLE, 0, dw);
-
-					// little black/empty arrows and blue highlight on treenodes
-					SetVistaStyleOnControlHandle(tv.Handle);
-					return true;
-				});
-
-				if (treeview.Handle != IntPtr.Zero)
-					SetTreeviewVistaStyleNow.Invoke(treeview);
-				else
-					treeview.HandleCreated += delegate { SetTreeviewVistaStyleNow(treeview); };
-			}
-		}
-	}
-
-	public class PhpEncryption
-	{
-		public static string SimpleTripleDesEncrypt(string Data, string keystring)
-		{
-			byte[] key = Encoding.ASCII.GetBytes(keystring);
-			byte[] iv = Encoding.ASCII.GetBytes("password");
-			byte[] data = Encoding.ASCII.GetBytes(Data);
-			byte[] enc = new byte[0];
-			TripleDES tdes = TripleDES.Create();
-			tdes.IV = iv;
-			tdes.Key = key;
-			tdes.Mode = CipherMode.CBC;
-			tdes.Padding = PaddingMode.Zeros;
-			ICryptoTransform ict = tdes.CreateEncryptor();
-			enc = ict.TransformFinalBlock(data, 0, data.Length);
-			return ByteArrayToString(enc);
-		}
-
-		public static string SimpleTripleDesDecrypt(string Data, string keystring)
-		{
-			byte[] key = Encoding.ASCII.GetBytes(keystring);
-			byte[] iv = Encoding.ASCII.GetBytes("password");
-			byte[] data = StringToByteArray(Data);
-			byte[] enc = new byte[0];
-			TripleDES tdes = TripleDES.Create();
-			tdes.IV = iv;
-			tdes.Key = key;
-			tdes.Mode = CipherMode.CBC;
-			tdes.Padding = PaddingMode.Zeros;
-			ICryptoTransform ict = tdes.CreateDecryptor();
-			enc = ict.TransformFinalBlock(data, 0, data.Length);
-			return Encoding.ASCII.GetString(enc);
-		}
-
-		public static string ByteArrayToString(byte[] ba)
-		{
-			string hex = BitConverter.ToString(ba);
-			return hex.Replace("-", "");
-		}
-
-		public static string StringToHex(string stringIn)
-		{
-			return PhpEncryption.ByteArrayToString(Encoding.Default.GetBytes(stringIn));
-		}
-
-		public static byte[] StringToByteArray(String hex)
-		{
-			int NumberChars = hex.Length;
-			byte[] bytes = new byte[NumberChars / 2];
-			for (int i = 0; i < NumberChars; i += 2)
-				bytes[i / 2] = Convert.ToByte(hex.Substring(i, 2), 16);
-			return bytes;
-		}
-
-		public static string HexToString(string hexIn)
-		{
-			return Encoding.Default.GetString(StringToByteArray(hexIn));
-		}
-	}
-
-	internal struct LASTINPUTINFO
-	{
-		public uint cbSize;
-
-		public uint dwTime;
-	}
-
-	/// <summary>
-	/// Summary description for Win32.
-	/// </summary>
-	public class Win32
-	{
-		[DllImport("User32.dll")]
-		public static extern bool LockWorkStation();
-
-		[DllImport("User32.dll")]
-		private static extern bool GetLastInputInfo(ref LASTINPUTINFO plii);
-
-		[DllImport("Kernel32.dll")]
-		private static extern uint GetLastError();
-
-		public static uint GetIdleTime()
-		{
-			LASTINPUTINFO lastInPut = new LASTINPUTINFO();
-			lastInPut.cbSize = (uint)System.Runtime.InteropServices.Marshal.SizeOf(lastInPut);
-			GetLastInputInfo(ref lastInPut);
-
-			return ((uint)Environment.TickCount - lastInPut.dwTime);
-		}
-
-		public static long GetTickCount()
-		{
-			return Environment.TickCount;
-		}
-
-		public static long GetLastInputTime()
-		{
-			LASTINPUTINFO lastInPut = new LASTINPUTINFO();
-			lastInPut.cbSize = (uint)System.Runtime.InteropServices.Marshal.SizeOf(lastInPut);
-			if (!GetLastInputInfo(ref lastInPut))
-			{
-				throw new Exception(GetLastError().ToString());
-			}
-
-			return lastInPut.dwTime;
-		}
-
-
 	}
 }

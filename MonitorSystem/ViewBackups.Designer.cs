@@ -30,7 +30,7 @@
 		{
 			this.splitContainer1 = new System.Windows.Forms.SplitContainer();
 			this.treeView1 = new System.Windows.Forms.TreeView();
-			this.textBox1 = new System.Windows.Forms.TextBox();
+			this.textBoxDescription = new System.Windows.Forms.TextBox();
 			((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
 			this.splitContainer1.Panel1.SuspendLayout();
 			this.splitContainer1.Panel2.SuspendLayout();
@@ -41,6 +41,7 @@
 			// 
 			this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.splitContainer1.Location = new System.Drawing.Point(0, 0);
+			this.splitContainer1.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.splitContainer1.Name = "splitContainer1";
 			// 
 			// splitContainer1.Panel1
@@ -49,37 +50,53 @@
 			// 
 			// splitContainer1.Panel2
 			// 
-			this.splitContainer1.Panel2.Controls.Add(this.textBox1);
-			this.splitContainer1.Size = new System.Drawing.Size(768, 262);
-			this.splitContainer1.SplitterDistance = 256;
+			this.splitContainer1.Panel2.Controls.Add(this.textBoxDescription);
+			this.splitContainer1.Size = new System.Drawing.Size(1228, 403);
+			this.splitContainer1.SplitterDistance = 409;
+			this.splitContainer1.SplitterWidth = 6;
 			this.splitContainer1.TabIndex = 0;
 			// 
 			// treeView1
 			// 
 			this.treeView1.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.treeView1.FullRowSelect = true;
+			this.treeView1.HideSelection = false;
+			this.treeView1.HotTracking = true;
 			this.treeView1.Location = new System.Drawing.Point(0, 0);
+			this.treeView1.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.treeView1.Name = "treeView1";
-			this.treeView1.Size = new System.Drawing.Size(256, 262);
+			this.treeView1.ShowLines = false;
+			this.treeView1.ShowRootLines = false;
+			this.treeView1.Size = new System.Drawing.Size(409, 403);
 			this.treeView1.TabIndex = 0;
+			this.treeView1.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeView1_AfterSelect);
 			// 
-			// textBox1
+			// textBoxDescription
 			// 
-			this.textBox1.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.textBox1.Location = new System.Drawing.Point(0, 0);
-			this.textBox1.Multiline = true;
-			this.textBox1.Name = "textBox1";
-			this.textBox1.Size = new System.Drawing.Size(508, 262);
-			this.textBox1.TabIndex = 0;
-			this.textBox1.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
+			this.textBoxDescription.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.textBoxDescription.Location = new System.Drawing.Point(0, 0);
+			this.textBoxDescription.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+			this.textBoxDescription.Multiline = true;
+			this.textBoxDescription.Name = "textBoxDescription";
+			this.textBoxDescription.ReadOnly = true;
+			this.textBoxDescription.Size = new System.Drawing.Size(813, 403);
+			this.textBoxDescription.TabIndex = 0;
+			this.textBoxDescription.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
 			// 
 			// ViewBackups
 			// 
-			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(768, 262);
+			this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
+			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
+			this.ClientSize = new System.Drawing.Size(1228, 403);
 			this.Controls.Add(this.splitContainer1);
+			this.DoubleBuffered = true;
+			this.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.Name = "ViewBackups";
+			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
 			this.Text = "ViewBackups";
+			this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
+			this.Shown += new System.EventHandler(this.ViewBackups_Shown);
 			this.splitContainer1.Panel1.ResumeLayout(false);
 			this.splitContainer1.Panel2.ResumeLayout(false);
 			this.splitContainer1.Panel2.PerformLayout();
@@ -93,6 +110,6 @@
 
 		private System.Windows.Forms.SplitContainer splitContainer1;
 		public System.Windows.Forms.TreeView treeView1;
-		public System.Windows.Forms.TextBox textBox1;
+		public System.Windows.Forms.TextBox textBoxDescription;
 	}
 }

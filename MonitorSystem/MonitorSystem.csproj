@@ -27,7 +27,7 @@
     <ProductName>MonitorSystem</ProductName>
     <PublisherName>Francois Hill</PublisherName>
     <SuiteName>Own applications</SuiteName>
-    <ApplicationRevision>43</ApplicationRevision>
+    <ApplicationRevision>44</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -96,6 +96,9 @@
     </Compile>
     <Compile Include="..\..\SharedClasses\PhpInterop.cs">
       <Link>PhpInterop.cs</Link>
+    </Compile>
+    <Compile Include="..\..\SharedClasses\StylingInterop.cs">
+      <Link>StylingInterop.cs</Link>
     </Compile>
     <Compile Include="..\..\SharedClasses\TextFilesInterop.cs">
       <Link>TextFilesInterop.cs</Link>

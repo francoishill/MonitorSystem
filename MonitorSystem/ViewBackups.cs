@@ -14,8 +14,6 @@ namespace MonitorSystem
 		public ViewBackups()
 		{
 			InitializeComponent();
-
-			StylingInterop.SetTreeviewVistaStyle(treeView1);
 		}
 
 		public bool AllowTextchangeCallback = true;
@@ -24,6 +22,20 @@ namespace MonitorSystem
 			if (AllowTextchangeCallback)
 			{
 			}
+		}
+
+		private void treeView1_AfterSelect(object sender, TreeViewEventArgs e)
+		{
+			if (e.Node != null && e.Node.Tag != null && e.Node.Tag is Form1.FileChangedDetails)
+			{
+				Form1.FileChangedDetails fcd = e.Node.Tag as Form1.FileChangedDetails;
+				textBoxDescription.Text = fcd.Description;
+			}
+		}
+
+		private void ViewBackups_Shown(object sender, EventArgs e)
+		{
+			StylingInterop.SetTreeviewVistaStyle(treeView1);
 		}
 	}
 }
