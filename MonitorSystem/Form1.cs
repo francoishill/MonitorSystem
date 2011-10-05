@@ -1976,7 +1976,6 @@ namespace MonitorSystem
 			else action.Invoke();
 		}
 
-		public delegate void SimpleDelegate();
 		//delegate void MoveWindowUpCallback();
 		List<CustomBalloonTip> VisibleBalloonTipForms = new List<CustomBalloonTip>();
 		private void ShowCustomBalloonTip(string Title, string Message, int Duration, CustomBalloonTip.IconTypes iconType)
