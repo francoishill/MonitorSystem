@@ -21,7 +21,8 @@ namespace MonitorSystem
 		{
 			if (e.Node != null && e.Node.Tag is Form1.FileChangedDetails)
 			{
-				textBox1.Enabled = true;
+				textBox_Description.Enabled = true;
+				richTextBox_FileContents.Enabled = true;
 				Form1.FileChangedDetails details = e.Node.Tag as Form1.FileChangedDetails;
 				if (details.QueueStatus == Form1.FileChangedDetails.QueueStatusEnum.New)
 				{
@@ -30,13 +31,16 @@ namespace MonitorSystem
 					//e.Node.NodeFont = new Font(e.Node.NodeFont, FontStyle.Strikeout);
 				}
 				AllowTextchangeCallback = false;
-				textBox1.Text = details.Description;
+				textBox_Description.Text = details.Description;
+				richTextBox_FileContents.LoadFile(details.GetBackupFileName(), RichTextBoxStreamType.PlainText);
 				AllowTextchangeCallback = true;
 			}
 			else
 			{
-				textBox1.Enabled = false;
-				textBox1.Text = null;
+				textBox_Description.Enabled = false;
+				textBox_Description.Text = null;
+				richTextBox_FileContents.Enabled = false;
+				richTextBox_FileContents.Text = null;
 			}
 		}
 
@@ -48,9 +52,9 @@ namespace MonitorSystem
 				if (treeView1.SelectedNode != null && treeView1.SelectedNode.Tag is Form1.FileChangedDetails)
 				{
 					Form1.FileChangedDetails details =  treeView1.SelectedNode.Tag as Form1.FileChangedDetails;
-					details.Description = textBox1.Text;
+					details.Description = textBox_Description.Text;
 					//details.UpdateNodeFontandcolorFromQueueStatus(treeView1.SelectedNode);
-					if (textBox1.Text.Length > 0)
+					if (textBox_Description.Text.Length > 0)
 						details.SetNewQueueStatusAndUpdateNodeFontandcolor(details.QueueStatus == Form1.FileChangedDetails.QueueStatusEnum.Read ? Form1.FileChangedDetails.QueueStatusEnum.Accepted : details.QueueStatus, treeView1.SelectedNode);
 					else
 						details.SetNewQueueStatusAndUpdateNodeFontandcolor(details.QueueStatus == Form1.FileChangedDetails.QueueStatusEnum.Accepted ? Form1.FileChangedDetails.QueueStatusEnum.Read : details.QueueStatus, treeView1.SelectedNode);
@@ -70,7 +74,7 @@ namespace MonitorSystem
 			this.Activate();
 			this.TopMost = false;
 			if (treeView1.SelectedNode != null && treeView1.SelectedNode.Tag is Form1.FileChangedDetails)
-				textBox1.Focus();
+				textBox_Description.Focus();
 			else treeView1.Focus();
 
 			StylingInterop.SetTreeviewVistaStyle(treeView1);

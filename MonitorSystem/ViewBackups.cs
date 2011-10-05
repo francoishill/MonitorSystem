@@ -34,9 +34,15 @@ namespace MonitorSystem
 			{
 				Form1.FileChangedDetails fcd = e.Node.Tag as Form1.FileChangedDetails;
 				textBoxDescription.Text = fcd.Description;
+				richTextBox_FileContents.LoadFile(fcd.GetBackupFileName(), RichTextBoxStreamType.PlainText);
 				toolStripStatusLabel1.Text = fcd.GetBackupFileName();//.OriginalFileName;
 			}
-			else toolStripStatusLabel1.Text = "";
+			else
+			{
+				toolStripStatusLabel1.Text = "";
+				textBoxDescription.Text = null;
+				richTextBox_FileContents.Text = null;
+			}
 		}
 
 		private void ViewBackups_Shown(object sender, EventArgs e)

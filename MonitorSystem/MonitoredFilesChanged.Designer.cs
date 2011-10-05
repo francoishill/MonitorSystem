@@ -30,7 +30,6 @@
 		{
 			this.splitContainer1 = new System.Windows.Forms.SplitContainer();
 			this.treeView1 = new System.Windows.Forms.TreeView();
-			this.textBox1 = new System.Windows.Forms.TextBox();
 			this.contextMenu_TotalFile = new System.Windows.Forms.ContextMenu();
 			this.menuItem_ClearMessages = new System.Windows.Forms.MenuItem();
 			this.menuItem_DiscardEmpty = new System.Windows.Forms.MenuItem();
@@ -38,18 +37,23 @@
 			this.menuItem_ClearThisMessage = new System.Windows.Forms.MenuItem();
 			this.menuItem_Accept = new System.Windows.Forms.MenuItem();
 			this.menuItem_Discard = new System.Windows.Forms.MenuItem();
+			this.splitContainer2 = new System.Windows.Forms.SplitContainer();
+			this.richTextBox_FileContents = new System.Windows.Forms.RichTextBox();
+			this.textBox_Description = new System.Windows.Forms.RichTextBox();
 			((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
 			this.splitContainer1.Panel1.SuspendLayout();
 			this.splitContainer1.Panel2.SuspendLayout();
 			this.splitContainer1.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).BeginInit();
+			this.splitContainer2.Panel1.SuspendLayout();
+			this.splitContainer2.Panel2.SuspendLayout();
+			this.splitContainer2.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// splitContainer1
 			// 
-			this.splitContainer1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.splitContainer1.Location = new System.Drawing.Point(12, 12);
+			this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.splitContainer1.Location = new System.Drawing.Point(0, 0);
 			this.splitContainer1.Name = "splitContainer1";
 			// 
 			// splitContainer1.Panel1
@@ -58,9 +62,9 @@
 			// 
 			// splitContainer1.Panel2
 			// 
-			this.splitContainer1.Panel2.Controls.Add(this.textBox1);
-			this.splitContainer1.Size = new System.Drawing.Size(1131, 306);
-			this.splitContainer1.SplitterDistance = 600;
+			this.splitContainer1.Panel2.Controls.Add(this.textBox_Description);
+			this.splitContainer1.Size = new System.Drawing.Size(1131, 297);
+			this.splitContainer1.SplitterDistance = 508;
 			this.splitContainer1.TabIndex = 2;
 			this.splitContainer1.TabStop = false;
 			// 
@@ -71,23 +75,11 @@
 			this.treeView1.HideSelection = false;
 			this.treeView1.Location = new System.Drawing.Point(0, 0);
 			this.treeView1.Name = "treeView1";
-			this.treeView1.Size = new System.Drawing.Size(600, 306);
+			this.treeView1.Size = new System.Drawing.Size(508, 297);
 			this.treeView1.TabIndex = 0;
 			this.treeView1.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeView1_AfterSelect);
 			this.treeView1.NodeMouseClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.treeView1_NodeMouseClick);
 			this.treeView1.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler(this.MonitoredFilesChanged_PreviewKeyDown);
-			// 
-			// textBox1
-			// 
-			this.textBox1.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.textBox1.Enabled = false;
-			this.textBox1.Location = new System.Drawing.Point(0, 0);
-			this.textBox1.Multiline = true;
-			this.textBox1.Name = "textBox1";
-			this.textBox1.Size = new System.Drawing.Size(527, 306);
-			this.textBox1.TabIndex = 0;
-			this.textBox1.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
-			this.textBox1.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler(this.MonitoredFilesChanged_PreviewKeyDown);
 			// 
 			// contextMenu_TotalFile
 			// 
@@ -133,12 +125,56 @@
 			this.menuItem_Discard.Text = "Dis&card";
 			this.menuItem_Discard.Click += new System.EventHandler(this.menuItem_Discard_Click);
 			// 
+			// splitContainer2
+			// 
+			this.splitContainer2.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.splitContainer2.Location = new System.Drawing.Point(12, 12);
+			this.splitContainer2.Name = "splitContainer2";
+			this.splitContainer2.Orientation = System.Windows.Forms.Orientation.Horizontal;
+			// 
+			// splitContainer2.Panel1
+			// 
+			this.splitContainer2.Panel1.Controls.Add(this.splitContainer1);
+			// 
+			// splitContainer2.Panel2
+			// 
+			this.splitContainer2.Panel2.Controls.Add(this.richTextBox_FileContents);
+			this.splitContainer2.Panel2.Font = new System.Drawing.Font("Microsoft Sans Serif", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.splitContainer2.Size = new System.Drawing.Size(1131, 621);
+			this.splitContainer2.SplitterDistance = 297;
+			this.splitContainer2.TabIndex = 3;
+			// 
+			// richTextBox_FileContents
+			// 
+			this.richTextBox_FileContents.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.richTextBox_FileContents.Location = new System.Drawing.Point(0, 0);
+			this.richTextBox_FileContents.Name = "richTextBox_FileContents";
+			this.richTextBox_FileContents.ReadOnly = true;
+			this.richTextBox_FileContents.Size = new System.Drawing.Size(1131, 320);
+			this.richTextBox_FileContents.TabIndex = 0;
+			this.richTextBox_FileContents.Text = "";
+			// 
+			// textBox_Description
+			// 
+			this.textBox_Description.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.textBox_Description.Font = new System.Drawing.Font("Comic Sans MS", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel, ((byte)(0)));
+			this.textBox_Description.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(0)))));
+			this.textBox_Description.Location = new System.Drawing.Point(0, 0);
+			this.textBox_Description.Name = "textBox_Description";
+			this.textBox_Description.Size = new System.Drawing.Size(619, 297);
+			this.textBox_Description.TabIndex = 1;
+			this.textBox_Description.Text = "";
+			this.textBox_Description.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
+			this.textBox_Description.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler(this.MonitoredFilesChanged_PreviewKeyDown);
+			// 
 			// MonitoredFilesChanged
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(1155, 330);
-			this.Controls.Add(this.splitContainer1);
+			this.ClientSize = new System.Drawing.Size(1155, 645);
+			this.Controls.Add(this.splitContainer2);
 			this.KeyPreview = true;
 			this.Name = "MonitoredFilesChanged";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
@@ -147,9 +183,12 @@
 			this.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler(this.MonitoredFilesChanged_PreviewKeyDown);
 			this.splitContainer1.Panel1.ResumeLayout(false);
 			this.splitContainer1.Panel2.ResumeLayout(false);
-			this.splitContainer1.Panel2.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
 			this.splitContainer1.ResumeLayout(false);
+			this.splitContainer2.Panel1.ResumeLayout(false);
+			this.splitContainer2.Panel2.ResumeLayout(false);
+			((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).EndInit();
+			this.splitContainer2.ResumeLayout(false);
 			this.ResumeLayout(false);
 
 		}
@@ -158,7 +197,6 @@
 
 		private System.Windows.Forms.SplitContainer splitContainer1;
 		public System.Windows.Forms.TreeView treeView1;
-		public System.Windows.Forms.TextBox textBox1;
 		private System.Windows.Forms.MenuItem menuItem_ClearMessages;
 		private System.Windows.Forms.MenuItem menuItem_DiscardEmpty;
 		public System.Windows.Forms.ContextMenu contextMenu_TotalFile;
@@ -166,5 +204,8 @@
 		private System.Windows.Forms.MenuItem menuItem_ClearThisMessage;
 		private System.Windows.Forms.MenuItem menuItem_Accept;
 		private System.Windows.Forms.MenuItem menuItem_Discard;
+		private System.Windows.Forms.SplitContainer splitContainer2;
+		private System.Windows.Forms.RichTextBox richTextBox_FileContents;
+		public System.Windows.Forms.RichTextBox textBox_Description;
 	}
 }

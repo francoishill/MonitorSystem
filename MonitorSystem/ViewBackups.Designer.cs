@@ -30,14 +30,20 @@
 		{
 			this.splitContainer1 = new System.Windows.Forms.SplitContainer();
 			this.treeView1 = new System.Windows.Forms.TreeView();
-			this.textBoxDescription = new System.Windows.Forms.TextBox();
 			this.statusStrip1 = new System.Windows.Forms.StatusStrip();
 			this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
+			this.splitContainer2 = new System.Windows.Forms.SplitContainer();
+			this.richTextBox_FileContents = new System.Windows.Forms.RichTextBox();
+			this.textBoxDescription = new System.Windows.Forms.RichTextBox();
 			((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
 			this.splitContainer1.Panel1.SuspendLayout();
 			this.splitContainer1.Panel2.SuspendLayout();
 			this.splitContainer1.SuspendLayout();
 			this.statusStrip1.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).BeginInit();
+			this.splitContainer2.Panel1.SuspendLayout();
+			this.splitContainer2.Panel2.SuspendLayout();
+			this.splitContainer2.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// splitContainer1
@@ -54,7 +60,7 @@
 			// splitContainer1.Panel2
 			// 
 			this.splitContainer1.Panel2.Controls.Add(this.textBoxDescription);
-			this.splitContainer1.Size = new System.Drawing.Size(1228, 381);
+			this.splitContainer1.Size = new System.Drawing.Size(1228, 272);
 			this.splitContainer1.SplitterDistance = 409;
 			this.splitContainer1.SplitterWidth = 6;
 			this.splitContainer1.TabIndex = 0;
@@ -69,30 +75,17 @@
 			this.treeView1.Name = "treeView1";
 			this.treeView1.ShowLines = false;
 			this.treeView1.ShowRootLines = false;
-			this.treeView1.Size = new System.Drawing.Size(409, 381);
+			this.treeView1.Size = new System.Drawing.Size(409, 272);
 			this.treeView1.TabIndex = 0;
 			this.treeView1.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeView1_AfterSelect);
 			this.treeView1.NodeMouseClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.treeView1_NodeMouseClick);
 			this.treeView1.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler(this.ViewBackups_PreviewKeyDown);
 			// 
-			// textBoxDescription
-			// 
-			this.textBoxDescription.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.textBoxDescription.Location = new System.Drawing.Point(0, 0);
-			this.textBoxDescription.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-			this.textBoxDescription.Multiline = true;
-			this.textBoxDescription.Name = "textBoxDescription";
-			this.textBoxDescription.ReadOnly = true;
-			this.textBoxDescription.Size = new System.Drawing.Size(813, 381);
-			this.textBoxDescription.TabIndex = 0;
-			this.textBoxDescription.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
-			this.textBoxDescription.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler(this.ViewBackups_PreviewKeyDown);
-			// 
 			// statusStrip1
 			// 
 			this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripStatusLabel1});
-			this.statusStrip1.Location = new System.Drawing.Point(0, 381);
+			this.statusStrip1.Location = new System.Drawing.Point(0, 571);
 			this.statusStrip1.Name = "statusStrip1";
 			this.statusStrip1.Size = new System.Drawing.Size(1228, 22);
 			this.statusStrip1.TabIndex = 1;
@@ -106,12 +99,56 @@
 			this.toolStripStatusLabel1.Size = new System.Drawing.Size(117, 17);
 			this.toolStripStatusLabel1.Text = "toolStripStatusLabel1";
 			// 
+			// splitContainer2
+			// 
+			this.splitContainer2.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.splitContainer2.Location = new System.Drawing.Point(0, 0);
+			this.splitContainer2.Name = "splitContainer2";
+			this.splitContainer2.Orientation = System.Windows.Forms.Orientation.Horizontal;
+			// 
+			// splitContainer2.Panel1
+			// 
+			this.splitContainer2.Panel1.Controls.Add(this.splitContainer1);
+			// 
+			// splitContainer2.Panel2
+			// 
+			this.splitContainer2.Panel2.Controls.Add(this.richTextBox_FileContents);
+			this.splitContainer2.Size = new System.Drawing.Size(1228, 571);
+			this.splitContainer2.SplitterDistance = 272;
+			this.splitContainer2.TabIndex = 2;
+			// 
+			// richTextBox_FileContents
+			// 
+			this.richTextBox_FileContents.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.richTextBox_FileContents.Font = new System.Drawing.Font("Microsoft Sans Serif", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.richTextBox_FileContents.ForeColor = System.Drawing.Color.Gray;
+			this.richTextBox_FileContents.Location = new System.Drawing.Point(0, 0);
+			this.richTextBox_FileContents.Name = "richTextBox_FileContents";
+			this.richTextBox_FileContents.ReadOnly = true;
+			this.richTextBox_FileContents.Size = new System.Drawing.Size(1228, 295);
+			this.richTextBox_FileContents.TabIndex = 0;
+			this.richTextBox_FileContents.Text = "";
+			// 
+			// textBoxDescription
+			// 
+			this.textBoxDescription.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.textBoxDescription.Font = new System.Drawing.Font("Microsoft Sans Serif", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel, ((byte)(0)));
+			this.textBoxDescription.ForeColor = System.Drawing.Color.DarkGreen;
+			this.textBoxDescription.Location = new System.Drawing.Point(0, 0);
+			this.textBoxDescription.Name = "textBoxDescription";
+			this.textBoxDescription.ReadOnly = true;
+			this.textBoxDescription.Size = new System.Drawing.Size(813, 272);
+			this.textBoxDescription.TabIndex = 0;
+			this.textBoxDescription.Text = "";
+			this.textBoxDescription.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
+			this.textBoxDescription.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler(this.ViewBackups_PreviewKeyDown);
+			// 
 			// ViewBackups
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(1228, 403);
-			this.Controls.Add(this.splitContainer1);
+			this.ClientSize = new System.Drawing.Size(1228, 593);
+			this.Controls.Add(this.splitContainer2);
 			this.Controls.Add(this.statusStrip1);
 			this.DoubleBuffered = true;
 			this.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -125,11 +162,14 @@
 			this.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler(this.ViewBackups_PreviewKeyDown);
 			this.splitContainer1.Panel1.ResumeLayout(false);
 			this.splitContainer1.Panel2.ResumeLayout(false);
-			this.splitContainer1.Panel2.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
 			this.splitContainer1.ResumeLayout(false);
 			this.statusStrip1.ResumeLayout(false);
 			this.statusStrip1.PerformLayout();
+			this.splitContainer2.Panel1.ResumeLayout(false);
+			this.splitContainer2.Panel2.ResumeLayout(false);
+			((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).EndInit();
+			this.splitContainer2.ResumeLayout(false);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -139,8 +179,10 @@
 
 		private System.Windows.Forms.SplitContainer splitContainer1;
 		public System.Windows.Forms.TreeView treeView1;
-		public System.Windows.Forms.TextBox textBoxDescription;
 		private System.Windows.Forms.StatusStrip statusStrip1;
 		private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
+		private System.Windows.Forms.SplitContainer splitContainer2;
+		private System.Windows.Forms.RichTextBox richTextBox_FileContents;
+		public System.Windows.Forms.RichTextBox textBoxDescription;
 	}
 }

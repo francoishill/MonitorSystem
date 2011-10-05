@@ -1662,9 +1662,9 @@ namespace MonitorSystem
 					}
 
 					formMonitoredFilesChanged.ShowDialog(this);
-					formMonitoredFilesChanged.textBox1.Enabled = false;
+					formMonitoredFilesChanged.textBox_Description.Enabled = false;
 					formMonitoredFilesChanged.AllowTextchangeCallback = false;
-					formMonitoredFilesChanged.textBox1.Text = null;
+					formMonitoredFilesChanged.textBox_Description.Text = null;
 					formMonitoredFilesChanged.AllowTextchangeCallback = true;
 					foreach (string file in QueuedFileChanges.Keys)
 					{
