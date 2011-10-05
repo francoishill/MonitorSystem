@@ -119,7 +119,7 @@ namespace MonitorSystem
 
 		private void menuItem_ClearMessages_Click(object sender, EventArgs e)
 		{
-			MessageBox.Show("Function not incorporated yet");
+			UserMessages.ShowErrorMessage("Function not incorporated yet");
 		}
 
 		private void menuItem_DiscardEmpty_Click(object sender, EventArgs e)
@@ -129,7 +129,7 @@ namespace MonitorSystem
 
 		private void menuItem_ClearThisMessage_Click(object sender, EventArgs e)
 		{
-			MessageBox.Show("Function not incorporated yet");
+			UserMessages.ShowErrorMessage("Function not incorporated yet");
 		}
 
 		private void menuItem_Accept_Click(object sender, EventArgs e)

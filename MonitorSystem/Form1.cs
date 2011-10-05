@@ -125,14 +125,14 @@ namespace MonitorSystem
 						DateTime lastWrite;
 						if (!DateTime.TryParseExact(line.Split('|')[1], FileChangedDetails.SavetofileDateFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out lastWrite))
 						{
-							MessageBox.Show("Could not get date from pipesplit 1: " + line);
+							UserMessages.ShowErrorMessage("Could not get date from pipesplit 1: " + line);
 							success = false;
 							continue;
 						}
 						FileChangedDetails.QueueStatusEnum queueStatus;
 						if (!Enum.TryParse(line.Split('|')[2], true, out queueStatus))
 						{
-							MessageBox.Show("Could not get QueueStatus from pipesplit 2: " + line);
+							UserMessages.ShowErrorMessage("Could not get QueueStatus from pipesplit 2: " + line);
 							success = false;
 							continue;
 						}
@@ -194,7 +194,7 @@ namespace MonitorSystem
 
 			//InitializeHooks(true, true);
 			//notifyIcon1.ShowBalloonTip(3000, "Hooks disabled", "Hooks were disabled in code", ToolTipIcon.Info);
-			if (!Win32Api.RegisterHotKey(this.Handle, Win32Api.Hotkey1, Win32Api.MOD_WIN, (int)Keys.Q)) MessageBox.Show("QuickAccess could not register hotkey WinKey + Q");
+			if (!Win32Api.RegisterHotKey(this.Handle, Win32Api.Hotkey1, Win32Api.MOD_WIN, (int)Keys.Q)) UserMessages.ShowWarningMessage("QuickAccess could not register hotkey WinKey + Q");
 
 			ReadLastQueuedStatusIfFileExist();
 
@@ -570,7 +570,7 @@ namespace MonitorSystem
 				}
 				catch (Exception exc)
 				{
-					MessageBox.Show("Error, could not encode hex, char " + c.ToString() + ", (int)char = " + (int)c + ": " + Environment.NewLine + exc.Message, "Exception error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+					UserMessages.ShowErrorMessage("Error, could not encode hex, char " + c.ToString() + ", (int)char = " + (int)c + ": " + Environment.NewLine + exc.Message, "Exception error");
 				}
 			}
 			return tmpstr;
@@ -782,7 +782,7 @@ namespace MonitorSystem
 				int tmpAutosnoozeInterval = Convert.ToInt32(line.Split('\t')[9]);
 				AdditemToTreeview(tmpCategory, tmpSubcat, tmpItems, tmpDescription, tmpCompleted, tmpDue, tmpCreated, tmpRemindedCount, tmpStopSnooze, tmpAutosnoozeInterval);
 			}
-			else MessageBox.Show("The following line is invalid todo line: " + line);
+			else UserMessages.ShowWarningMessage("The following line is invalid todo line: " + line);
 		}
 
 		private void AdditemToTreeview(string Category, string Subcat, string Items, string Description, bool Completed, DateTime Due, DateTime Created, int RemindedCount, bool StopSnooze, int AutosnoozeInterval)
@@ -987,16 +987,8 @@ namespace MonitorSystem
 								//MessageBox.Show(this, decryptedstring);
 								if (MustWriteResultToLogsTextbox) appendLogTextbox("Result for " + TaskName + ": " + decryptedstring);
 								mustreturn = true;
-
-								//else
-								//{
-								//    //appendLogTextbox("Uploading changes failed: " + decryptedstring);
-								//    string s = "";
-								//    foreach (char c in decryptedstring.ToCharArray()) s += (int)c + ",";
-								//    appendLogTextbox("Uploading changes failed: " + s);
-								//}
 							}
-							catch (Exception exc) { MessageBox.Show(this, "Exception:" + exc.Message, "Exception", MessageBoxButtons.OK, MessageBoxIcon.Error); }
+							catch (Exception exc) { UserMessages.ShowErrorMessage("Exception:" + exc.Message, "Exception", this); }
 						});
 						if (mustreturn) return decryptedstring;
 					}
@@ -1825,9 +1817,6 @@ namespace MonitorSystem
 					{
 						string originalFileName = file.Split('\\')[file.Split('\\').Length - 1];// FileChangedDetails.GetOriginalNameFromBackupFile(file.Split('\\')[file.Split('\\').Length - 1]);
 						TreeNode fileNode;
-						/*if (rootDirNode.Nodes.ContainsKey(originalFileName)) fileNode = rootDirNode.Nodes[rootDirNode.Nodes.IndexOfKey(originalFileName)];
-						else
-						{*/
 						fileNode = new TreeNode();
 						fileNode = PopulateTreeNode(file.Substring(rootDir.Length + 1), rootDirNode);
 						//fileNode.NodeFont = new System.Drawing.Font(this.Font.FontFamily, 12, this.Font.Style);
@@ -1835,34 +1824,8 @@ namespace MonitorSystem
 						fileNode.Text = originalFileName;
 						fileNode.Tag = file;
 
-						fileNode.ContextMenu = new System.Windows.Forms.ContextMenu(
-							new MenuItem[]
-							{
-								new MenuItem("Discard &empty backups", delegate
-									{
-										if (UserMessages.Confirm("Delete all backups with empty descriptions?"))
-										{
-											TreeNodeCollection subnodes = fileNode.Nodes;
-											foreach (TreeNode subnode in subnodes)
-											{
-												if (subnode.Tag is FileChangedDetails)
-												{
-													FileChangedDetails tmpsubfcd = subnode.Tag as FileChangedDetails;
-													if (!tmpsubfcd.HasDescription())
-														if (tmpsubfcd.DiscardBackupFileAndDescription())
-														{
-															subnode.NodeFont = new Font(formViewBackups.treeView1.Font, FontStyle.Strikeout | FontStyle.Italic);
-															subnode.ContextMenu = null;
-														}
-												}
-											}
-										}
-									})
-							}
-							);
+						fileNode.ContextMenu = formViewBackups.contextMenu_FileNode;
 
-						/*}*/
-						//fileNode.ContextMenuStrip = formViewBackups.contextMenuStrip_TotalFile;
 						bool AtleastOneFileModification = false;
 						foreach (DateTime date in OriginalFilenamesWithModificationsDict[file].Keys)
 						{
@@ -1873,71 +1836,18 @@ namespace MonitorSystem
 								AtleastOneFileModification = true;
 								TreeNode fileModifiedNode = new TreeNode(date.ToString("yyyy-MM-dd HH:mm:ss"));
 								fileModifiedNode.Tag = fcd;
-								fileModifiedNode.ContextMenu = new System.Windows.Forms.ContextMenu(
-									new MenuItem[]
-									{
-										new MenuItem("Dis&card backup", delegate
-											{
-												FileChangedDetails tmpfcd = fileModifiedNode.Tag as FileChangedDetails;
-												if (!tmpfcd.HasDescription() || MessageBox.Show("This item (" + tmpfcd.HumanFriendlyLastwriteDateString() + ") has a description, confirm discarding?", "Confirm", MessageBoxButtons.YesNo) == System.Windows.Forms.DialogResult.Yes)
-												{
-													if (tmpfcd.DiscardBackupFileAndDescription())
-													{
-														fileModifiedNode.NodeFont = new System.Drawing.Font(formViewBackups.treeView1.Font, FontStyle.Strikeout | FontStyle.Italic);
-														fileModifiedNode.ContextMenu = null;
-													}
-												}
-											}),
-										new MenuItem("Add &description", delegate
-											{
-												FileChangedDetails tmpfcd = fileModifiedNode.Tag as FileChangedDetails;
-												AddBackupDescription formAddBackup = new AddBackupDescription(tmpfcd);
-												if (formAddBackup.ShowDialog(this) == System.Windows.Forms.DialogResult.OK)
-												{
-													if (formAddBackup.textBox_Description.Text != null && formAddBackup.textBox_Description.Text.Trim().Length > 0)
-													{
-														fcd.Description = formAddBackup.textBox_Description.Text;
-														fcd.WriteDescriptionFileNow();
-														formViewBackups.textBoxDescription.Text = formAddBackup.textBox_Description.Text;
-														fileModifiedNode.ForeColor = fcd.GetColorBasedOnDescription();
-													}
-												}
-											})
-									});
+								fileModifiedNode.ContextMenu = formViewBackups.contextMenu_ModificationNode;
 								fileModifiedNode.ForeColor = fcd.GetColorBasedOnDescription();
 
-								//fileModifiedNode.ContextMenuStrip = formViewBackups.contextMenuStrip_FileModification;
-								//fcd.UpdateNodeFontandcolorFromQueueStatus(fileModifiedNode, this.Font);
 								fileNode.Nodes.Add(fileModifiedNode);
 								string PathExcludingRoot = file.Substring(rootDir.Length + 2);
 								while (PathExcludingRoot.EndsWith("\\")) PathExcludingRoot = PathExcludingRoot.Substring(0, PathExcludingRoot.Length);
-
-								/*TreeNode NodeToAddFileTo = null;
-								while (PathExcludingRoot.Contains('\\'))
-								{
-									string nodeText = PathExcludingRoot.Split('\\')[PathExcludingRoot.Split('\\').Length - 1];
-									TreeNode tmpSubNode = new TreeNode(nodeText);
-									if (NodeToAddFileTo == null) NodeToAddFileTo = tmpSubNode;
-									else
-									{
-										NodeToAddFileTo.Nodes.Add(tmpSubNode);
-										NodeToAddFileTo = tmpSubNode;
-									}
-									PathExcludingRoot = PathExcludingRoot.Substring(nodeText.Length + 1);
-								}*/
 
 								if (fcd == LastFileChangedDetailsAdded) nodeToSelect = fileModifiedNode;
 							}
 						}
 
 						fileNode.Text = fileNode.Name + " (" + fileNode.GetNodeCount(false) + ")";
-
-						//if (AtleastOneFileModification)
-						//{
-						//  fileNode.Text = fileNode.Name + " (" + fileNode.GetNodeCount(false) + ")";
-						//  /*if (!rootDirNode.Nodes.ContainsKey(originalFileName)) */
-						//  //rootDirNode.Nodes.Add(fileNode);
-						//}
 
 						TreeNode parentNode = fileNode.Parent;
 						while (parentNode != null)
@@ -1984,7 +1894,7 @@ namespace MonitorSystem
 
 		private void menuItem_DeleteThisItem_Click(object sender, EventArgs e)
 		{
-			if (MessageBox.Show(this, "Are you sure you want to delete " + treeViewTodolist.SelectedNode.Text + "?", "Confirm delete", MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2) == System.Windows.Forms.DialogResult.Yes)
+			if (UserMessages.Confirm("Are you sure you want to delete " + treeViewTodolist.SelectedNode.Text + "?", "Confirm delete", owner: this))
 			{
 				bool successfulDelete = PerformDesktopAppDoTask(
 						PhpInterop.Username,

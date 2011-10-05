@@ -30,11 +30,16 @@
 		{
 			this.splitContainer1 = new System.Windows.Forms.SplitContainer();
 			this.treeView1 = new System.Windows.Forms.TreeView();
+			this.textBoxDescription = new System.Windows.Forms.RichTextBox();
 			this.statusStrip1 = new System.Windows.Forms.StatusStrip();
 			this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
 			this.splitContainer2 = new System.Windows.Forms.SplitContainer();
 			this.richTextBox_FileContents = new System.Windows.Forms.RichTextBox();
-			this.textBoxDescription = new System.Windows.Forms.RichTextBox();
+			this.contextMenu_FileNode = new System.Windows.Forms.ContextMenu();
+			this.contextMenu_ModificationNode = new System.Windows.Forms.ContextMenu();
+			this.menuItem_DiscardEmptyBackups = new System.Windows.Forms.MenuItem();
+			this.menuItem_DiscardBackup = new System.Windows.Forms.MenuItem();
+			this.menuItem_AddDescription = new System.Windows.Forms.MenuItem();
 			((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
 			this.splitContainer1.Panel1.SuspendLayout();
 			this.splitContainer1.Panel2.SuspendLayout();
@@ -70,6 +75,7 @@
 			this.treeView1.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.treeView1.HideSelection = false;
 			this.treeView1.HotTracking = true;
+			this.treeView1.Indent = 30;
 			this.treeView1.Location = new System.Drawing.Point(0, 0);
 			this.treeView1.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.treeView1.Name = "treeView1";
@@ -80,6 +86,20 @@
 			this.treeView1.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeView1_AfterSelect);
 			this.treeView1.NodeMouseClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.treeView1_NodeMouseClick);
 			this.treeView1.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler(this.ViewBackups_PreviewKeyDown);
+			// 
+			// textBoxDescription
+			// 
+			this.textBoxDescription.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.textBoxDescription.Font = new System.Drawing.Font("Microsoft Sans Serif", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel, ((byte)(0)));
+			this.textBoxDescription.ForeColor = System.Drawing.Color.DarkGreen;
+			this.textBoxDescription.Location = new System.Drawing.Point(0, 0);
+			this.textBoxDescription.Name = "textBoxDescription";
+			this.textBoxDescription.ReadOnly = true;
+			this.textBoxDescription.Size = new System.Drawing.Size(813, 272);
+			this.textBoxDescription.TabIndex = 0;
+			this.textBoxDescription.Text = "";
+			this.textBoxDescription.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
+			this.textBoxDescription.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler(this.ViewBackups_PreviewKeyDown);
 			// 
 			// statusStrip1
 			// 
@@ -129,19 +149,34 @@
 			this.richTextBox_FileContents.TabIndex = 0;
 			this.richTextBox_FileContents.Text = "";
 			// 
-			// textBoxDescription
+			// contextMenu_FileNode
 			// 
-			this.textBoxDescription.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.textBoxDescription.Font = new System.Drawing.Font("Microsoft Sans Serif", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel, ((byte)(0)));
-			this.textBoxDescription.ForeColor = System.Drawing.Color.DarkGreen;
-			this.textBoxDescription.Location = new System.Drawing.Point(0, 0);
-			this.textBoxDescription.Name = "textBoxDescription";
-			this.textBoxDescription.ReadOnly = true;
-			this.textBoxDescription.Size = new System.Drawing.Size(813, 272);
-			this.textBoxDescription.TabIndex = 0;
-			this.textBoxDescription.Text = "";
-			this.textBoxDescription.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
-			this.textBoxDescription.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler(this.ViewBackups_PreviewKeyDown);
+			this.contextMenu_FileNode.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
+            this.menuItem_DiscardEmptyBackups});
+			// 
+			// contextMenu_ModificationNode
+			// 
+			this.contextMenu_ModificationNode.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
+            this.menuItem_DiscardBackup,
+            this.menuItem_AddDescription});
+			// 
+			// menuItem_DiscardEmptyBackups
+			// 
+			this.menuItem_DiscardEmptyBackups.Index = 0;
+			this.menuItem_DiscardEmptyBackups.Text = "Discard &empty backups";
+			this.menuItem_DiscardEmptyBackups.Click += new System.EventHandler(this.menuItem_DiscardEmptyBackups_Click);
+			// 
+			// menuItem_DiscardBackup
+			// 
+			this.menuItem_DiscardBackup.Index = 0;
+			this.menuItem_DiscardBackup.Text = "Dis&card backup";
+			this.menuItem_DiscardBackup.Click += new System.EventHandler(this.menuItem_DiscardBackup_Click);
+			// 
+			// menuItem_AddDescription
+			// 
+			this.menuItem_AddDescription.Index = 1;
+			this.menuItem_AddDescription.Text = "Add &description";
+			this.menuItem_AddDescription.Click += new System.EventHandler(this.menuItem_AddDescription_Click);
 			// 
 			// ViewBackups
 			// 
@@ -184,5 +219,10 @@
 		private System.Windows.Forms.SplitContainer splitContainer2;
 		private System.Windows.Forms.RichTextBox richTextBox_FileContents;
 		public System.Windows.Forms.RichTextBox textBoxDescription;
+		private System.Windows.Forms.MenuItem menuItem_DiscardEmptyBackups;
+		public System.Windows.Forms.ContextMenu contextMenu_FileNode;
+		public System.Windows.Forms.ContextMenu contextMenu_ModificationNode;
+		private System.Windows.Forms.MenuItem menuItem_DiscardBackup;
+		private System.Windows.Forms.MenuItem menuItem_AddDescription;
 	}
 }

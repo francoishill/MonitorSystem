@@ -8,6 +8,7 @@ using System.Text;
 using System.Windows.Forms;
 using System.IO;
 using System.Diagnostics;
+using FileChangedDetails = MonitorSystem.Form1.FileChangedDetails;
 
 namespace MonitorSystem
 {
@@ -58,6 +59,56 @@ namespace MonitorSystem
 		private void ViewBackups_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
 		{
 			if (e.KeyCode == Keys.Escape) this.Close();
+		}
+
+		private void menuItem_DiscardEmptyBackups_Click(object sender, EventArgs e)
+		{
+			if (UserMessages.Confirm("Delete all backups with empty descriptions?"))
+			{
+				TreeNodeCollection subnodes = treeView1.SelectedNode.Nodes;
+				foreach (TreeNode subnode in subnodes)
+				{
+					if (subnode.Tag is FileChangedDetails)
+					{
+						FileChangedDetails tmpsubfcd = subnode.Tag as FileChangedDetails;
+						if (!tmpsubfcd.HasDescription())
+							if (tmpsubfcd.DiscardBackupFileAndDescription())
+							{
+								subnode.NodeFont = new Font(treeView1.Font, FontStyle.Strikeout | FontStyle.Italic);
+								subnode.ContextMenu = null;
+							}
+					}
+				}
+			}
+		}
+
+		private void menuItem_DiscardBackup_Click(object sender, EventArgs e)
+		{
+			FileChangedDetails tmpfcd = treeView1.SelectedNode.Tag as FileChangedDetails;
+			if (!tmpfcd.HasDescription() || UserMessages.Confirm("This item (" + tmpfcd.HumanFriendlyLastwriteDateString() + ") has a description, confirm discarding?"))
+			{
+				if (tmpfcd.DiscardBackupFileAndDescription())
+				{
+					treeView1.SelectedNode.NodeFont = new System.Drawing.Font(treeView1.Font, FontStyle.Strikeout | FontStyle.Italic);
+					treeView1.SelectedNode.ContextMenu = null;
+				}
+			}
+		}
+
+		private void menuItem_AddDescription_Click(object sender, EventArgs e)
+		{
+			FileChangedDetails tmpfcd = treeView1.SelectedNode.Tag as FileChangedDetails;
+			AddBackupDescription formAddBackup = new AddBackupDescription(tmpfcd);
+			if (formAddBackup.ShowDialog(this) == System.Windows.Forms.DialogResult.OK)
+			{
+				if (formAddBackup.textBox_Description.Text != null && formAddBackup.textBox_Description.Text.Trim().Length > 0)
+				{
+					tmpfcd.Description = formAddBackup.textBox_Description.Text;
+					tmpfcd.WriteDescriptionFileNow();
+					textBoxDescription.Text = formAddBackup.textBox_Description.Text;
+					treeView1.SelectedNode.ForeColor = tmpfcd.GetColorBasedOnDescription();
+				}
+			}
 		}
 	}
 }
