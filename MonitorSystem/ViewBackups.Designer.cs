@@ -73,6 +73,7 @@
 			this.treeView1.TabIndex = 0;
 			this.treeView1.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeView1_AfterSelect);
 			this.treeView1.NodeMouseClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.treeView1_NodeMouseClick);
+			this.treeView1.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler(this.ViewBackups_PreviewKeyDown);
 			// 
 			// textBoxDescription
 			// 
@@ -85,6 +86,7 @@
 			this.textBoxDescription.Size = new System.Drawing.Size(813, 381);
 			this.textBoxDescription.TabIndex = 0;
 			this.textBoxDescription.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
+			this.textBoxDescription.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler(this.ViewBackups_PreviewKeyDown);
 			// 
 			// statusStrip1
 			// 
@@ -95,6 +97,7 @@
 			this.statusStrip1.Size = new System.Drawing.Size(1228, 22);
 			this.statusStrip1.TabIndex = 1;
 			this.statusStrip1.Text = "statusStrip1";
+			this.statusStrip1.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler(this.ViewBackups_PreviewKeyDown);
 			// 
 			// toolStripStatusLabel1
 			// 
@@ -112,12 +115,14 @@
 			this.Controls.Add(this.statusStrip1);
 			this.DoubleBuffered = true;
 			this.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.KeyPreview = true;
 			this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.Name = "ViewBackups";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
 			this.Text = "ViewBackups";
 			this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
 			this.Shown += new System.EventHandler(this.ViewBackups_Shown);
+			this.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler(this.ViewBackups_PreviewKeyDown);
 			this.splitContainer1.Panel1.ResumeLayout(false);
 			this.splitContainer1.Panel2.ResumeLayout(false);
 			this.splitContainer1.Panel2.PerformLayout();

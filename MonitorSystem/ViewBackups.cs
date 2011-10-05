@@ -48,5 +48,10 @@ namespace MonitorSystem
 		{
 			treeView1.SelectedNode = e.Node;
 		}
+
+		private void ViewBackups_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
+		{
+			if (e.KeyCode == Keys.Escape) this.Close();
+		}
 	}
 }

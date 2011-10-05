@@ -1938,7 +1938,18 @@ namespace MonitorSystem
 						//  /*if (!rootDirNode.Nodes.ContainsKey(originalFileName)) */
 						//  //rootDirNode.Nodes.Add(fileNode);
 						//}
+
+						TreeNode parentNode = fileNode.Parent;
+						while (parentNode != null)
+						{
+							parentNode.Expand();
+							//parentNode.NodeFont = new Font(formViewBackups.treeView1.Font.FontFamily, 8);
+							parentNode.ForeColor = Color.LightGray;
+							parentNode = parentNode.Parent;
+						}
+						//fileNode.NodeFont = new Font(formViewBackups.treeView1.Font.FontFamily, 8);
 					}
+
 					if (AtleastOneFile)
 					{
 						formViewBackups.treeView1.Nodes.Add(rootDirNode);
