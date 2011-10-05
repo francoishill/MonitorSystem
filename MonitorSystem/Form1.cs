@@ -11,7 +11,6 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
-//using System.Threading;
 
 namespace MonitorSystem
 {
@@ -142,7 +141,7 @@ namespace MonitorSystem
 						lastWrite = new DateTime(lastWrite.Year, lastWrite.Month, lastWrite.Day, lastWrite.Hour, lastWrite.Minute, lastWrite.Second);
 						if (!QueuedFileChanges[fullPath].ContainsKey(lastWrite))
 						{
-							FileChangedDetails fcd = new FileChangedDetails(fullPath, null);
+							FileChangedDetails fcd = new FileChangedDetails(lastWrite, fullPath, null);
 							fcd.QueueStatus = queueStatus;
 							QueuedFileChanges[fullPath].Add(lastWrite, fcd);
 						}
@@ -1261,12 +1260,17 @@ namespace MonitorSystem
 		public class FileChangedDetails
 		{
 			public enum QueueStatusEnum { New, Read, Accepted, Discard, Complete };
-			public string FileName;
+
+			public static FileAttributes BackupAndDescriptionAttributes = FileAttributes.System | FileAttributes.Hidden;
+
+			public DateTime LastWrite;
+			public string OriginalFileName;
 			public string Description;
 			public QueueStatusEnum QueueStatus;
-			public FileChangedDetails(string FileNameIn, string DescriptionIn, QueueStatusEnum QueueStatusIn = QueueStatusEnum.New)
+			public FileChangedDetails(DateTime LastWriteIn, string OriginalFileNameIn, string DescriptionIn, QueueStatusEnum QueueStatusIn = QueueStatusEnum.New)
 			{
-				FileName = FileNameIn;
+				LastWrite = LastWriteIn;
+				OriginalFileName = OriginalFileNameIn;
 				Description = DescriptionIn;
 				QueueStatus = QueueStatusIn;
 			}
@@ -1274,6 +1278,22 @@ namespace MonitorSystem
 			private bool IsStringEmpty(string str)
 			{
 				return str == null || str.Trim().Length == 0;
+			}
+
+			public bool HasDescription()
+			{
+				return Description != null && Description.Trim().Length > 0;
+			}
+
+			public Color GetColorBasedOnDescription()
+			{
+				if (HasDescription()) return Color.Green;
+				else return Color.LightGray;
+			}
+
+			public string HumanFriendlyLastwriteDateString()
+			{
+				return LastWrite.ToString(humandfriendlyDateFormat);
 			}
 
 			public void UpdateNodeFontandcolorFromQueueStatus(TreeNode node, Font fontPrototype = null)
@@ -1302,6 +1322,7 @@ namespace MonitorSystem
 					node.NodeFont = new Font(fontPrototype, nodeFontStyle);
 			}
 
+			public static string humandfriendlyDateFormat = @"dd MMM yyyy HH\hmm:ss";
 			public static string dateFormat = @"yyyy MM dd (HH\hmm ss)";
 			public static string SavetofileDateFormat = "yyyyMMddHHmmss";
 
@@ -1312,14 +1333,14 @@ namespace MonitorSystem
 
 			public static string backupExt = ".bac";
 			public static string descrExt = ".desc";
-			public string GetBackupFileName(DateTime lastWriteTime)
+			public string GetBackupFileName()//(DateTime lastWriteTime)
 			{
-				return FileName + GetFileNameAppendStringForDate(lastWriteTime) + backupExt;
+				return OriginalFileName + GetFileNameAppendStringForDate(LastWrite) + backupExt;//lastWriteTime) + backupExt;
 			}
 
-			public string GetDescriptionFileName(DateTime lastWriteTime)
+			public string GetDescriptionFileName()//DateTime lastWriteTime)
 			{
-				return FileName + GetFileNameAppendStringForDate(lastWriteTime) + descrExt;
+				return OriginalFileName + GetFileNameAppendStringForDate(LastWrite) + descrExt;//;lastWriteTime) + descrExt;
 			}
 
 			public static string GetDescriptionFileNameFromBackupFilename(string backupFileName)
@@ -1330,6 +1351,40 @@ namespace MonitorSystem
 			public static string GetOriginalNameFromBackupFile(string backupFileName)
 			{
 				return backupFileName.Substring(0, backupFileName.Length - GetFileNameAppendStringForDate(new DateTime()).Length - backupExt.Length);
+			}
+
+			public bool DiscardBackupFileAndDescription()
+			{
+				try
+				{
+					File.Delete(GetBackupFileName());
+					if (File.Exists(GetDescriptionFileName())) File.Delete(GetDescriptionFileName());
+				}
+				catch (Exception exc)
+				{
+					UserMessages.ShowErrorMessage("Could not delete file: ", exc.Message);
+				}
+
+				if (File.Exists(GetBackupFileName()) || File.Exists(GetDescriptionFileName()))
+					return false;
+				else
+					return true;
+			}
+
+			public void WriteDescriptionFileNow()//string newDescription)
+			{
+				using (StreamWriter sw = new StreamWriter(GetDescriptionFileName()))
+				{
+					sw.Write(Description);//newDescription);
+				}
+				try
+				{
+					File.SetAttributes(GetDescriptionFileName(), BackupAndDescriptionAttributes);
+				}
+				catch (Exception exc)
+				{
+					UserMessages.ShowErrorMessage("Could not set description file attributes: " + GetDescriptionFileName() + Environment.NewLine + exc.Message);
+				}
 			}
 		}
 
@@ -1355,9 +1410,9 @@ namespace MonitorSystem
 				lastWrite = new DateTime(lastWrite.Year, lastWrite.Month, lastWrite.Day, lastWrite.Hour, lastWrite.Minute, lastWrite.Second);
 				if (!QueuedFileChanges[e.FullPath].ContainsKey(lastWrite))
 				{
-					FileChangedDetails fcd = new FileChangedDetails(e.FullPath, null);
+					FileChangedDetails fcd = new FileChangedDetails(lastWrite, e.FullPath, null);
 					QueuedFileChanges[e.FullPath].Add(lastWrite, fcd);
-					string newFileName = fcd.GetBackupFileName(lastWrite);
+					string newFileName = fcd.GetBackupFileName();//lastWrite);
 
 					bool successfullyCopied = false;
 					int unsuccessfulCount = 0;
@@ -1382,7 +1437,7 @@ namespace MonitorSystem
 
 					try
 					{
-						File.SetAttributes(newFileName, FileAttributes.System | FileAttributes.Hidden);
+						File.SetAttributes(newFileName, FileChangedDetails.BackupAndDescriptionAttributes);
 					}
 					catch (Exception exc)
 					{
@@ -1397,7 +1452,7 @@ namespace MonitorSystem
 		private void ShowFileChangedBalloonTip(FileChangedDetails fcd)
 		{
 			//ShowBalloonTipNotification(fcd.FileName, 3000, "File changed, click to add description", ToolTipIcon.Info, BalloonTipActionEnum.ChangedFileList);
-			ShowCustomBalloonTipNotification(fcd.FileName, 3000, "File changed, click to add description", ToolTipIcon.Info, BalloonTipActionEnum.ChangedFileList);
+			ShowCustomBalloonTipNotification(fcd.OriginalFileName, 3000, "File changed, click to add description", ToolTipIcon.Info, BalloonTipActionEnum.ChangedFileList);
 			//ShowCustomBalloonTipNotification(fcd.FileName, 1000, "File changed, click to add description", ToolTipIcon.Info, BalloonTipActionEnum.ChangedFileList);
 			//ShowCustomBalloonTipNotification(fcd.FileName, 2000, "File changed, click to add description", ToolTipIcon.Info, BalloonTipActionEnum.ChangedFileList);
 			//ShowCustomBalloonTipNotification(fcd.FileName, 10000, "File changed, click to add description", ToolTipIcon.Info, BalloonTipActionEnum.ChangedFileList);
@@ -1636,7 +1691,7 @@ namespace MonitorSystem
 								//Delete from List?
 								if (fcd.Description != null && fcd.Description.Trim().Length > 0)
 								{
-									string fileName = fcd.GetDescriptionFileName(lastWrite);
+									string fileName = fcd.GetDescriptionFileName();//lastWrite);
 									StreamWriter sw = new StreamWriter(fileName);
 									try
 									{
@@ -1662,7 +1717,7 @@ namespace MonitorSystem
 								try
 								{
 									//TODO: Eventually add functionality to delete files (according to date, empty description, timeafter previous backup, etc)
-									File.Delete(fcd.GetBackupFileName(lastWrite));
+									File.Delete(fcd.GetBackupFileName());//lastWrite));
 									fcd.QueueStatus = FileChangedDetails.QueueStatusEnum.Complete;
 								}
 								catch (Exception exc)
@@ -1769,7 +1824,7 @@ namespace MonitorSystem
 						if (OriginalFilenamesWithModificationsDict == null) OriginalFilenamesWithModificationsDict = new Dictionary<string, Dictionary<DateTime, FileChangedDetails>>();
 						if (!OriginalFilenamesWithModificationsDict.ContainsKey(originalFileName)) OriginalFilenamesWithModificationsDict.Add(originalFileName, new Dictionary<DateTime, FileChangedDetails>());
 						if (!OriginalFilenamesWithModificationsDict[originalFileName].ContainsKey(dateOut))
-							OriginalFilenamesWithModificationsDict[originalFileName].Add(dateOut, new FileChangedDetails(backupFile, fileDescription));
+							OriginalFilenamesWithModificationsDict[originalFileName].Add(dateOut, new FileChangedDetails(dateOut, originalFileName, fileDescription));
 					}
 				}
 
@@ -1791,6 +1846,33 @@ namespace MonitorSystem
 						fileNode.Name = originalFileName;
 						fileNode.Text = originalFileName;
 						fileNode.Tag = file;
+
+						fileNode.ContextMenu = new System.Windows.Forms.ContextMenu(
+							new MenuItem[]
+							{
+								new MenuItem("Discard &empty backups", delegate
+									{
+										if (UserMessages.Confirm("Delete all backups with empty descriptions?"))
+										{
+											TreeNodeCollection subnodes = fileNode.Nodes;
+											foreach (TreeNode subnode in subnodes)
+											{
+												if (subnode.Tag is FileChangedDetails)
+												{
+													FileChangedDetails tmpsubfcd = subnode.Tag as FileChangedDetails;
+													if (!tmpsubfcd.HasDescription())
+														if (tmpsubfcd.DiscardBackupFileAndDescription())
+														{
+															subnode.NodeFont = new Font(formViewBackups.treeView1.Font, FontStyle.Strikeout | FontStyle.Italic);
+															subnode.ContextMenu = null;
+														}
+												}
+											}
+										}
+									})
+							}
+							);
+
 						/*}*/
 						//fileNode.ContextMenuStrip = formViewBackups.contextMenuStrip_TotalFile;
 						bool AtleastOneFileModification = false;
@@ -1803,7 +1885,38 @@ namespace MonitorSystem
 								AtleastOneFileModification = true;
 								TreeNode fileModifiedNode = new TreeNode(date.ToString("yyyy-MM-dd HH:mm:ss"));
 								fileModifiedNode.Tag = fcd;
-								fileModifiedNode.ForeColor = fcd.Description != null && fcd.Description.Length > 0 ? Color.Green : Color.LightGray;
+								fileModifiedNode.ContextMenu = new System.Windows.Forms.ContextMenu(
+									new MenuItem[]
+									{
+										new MenuItem("Dis&card backup", delegate
+											{
+												FileChangedDetails tmpfcd = fileModifiedNode.Tag as FileChangedDetails;
+												if (!tmpfcd.HasDescription() || MessageBox.Show("This item (" + tmpfcd.HumanFriendlyLastwriteDateString() + ") has a description, confirm discarding?", "Confirm", MessageBoxButtons.YesNo) == System.Windows.Forms.DialogResult.Yes)
+												{
+													if (tmpfcd.DiscardBackupFileAndDescription())
+													{
+														fileModifiedNode.NodeFont = new System.Drawing.Font(formViewBackups.treeView1.Font, FontStyle.Strikeout | FontStyle.Italic);
+														fileModifiedNode.ContextMenu = null;
+													}
+												}
+											}),
+										new MenuItem("Add &description", delegate
+											{
+												FileChangedDetails tmpfcd = fileModifiedNode.Tag as FileChangedDetails;
+												AddBackupDescription formAddBackup = new AddBackupDescription(tmpfcd);
+												if (formAddBackup.ShowDialog(this) == System.Windows.Forms.DialogResult.OK)
+												{
+													if (formAddBackup.textBox_Description.Text != null && formAddBackup.textBox_Description.Text.Trim().Length > 0)
+													{
+														fcd.Description = formAddBackup.textBox_Description.Text;
+														fcd.WriteDescriptionFileNow();
+														formViewBackups.textBoxDescription.Text = formAddBackup.textBox_Description.Text;
+														fileModifiedNode.ForeColor = fcd.GetColorBasedOnDescription();
+													}
+												}
+											})
+									});
+								fileModifiedNode.ForeColor = fcd.GetColorBasedOnDescription();
 
 								//fileModifiedNode.ContextMenuStrip = formViewBackups.contextMenuStrip_FileModification;
 								//fcd.UpdateNodeFontandcolorFromQueueStatus(fileModifiedNode, this.Font);
@@ -1829,12 +1942,14 @@ namespace MonitorSystem
 							}
 						}
 
-						if (AtleastOneFileModification)
-						{
-							fileNode.Text = fileNode.Name + " (" + fileNode.GetNodeCount(false) + ")";
-							/*if (!rootDirNode.Nodes.ContainsKey(originalFileName)) */
-							//rootDirNode.Nodes.Add(fileNode);
-						}
+						fileNode.Text = fileNode.Name + " (" + fileNode.GetNodeCount(false) + ")";
+
+						//if (AtleastOneFileModification)
+						//{
+						//  fileNode.Text = fileNode.Name + " (" + fileNode.GetNodeCount(false) + ")";
+						//  /*if (!rootDirNode.Nodes.ContainsKey(originalFileName)) */
+						//  //rootDirNode.Nodes.Add(fileNode);
+						//}
 					}
 					if (AtleastOneFile)
 					{

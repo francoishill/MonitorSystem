@@ -12,14 +12,25 @@ namespace MonitorSystem
 {
 	public partial class AddBackupDescription : Form
 	{
-		public AddBackupDescription()
+		public AddBackupDescription(Form1.FileChangedDetails fileChangedDetails = null)
 		{
 			InitializeComponent();
+
+			if (fileChangedDetails != null)
+			{
+				toolStripStatusLabel1.Text = Path.GetFileName(fileChangedDetails.OriginalFileName) + "   (" + fileChangedDetails.HumanFriendlyLastwriteDateString() + ")";
+				if (fileChangedDetails.HasDescription()) textBox_Description.Text = fileChangedDetails.Description;
+			}
 		}
 
 		private void label1_Click(object sender, EventArgs e)
 		{
-			this.Close();
+			this.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+		}
+
+		private void label2_Click(object sender, EventArgs e)
+		{
+			this.DialogResult = System.Windows.Forms.DialogResult.OK;
 		}
 
 		private void textBox1_DragEnter(object sender, DragEventArgs e)
@@ -40,7 +51,19 @@ namespace MonitorSystem
 			else
 			{
 				toolStripStatusLabel1.Text = files[0];
-				textBox1.Text = "This function is not incorporated yet"; textBox1.Enabled = false;
+				textBox_Description.Text = "This function is not incorporated yet"; textBox_Description.Enabled = false;
+			}
+		}
+
+		private void textBox1_KeyPress(object sender, KeyPressEventArgs e)
+		{
+			if (e.KeyChar == (char)10)//Ctrl + Enter
+			{
+				this.DialogResult = System.Windows.Forms.DialogResult.OK;
+			}
+			else if (e.KeyChar == (char)27)
+			{
+				this.DialogResult = System.Windows.Forms.DialogResult.Cancel;
 			}
 		}
 	}

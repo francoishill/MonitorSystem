@@ -6,6 +6,8 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using System.IO;
+using System.Diagnostics;
 
 namespace MonitorSystem
 {
@@ -14,6 +16,8 @@ namespace MonitorSystem
 		public ViewBackups()
 		{
 			InitializeComponent();
+
+			toolStripStatusLabel1.Text = "";
 		}
 
 		public bool AllowTextchangeCallback = true;
@@ -30,7 +34,9 @@ namespace MonitorSystem
 			{
 				Form1.FileChangedDetails fcd = e.Node.Tag as Form1.FileChangedDetails;
 				textBoxDescription.Text = fcd.Description;
+				toolStripStatusLabel1.Text = fcd.GetBackupFileName();//.OriginalFileName;
 			}
+			else toolStripStatusLabel1.Text = "";
 		}
 
 		private void ViewBackups_Shown(object sender, EventArgs e)
