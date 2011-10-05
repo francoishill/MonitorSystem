@@ -1361,7 +1361,7 @@ namespace MonitorSystem
 
 			public void WriteDescriptionFileNow()//string newDescription)
 			{
-				File.SetAttributes(GetDescriptionFileName(), NormalAttributes);
+				if (File.Exists(GetDescriptionFileName())) File.SetAttributes(GetDescriptionFileName(), NormalAttributes);
 				using (StreamWriter sw = new StreamWriter(GetDescriptionFileName()))
 					sw.Write(Description);//newDescription);
 
