@@ -466,7 +466,7 @@ namespace MonitorSystem
 				bool ShouldRatherSaveThis_State_AndReloadOnPcStartupAgain_AndNotifyUser;
 				this.Activate();
 				toolStripStatusLabelCurrentStatus.Text = "Saving current state, please wait...";
-				PerformVoidFunctionSeperateThread(() =>
+				ThreadingInterop.PerformVoidFunctionSeperateThread(() =>
 				{
 					using (StreamWriter sw = new StreamWriter(LastAutobackupStateFileName))
 					{
@@ -601,19 +601,6 @@ namespace MonitorSystem
 			return res;
 		}
 
-		//PerformVoidFunctionSeperateThread(() => { MessageBox.Show("Test"); MessageBox.Show("Test1"); });
-		public static void PerformVoidFunctionSeperateThread(MethodInvoker method, bool WaitUntilFinish = true)
-		{
-			System.Threading.Thread th = new System.Threading.Thread(() =>
-			{
-				method.Invoke();
-			});
-			th.Start();
-			//th.Join();
-			if (WaitUntilFinish)
-				while (th.IsAlive) { Application.DoEvents(); }
-		}
-
 		private string GetPrivateKey()
 		{
 			try
@@ -621,7 +608,7 @@ namespace MonitorSystem
 				toolStripStatusLabelCurrentStatus.Text = "Obtaining pvt key...";
 				string tmpkey = null;
 
-				PerformVoidFunctionSeperateThread(() =>
+				ThreadingInterop.PerformVoidFunctionSeperateThread(() =>
 				{
 					tmpkey = PostPHP(PhpInterop.ServerAddress + "/generateprivatekey.php", "username=" + PhpInterop.Username + "&password=" + PhpInterop.Password);
 				});
@@ -976,7 +963,7 @@ namespace MonitorSystem
 						string encryptedstring;
 						string decryptedstring = "";
 						bool mustreturn = false;
-						PerformVoidFunctionSeperateThread(() =>
+						ThreadingInterop.PerformVoidFunctionSeperateThread(() =>
 						{
 							string ArgumentListTabSeperated = "";
 							foreach (string s in ArgumentList)
@@ -1208,7 +1195,7 @@ namespace MonitorSystem
 		private void timer_PhpCronJob_Tick(object sender, EventArgs e)
 		{
 
-			PerformVoidFunctionSeperateThread(() =>
+			ThreadingInterop.PerformVoidFunctionSeperateThread(() =>
 			{
 				try
 				{
@@ -1261,6 +1248,7 @@ namespace MonitorSystem
 		{
 			public enum QueueStatusEnum { New, Read, Accepted, Discard, Complete };
 
+			public static FileAttributes NormalAttributes = FileAttributes.Normal;
 			public static FileAttributes BackupAndDescriptionAttributes = FileAttributes.System | FileAttributes.Hidden;
 
 			public DateTime LastWrite;
@@ -1373,10 +1361,10 @@ namespace MonitorSystem
 
 			public void WriteDescriptionFileNow()//string newDescription)
 			{
+				File.SetAttributes(GetDescriptionFileName(), NormalAttributes);
 				using (StreamWriter sw = new StreamWriter(GetDescriptionFileName()))
-				{
 					sw.Write(Description);//newDescription);
-				}
+
 				try
 				{
 					File.SetAttributes(GetDescriptionFileName(), BackupAndDescriptionAttributes);
@@ -1426,7 +1414,7 @@ namespace MonitorSystem
 						catch (Exception exc)
 						{
 							unsuccessfulCount++;
-							PerformVoidFunctionSeperateThread(() => { System.Threading.Thread.Sleep(500); }, true);
+							ThreadingInterop.PerformVoidFunctionSeperateThread(() => { System.Threading.Thread.Sleep(500); }, true);
 							if (unsuccessfulCount >= 5)
 							{
 								ShowBalloonTipNotification(exc.Message, Title: "Copy failed 5x", icon: ToolTipIcon.Error);
@@ -1673,7 +1661,7 @@ namespace MonitorSystem
 						return;
 					}
 
-					formMonitoredFilesChanged.ShowDialog();
+					formMonitoredFilesChanged.ShowDialog(this);
 					formMonitoredFilesChanged.textBox1.Enabled = false;
 					formMonitoredFilesChanged.AllowTextchangeCallback = false;
 					formMonitoredFilesChanged.textBox1.Text = null;
@@ -2000,7 +1988,7 @@ namespace MonitorSystem
 					for (int i = indexOfRemoved + 1; i < VisibleBalloonTipForms.Count; i++)
 					{
 						CustomBalloonTip tmpForm = VisibleBalloonTipForms[i];
-						PerformVoidFunctionSeperateThread(() =>
+						ThreadingInterop.PerformVoidFunctionSeperateThread(() =>
 						{
 							//int StartPoint = VisibleBalloonTipForms[i].Top;
 							int EndPoint = tmpForm.Top - cbtHeight;

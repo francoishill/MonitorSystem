@@ -43,5 +43,10 @@ namespace MonitorSystem
 		{
 			StylingInterop.SetTreeviewVistaStyle(treeView1);
 		}
+
+		private void treeView1_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e)
+		{
+			treeView1.SelectedNode = e.Node;
+		}
 	}
 }
