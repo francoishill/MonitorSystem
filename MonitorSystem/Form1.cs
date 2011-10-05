@@ -99,7 +99,7 @@ namespace MonitorSystem
 				});
 			MenuItem exitMenuItem = new MenuItem("E&xit", delegate { RequestApplicationQuit(); });
 			MenuItem viewallbackupsMenuItem = new MenuItem("View &all backups", delegate { ViewAllBackupsNow(); });
-			MenuItem testcustomballoontipMenuItem = new MenuItem("Test &custom balloontip", delegate { ShowCustomBalloonTip("Hallo", "This is a custom balloon tip for 3 seconds...", 3000, CustomBalloonTip.IconTypes.Shield); });
+			MenuItem testcustomballoontipMenuItem = new MenuItem("Test &custom balloontip", delegate { CustomBalloonTip.ShowCustomBalloonTip("Hallo", "This is a custom balloon tip for 3 seconds...", 3000, CustomBalloonTip.IconTypes.Shield, delegate { PerformBalloonTipClick(); }); });
 
 			notifyIcon1.ContextMenu = new ContextMenu(new MenuItem[]
 			{
@@ -1464,7 +1464,7 @@ namespace MonitorSystem
 				icon == ToolTipIcon.Warning ? CustomBalloonTip.IconTypes.Warning :
 				CustomBalloonTip.IconTypes.None;
 			BalloonTipAction = BalloonTipActionIn;
-			ShowCustomBalloonTip(Title, Description, duration, iconType);
+			CustomBalloonTip.ShowCustomBalloonTip(Title, Description, duration, iconType, delegate { PerformBalloonTipClick(); });
 		}
 
 		//private void tmpShowPopupToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1974,64 +1974,6 @@ namespace MonitorSystem
 			if (controlToUpdate.InvokeRequired)
 				controlToUpdate.Invoke(action, new object[] { });
 			else action.Invoke();
-		}
-
-		//delegate void MoveWindowUpCallback();
-		List<CustomBalloonTip> VisibleBalloonTipForms = new List<CustomBalloonTip>();
-		private void ShowCustomBalloonTip(string Title, string Message, int Duration, CustomBalloonTip.IconTypes iconType)
-		{
-			CustomBalloonTip cbt = new CustomBalloonTip(Title, Message, Duration, iconType, delegate { PerformBalloonTipClick(); });
-			//this.Location = new Point(Screen.PrimaryScreen.WorkingArea.Right - this.Width, Screen.PrimaryScreen.WorkingArea.Bottom - this.Height);
-			int TopStart = 0;
-			foreach (CustomBalloonTip tmpVisibleFrms in VisibleBalloonTipForms)
-				if (tmpVisibleFrms != null && tmpVisibleFrms.Visible)
-					TopStart += tmpVisibleFrms.Height;
-			int gapFromSide = 100;
-			cbt.Location = new Point(Screen.PrimaryScreen.WorkingArea.Left + gapFromSide, Screen.PrimaryScreen.WorkingArea.Top + TopStart - cbt.Height);
-			cbt.Width = Screen.PrimaryScreen.WorkingArea.Width - gapFromSide * 2;
-			cbt.FormClosed += delegate
-			{
-				if (VisibleBalloonTipForms.Contains(cbt))
-				{
-					int indexOfRemoved = VisibleBalloonTipForms.IndexOf(cbt);
-					int cbtHeight = cbt.Height;
-					for (int i = indexOfRemoved + 1; i < VisibleBalloonTipForms.Count; i++)
-					{
-						CustomBalloonTip tmpForm = VisibleBalloonTipForms[i];
-						ThreadingInterop.PerformVoidFunctionSeperateThread(() =>
-						{
-							//int StartPoint = VisibleBalloonTipForms[i].Top;
-							int EndPoint = tmpForm.Top - cbtHeight;
-							while (tmpForm.Top > EndPoint)
-							{
-								System.Threading.Thread.Sleep(10);
-								UpdateGuiFromThread(tmpForm, () =>
-								{
-									if (tmpForm.Top - 5 > EndPoint) tmpForm.Top -= 5;
-									else tmpForm.Top = EndPoint;
-								});
-								//Action SlideUpAction = (Action)(() =>
-								//{
-								//  if (tmpForm.Top - 5 > EndPoint) tmpForm.Top -= 5;
-								//  else tmpForm.Top = EndPoint;
-								//});
-								//if (tmpForm.InvokeRequired)
-								//  tmpForm.Invoke(SlideUpAction, new object[] { });
-								//else SlideUpAction.Invoke();
-								//VisibleBalloonTipForms[i].Top -= 5;
-							}
-						}, false);
-						//VisibleBalloonTipForms[i].Top -= cbt.Height;
-					}
-					VisibleBalloonTipForms.Remove(cbt);
-					//foreach (
-				}
-			};
-			VisibleBalloonTipForms.Add(cbt);
-			cbt.Show();
-			//ShowInactiveTopmost(cbt);
-			//cbt.StartTimerForClosing();
-			//cbt.Show();
 		}
 
 		private static void ShowInactiveTopmost(Form frm)
