@@ -37,6 +37,8 @@ namespace MonitorSystem
 
 		public static string MonitoredAutoBackupPath = "";
 
+		MouseHooks.MouseHook mouseHook;
+
 		public static string AutoBackupDir
 		{
 			get
@@ -48,6 +50,8 @@ namespace MonitorSystem
 				else return @"c:\windows\system32";
 			}
 		}
+
+		OverlayForm overlayForm = new OverlayForm();
 
 		public Form1()
 		{
@@ -88,6 +92,16 @@ namespace MonitorSystem
 			MonitoredAutoBackupPath = fileSystemWatcher_SqlFiles.Path;
 
 			PopulateNotifyIconContextMenu();
+
+			mouseHook = new MouseHooks.MouseHook();
+			//mouseHook.MouseGestureEvent += (o, gest) => { if (gest.MouseGesture == Win32Api.MouseGestures.RL) UserMessages.ShowErrorMessage("Message"); };
+			mouseHook.MouseMoveEvent += delegate
+			{
+				if (MousePosition.X < 5)
+					overlayForm.Show();
+					//ShowCustomBalloonTipNotification("Testing move...", 300);
+			};
+			mouseHook.Start();
 		}
 
 		private void PopulateNotifyIconContextMenu()
