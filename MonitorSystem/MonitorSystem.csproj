@@ -72,6 +72,7 @@
     <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Speech" />
     <Reference Include="System.Windows.Forms.DataVisualization" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -96,6 +97,14 @@
     </Compile>
     <Compile Include="..\..\SharedClasses\MouseHooks.cs">
       <Link>MouseHooks.cs</Link>
+    </Compile>
+    <Compile Include="..\..\SharedClasses\OverlayForm.cs">
+      <Link>OverlayForm.cs</Link>
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="..\..\SharedClasses\OverlayForm.designer.cs">
+      <Link>OverlayForm.designer.cs</Link>
+      <DependentUpon>OverlayForm.cs</DependentUpon>
     </Compile>
     <Compile Include="..\..\SharedClasses\PhpInterop.cs">
       <Link>PhpInterop.cs</Link>
@@ -151,14 +160,20 @@
     <Compile Include="MonitoredFilesChanged.Designer.cs">
       <DependentUpon>MonitoredFilesChanged.cs</DependentUpon>
     </Compile>
-    <Compile Include="OverlayForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="OverlayForm.Designer.cs">
-      <DependentUpon>OverlayForm.cs</DependentUpon>
-    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TestAnimations.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="TestAnimations.Designer.cs">
+      <DependentUpon>TestAnimations.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TestSpeech.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="TestSpeech.Designer.cs">
+      <DependentUpon>TestSpeech.cs</DependentUpon>
+    </Compile>
     <Compile Include="ViewBackups.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -168,6 +183,10 @@
     <EmbeddedResource Include="..\..\SharedClasses\CustomBalloonTip.resx">
       <Link>CustomBalloonTip.resx</Link>
       <DependentUpon>CustomBalloonTip.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\..\SharedClasses\OverlayForm.resx">
+      <Link>OverlayForm.resx</Link>
+      <DependentUpon>OverlayForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="AddBackupDescription.resx">
       <DependentUpon>AddBackupDescription.cs</DependentUpon>
@@ -184,9 +203,6 @@
     <EmbeddedResource Include="MonitoredFilesChanged.resx">
       <DependentUpon>MonitoredFilesChanged.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="OverlayForm.resx">
-      <DependentUpon>OverlayForm.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -196,6 +212,12 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="TestAnimations.resx">
+      <DependentUpon>TestAnimations.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TestSpeech.resx">
+      <DependentUpon>TestSpeech.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="ViewBackups.resx">
       <DependentUpon>ViewBackups.cs</DependentUpon>
     </EmbeddedResource>

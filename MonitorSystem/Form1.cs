@@ -37,7 +37,7 @@ namespace MonitorSystem
 
 		public static string MonitoredAutoBackupPath = "";
 
-		MouseHooks.MouseHook mouseHook;
+		//MouseHooks.MouseHook mouseHook;
 
 		public static string AutoBackupDir
 		{
@@ -51,7 +51,13 @@ namespace MonitorSystem
 			}
 		}
 
-		OverlayForm overlayForm = new OverlayForm();
+		//List<Form> OverlayChildrenList = new List<Form>()
+		//{
+		//    new Form(),
+		//    new Form()
+		//};
+
+		//OverlayForm overlayForm = new OverlayForm();
 
 		public Form1()
 		{
@@ -93,15 +99,21 @@ namespace MonitorSystem
 
 			PopulateNotifyIconContextMenu();
 
-			mouseHook = new MouseHooks.MouseHook();
-			//mouseHook.MouseGestureEvent += (o, gest) => { if (gest.MouseGesture == Win32Api.MouseGestures.RL) UserMessages.ShowErrorMessage("Message"); };
-			mouseHook.MouseMoveEvent += delegate
-			{
-				if (MousePosition.X < 5)
-					overlayForm.Show();
-					//ShowCustomBalloonTipNotification("Testing move...", 300);
-			};
-			mouseHook.Start();
+			//mouseHook = new MouseHooks.MouseHook();
+			////mouseHook.MouseGestureEvent += (o, gest) => { if (gest.MouseGesture == Win32Api.MouseGestures.RL) UserMessages.ShowErrorMessage("Message"); };
+			//mouseHook.MouseMoveEvent += delegate
+			//{
+			//  if (MousePosition.X < 5)
+			//  {
+			//    if (overlayForm.IsDisposed) overlayForm = new OverlayForm();
+			//    if (!overlayForm.Visible)
+			//    {
+			//      overlayForm.ListOfChildForms = OverlayChildrenList;
+			//      overlayForm.Show();
+			//    }
+			//  }
+			//};
+			//mouseHook.Start();
 		}
 
 		private void PopulateNotifyIconContextMenu()
@@ -113,7 +125,9 @@ namespace MonitorSystem
 				});
 			MenuItem exitMenuItem = new MenuItem("E&xit", delegate { RequestApplicationQuit(); });
 			MenuItem viewallbackupsMenuItem = new MenuItem("View &all backups", delegate { ViewAllBackupsNow(); });
-			MenuItem testcustomballoontipMenuItem = new MenuItem("Test &custom balloontip", delegate { CustomBalloonTip.ShowCustomBalloonTip("Hallo", "This is a custom balloon tip for 3 seconds...", 3000, CustomBalloonTip.IconTypes.Shield, delegate { PerformBalloonTipClick(); }); });
+			//MenuItem testcustomballoontipMenuItem = new MenuItem("Test &custom balloontip", delegate { CustomBalloonTip.ShowCustomBalloonTip("Hallo", "This is a custom balloon tip for 3 seconds...", 3000, CustomBalloonTip.IconTypes.Shield, delegate { PerformBalloonTipClick(); }); });
+			MenuItem testWindowAnimations = new MenuItem("Test window &animations", delegate { (new TestAnimations()).Show(); });
+			MenuItem testSpeech = new MenuItem("Test &speech", delegate { (new TestSpeech()).Show(); });
 
 			notifyIcon1.ContextMenu = new ContextMenu(new MenuItem[]
 			{
@@ -121,7 +135,8 @@ namespace MonitorSystem
 				viewallbackupsMenuItem,
 				new MenuItem("-"),
 				exitMenuItem,				
-				testcustomballoontipMenuItem
+				testWindowAnimations,
+				testSpeech
 			});
 		}
 
@@ -1460,6 +1475,7 @@ namespace MonitorSystem
 		{
 			notifyIcon1.ShowBalloonTip(duration, Title, Description, icon);
 			BalloonTipAction = BalloonTipActionIn;
+			//TODO: Dink bietjie oor speech input
 		}
 
 		private void ShowCustomBalloonTipNotification(string Description, int duration = 3000, string Title = "Title", ToolTipIcon icon = ToolTipIcon.Info, BalloonTipActionEnum BalloonTipActionIn = BalloonTipActionEnum.None)
