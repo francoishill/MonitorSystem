@@ -1683,6 +1683,7 @@ namespace MonitorSystem
 						return;
 					}
 
+					formMonitoredFilesChanged.textBox_Description.Text = null;
 					formMonitoredFilesChanged.ShowDialog(this);
 					formMonitoredFilesChanged.textBox_Description.Enabled = false;
 					formMonitoredFilesChanged.AllowTextchangeCallback = false;
