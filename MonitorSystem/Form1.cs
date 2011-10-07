@@ -114,7 +114,7 @@ namespace MonitorSystem
 			//  }
 			//};
 			//mouseHook.Start();
-			//TODO: Textbox does not get cleared when showing queued messages
+			//DONE TODO: Textbox does not get cleared when showing queued messages
 		}
 
 		private void PopulateNotifyIconContextMenu()
@@ -1684,7 +1684,7 @@ namespace MonitorSystem
 						return;
 					}
 
-					formMonitoredFilesChanged.textBox_Description.Text = null;
+					formMonitoredFilesChanged.textBox_Description.Text = "";
 					formMonitoredFilesChanged.ShowDialog(this);
 					formMonitoredFilesChanged.textBox_Description.Enabled = false;
 					formMonitoredFilesChanged.AllowTextchangeCallback = false;

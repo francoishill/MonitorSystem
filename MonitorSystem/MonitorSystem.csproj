@@ -57,10 +57,11 @@
     <ApplicationIcon>app.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestCertificateThumbprint>A26C44482C0F15C2048DBE60CF41865723AF18A5</ManifestCertificateThumbprint>
+    <ManifestCertificateThumbprint>F12DC744EE8A9F3E5F166925FB862ABE1BBF6A00</ManifestCertificateThumbprint>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestKeyFile>MonitorSystem_TemporaryKey.pfx</ManifestKeyFile>
+    <ManifestKeyFile>
+    </ManifestKeyFile>
   </PropertyGroup>
   <PropertyGroup>
     <GenerateManifests>true</GenerateManifests>
