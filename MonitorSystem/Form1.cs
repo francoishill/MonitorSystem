@@ -114,6 +114,7 @@ namespace MonitorSystem
 			//  }
 			//};
 			//mouseHook.Start();
+			//TODO: Textbox does not get cleared when showing queued messages
 		}
 
 		private void PopulateNotifyIconContextMenu()
