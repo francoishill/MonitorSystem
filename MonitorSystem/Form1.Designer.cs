@@ -136,7 +136,7 @@
 					// toolStripStatusLabelCurrentStatus
 					// 
 					this.toolStripStatusLabelCurrentStatus.Name = "toolStripStatusLabelCurrentStatus";
-					this.toolStripStatusLabelCurrentStatus.Size = new System.Drawing.Size(78, 17);
+					this.toolStripStatusLabelCurrentStatus.Size = new System.Drawing.Size(79, 17);
 					this.toolStripStatusLabelCurrentStatus.Text = "CurrentStatus";
 					// 
 					// dataGridView1
@@ -214,9 +214,9 @@
 					this.checkBoxAutoUpload.CheckState = System.Windows.Forms.CheckState.Checked;
 					this.checkBoxAutoUpload.Enabled = false;
 					this.checkBoxAutoUpload.Font = new System.Drawing.Font("Microsoft Sans Serif", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-					this.checkBoxAutoUpload.Location = new System.Drawing.Point(666, 396);
+					this.checkBoxAutoUpload.Location = new System.Drawing.Point(669, 396);
 					this.checkBoxAutoUpload.Name = "checkBoxAutoUpload";
-					this.checkBoxAutoUpload.Size = new System.Drawing.Size(129, 17);
+					this.checkBoxAutoUpload.Size = new System.Drawing.Size(126, 17);
 					this.checkBoxAutoUpload.TabIndex = 9;
 					this.checkBoxAutoUpload.Text = "Auto upload changes";
 					this.checkBoxAutoUpload.UseVisualStyleBackColor = true;
@@ -225,9 +225,9 @@
 					// 
 					this.checkBoxComplete.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 					this.checkBoxComplete.AutoSize = true;
-					this.checkBoxComplete.Location = new System.Drawing.Point(722, 188);
+					this.checkBoxComplete.Location = new System.Drawing.Point(725, 188);
 					this.checkBoxComplete.Name = "checkBoxComplete";
-					this.checkBoxComplete.Size = new System.Drawing.Size(73, 17);
+					this.checkBoxComplete.Size = new System.Drawing.Size(70, 17);
 					this.checkBoxComplete.TabIndex = 11;
 					this.checkBoxComplete.Text = "Complete";
 					this.checkBoxComplete.UseVisualStyleBackColor = true;
@@ -327,9 +327,9 @@
 					// 
 					this.checkBoxStopSnooze.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 					this.checkBoxStopSnooze.AutoSize = true;
-					this.checkBoxStopSnooze.Location = new System.Drawing.Point(707, 289);
+					this.checkBoxStopSnooze.Location = new System.Drawing.Point(710, 289);
 					this.checkBoxStopSnooze.Name = "checkBoxStopSnooze";
-					this.checkBoxStopSnooze.Size = new System.Drawing.Size(88, 17);
+					this.checkBoxStopSnooze.Size = new System.Drawing.Size(85, 17);
 					this.checkBoxStopSnooze.TabIndex = 20;
 					this.checkBoxStopSnooze.Text = "Stop snooze";
 					this.checkBoxStopSnooze.UseVisualStyleBackColor = true;
