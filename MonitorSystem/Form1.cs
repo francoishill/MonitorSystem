@@ -61,6 +61,7 @@ namespace MonitorSystem
 
 		public Form1()
 		{
+            //TODO: Need to add Application Restart and Recovery
 			try { Win32Api._fpreset(); }
 			catch { }
 
