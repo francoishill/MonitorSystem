@@ -82,6 +82,7 @@ namespace MonitorSystem
 
 		private void MonitoredFilesChanged_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
 		{
+            //Note this event is used for multiple controls
 			if (e.KeyCode == Keys.Escape) this.Close();
 		}
 
@@ -141,5 +142,14 @@ namespace MonitorSystem
 		{
 			DiscardItem(treeView1.SelectedNode);
 		}
+
+        private void textBox_Description_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.V && e.Control && !e.Alt && !e.Shift)
+            {
+                e.Handled = true;
+                textBox_Description.Paste(DataFormats.GetFormat(DataFormats.Text));
+            }
+        }
 	}
 }

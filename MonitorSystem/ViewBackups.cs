@@ -58,6 +58,7 @@ namespace MonitorSystem
 
 		private void ViewBackups_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
 		{
+            //Note this event is used for multiple controls
 			if (e.KeyCode == Keys.Escape) this.Close();
 		}
 
