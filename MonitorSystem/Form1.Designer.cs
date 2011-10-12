@@ -59,6 +59,8 @@
 					this.menuItem_DeleteThisItem = new System.Windows.Forms.MenuItem();
 					this.contextMenuItemsSubcat = new System.Windows.Forms.ContextMenu();
 					this.menuItem_AddItemToThisCategory = new System.Windows.Forms.MenuItem();
+					this.labelTestCrash = new System.Windows.Forms.Label();
+					this.labelRecoveryAndRestartSafe = new System.Windows.Forms.Label();
 					this.statusStrip1.SuspendLayout();
 					((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
 					((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -371,11 +373,38 @@
 					this.menuItem_AddItemToThisCategory.Text = "&Add item to this category";
 					this.menuItem_AddItemToThisCategory.Click += new System.EventHandler(this.menuItem_AddItemToThisCategory_Click);
 					// 
+					// labelTestCrash
+					// 
+					this.labelTestCrash.AutoSize = true;
+					this.labelTestCrash.ForeColor = System.Drawing.Color.Gray;
+					this.labelTestCrash.Location = new System.Drawing.Point(353, 13);
+					this.labelTestCrash.Name = "labelTestCrash";
+					this.labelTestCrash.Size = new System.Drawing.Size(58, 13);
+					this.labelTestCrash.TabIndex = 21;
+					this.labelTestCrash.Text = "Test Crash";
+					this.labelTestCrash.Visible = false;
+					this.labelTestCrash.Click += new System.EventHandler(this.label5_Click);
+					// 
+					// labelRecoveryAndRestartSafe
+					// 
+					this.labelRecoveryAndRestartSafe.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+					this.labelRecoveryAndRestartSafe.AutoSize = true;
+					this.labelRecoveryAndRestartSafe.Font = new System.Drawing.Font("Microsoft Sans Serif", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+					this.labelRecoveryAndRestartSafe.ForeColor = System.Drawing.Color.Green;
+					this.labelRecoveryAndRestartSafe.Location = new System.Drawing.Point(1, 400);
+					this.labelRecoveryAndRestartSafe.Name = "labelRecoveryAndRestartSafe";
+					this.labelRecoveryAndRestartSafe.Size = new System.Drawing.Size(133, 13);
+					this.labelRecoveryAndRestartSafe.TabIndex = 22;
+					this.labelRecoveryAndRestartSafe.Text = "Recovery and Restart Safe";
+					this.labelRecoveryAndRestartSafe.Visible = false;
+					// 
 					// Form1
 					// 
 					this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 					this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 					this.ClientSize = new System.Drawing.Size(807, 438);
+					this.Controls.Add(this.labelRecoveryAndRestartSafe);
+					this.Controls.Add(this.labelTestCrash);
 					this.Controls.Add(this.checkBoxStopSnooze);
 					this.Controls.Add(this.label4);
 					this.Controls.Add(this.label3);
@@ -452,6 +481,8 @@
 				private System.Windows.Forms.MenuItem menuItem_DeleteThisItem;
 				private System.Windows.Forms.ContextMenu contextMenuItemsSubcat;
 				private System.Windows.Forms.MenuItem menuItem_AddItemToThisCategory;
+				private System.Windows.Forms.Label labelTestCrash;
+				private System.Windows.Forms.Label labelRecoveryAndRestartSafe;
     }
 }
 

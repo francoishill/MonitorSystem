@@ -11,6 +11,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
+using System.Diagnostics;
 
 namespace MonitorSystem
 {
@@ -61,7 +62,30 @@ namespace MonitorSystem
 
 		public Form1()
 		{
-            //TODO: Need to add Application Restart and Recovery
+			if (IsApplicationArestartedInstance())
+			{
+				//MessageBox.Show("Application successfully restarted from crash. No functionality incorporated yet.", "Restarted", MessageBoxButtons.OK, MessageBoxIcon.Information);
+				if (Directory.Exists(ApplicationRecoveryAndRestart.CrashReportsDirectory))
+				{
+					MessageBox.Show("MonitorSystem successfully restarted from crash. See Crash report.", "Restarted successfully", MessageBoxButtons.OK, MessageBoxIcon.Information);
+					Process.Start("explorer", "\"" + ApplicationRecoveryAndRestart.CrashReportsDirectory + "\"");
+				}
+				else MessageBox.Show("MonitorSystem successfully restarted from crash. Could not find Crash reports folder ("
+					+ ApplicationRecoveryAndRestart.CrashReportsDirectory
+					+ ").", "Successfully Restarted", MessageBoxButtons.OK, MessageBoxIcon.Information);
+			}
+
+			ApplicationRecoveryAndRestart.RegisterApplicationRecoveryAndRestart(delegate
+			{
+				//TODO: Application Restart and Recovery is there but no use so far?
+				ApplicationRecoveryAndRestart.WriteCrashReportFile("MonitorSystem", "Application crashed, more details not incorporated yet.");
+			},
+			delegate
+			{
+				labelRecoveryAndRestartSafe.Visible = true;
+				notifyIcon1.ShowBalloonTip(3000, "Recovery and Restart", "MonitorSystem is now Recovery and Restart Safe", ToolTipIcon.Info);
+			});
+
 			try { Win32Api._fpreset(); }
 			catch { }
 
@@ -116,6 +140,11 @@ namespace MonitorSystem
 			//};
 			//mouseHook.Start();
 			//DONE TODO: Textbox does not get cleared when showing queued messages
+		}
+
+		private bool IsApplicationArestartedInstance()
+		{
+			return System.Environment.GetCommandLineArgs().Length > 1 && System.Environment.GetCommandLineArgs()[1] == "/restart";
 		}
 
 		private void PopulateNotifyIconContextMenu()
@@ -230,6 +259,8 @@ namespace MonitorSystem
 			ReadLastQueuedStatusIfFileExist();
 
 			StylingInterop.SetTreeviewVistaStyle(treeViewTodolist);
+
+			if (Environment.CommandLine.ToLower().Contains(@"documents\visual studio 2010\")) labelTestCrash.Visible = true;
 		}
 
 		protected override void WndProc(ref Message m)
@@ -482,6 +513,7 @@ namespace MonitorSystem
 
 		private void Form1_FormClosing(object sender, FormClosingEventArgs e)
 		{
+			ApplicationRecoveryAndRestart.UnregisterApplicationRecoveryAndRestart();
 			if (e.CloseReason == CloseReason.UserClosing)
 			{
 				this.WindowState = FormWindowState.Minimized;
@@ -1948,6 +1980,11 @@ namespace MonitorSystem
 		private void menuItem_AddItemToThisCategory_Click(object sender, EventArgs e)
 		{
 			AddTodoItemNow(treeViewTodolist.SelectedNode.Parent.Text, treeViewTodolist.SelectedNode.Text);
+		}
+
+		private void label5_Click(object sender, EventArgs e)
+		{
+			ApplicationRecoveryAndRestart.TestCrash(true);
 		}
 	}
 
