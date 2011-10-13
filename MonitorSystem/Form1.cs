@@ -1878,6 +1878,9 @@ namespace MonitorSystem
 					TreeNode nodeToSelect = null;
 					TreeNode rootDirNode = new TreeNode(rootDir + "\\");
 					bool AtleastOneFile = false;
+
+                    TreeNode FileNodeWithLastSavedTime = null;
+                    DateTime LastSavedTimeOfAllFileNodes = DateTime.MinValue;
 					foreach (string file in OriginalFilenamesWithModificationsDict.Keys)
 					{
 						string originalFileName = file.Split('\\')[file.Split('\\').Length - 1];// FileChangedDetails.GetOriginalNameFromBackupFile(file.Split('\\')[file.Split('\\').Length - 1]);
@@ -1888,6 +1891,8 @@ namespace MonitorSystem
 						fileNode.Name = originalFileName;
 						fileNode.Text = originalFileName;
 						fileNode.Tag = file;
+
+                        if (FileNodeWithLastSavedTime == null) FileNodeWithLastSavedTime = fileNode;
 
 						fileNode.ContextMenu = formViewBackups.contextMenu_FileNode;
 
@@ -1912,7 +1917,22 @@ namespace MonitorSystem
 							}
 						}
 
-						fileNode.Text = fileNode.Name + " (" + fileNode.GetNodeCount(false) + ")";
+                        DateTime lastSaveTimeInNode = DateTime.MinValue;
+                        foreach (TreeNode subnode in fileNode.Nodes)
+                        {
+                            if (subnode.Tag is FileChangedDetails)
+                            {
+                                FileChangedDetails thisChangedDetails = subnode.Tag as FileChangedDetails;
+                                if (thisChangedDetails.LastWrite > lastSaveTimeInNode) lastSaveTimeInNode = thisChangedDetails.LastWrite;
+                                if (thisChangedDetails.LastWrite > LastSavedTimeOfAllFileNodes)
+                                {
+                                    LastSavedTimeOfAllFileNodes = thisChangedDetails.LastWrite;
+                                    FileNodeWithLastSavedTime = fileNode;
+                                }
+                            }
+                        }
+
+						fileNode.Text = fileNode.Name + "  (" + fileNode.GetNodeCount(false) + ")  " + lastSaveTimeInNode.ToString(FileChangedDetails.humandfriendlyDateFormat);
 
 						TreeNode parentNode = fileNode.Parent;
 						while (parentNode != null)
@@ -1924,6 +1944,7 @@ namespace MonitorSystem
 						}
 						//fileNode.NodeFont = new Font(formViewBackups.treeView1.Font.FontFamily, 8);
 					}
+                    if (FileNodeWithLastSavedTime != null) FileNodeWithLastSavedTime.ForeColor = Color.Green;
 
 					if (AtleastOneFile)
 					{
