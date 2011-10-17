@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.Runtime.InteropServices;
+using System.IO;
 
 namespace MonitorSystem
 {
@@ -32,7 +33,13 @@ namespace MonitorSystem
 				}
 				AllowTextchangeCallback = false;
 				textBox_Description.Text = details.Description;
-				richTextBox_FileContents.LoadFile(details.GetBackupFileName(), RichTextBoxStreamType.PlainText);
+				//TODO: get a way to incorporate the ScintillaNET.dll file so that it does not have to be in the Path Environment Variables.
+				richTextBox_FileContents.IsReadOnly = false;
+				richTextBox_FileContents.Text = File.ReadAllText(details.GetBackupFileName());
+				richTextBox_FileContents.IsReadOnly = true;
+				if (details.OriginalFileName.ToLower().EndsWith(".sql")) richTextBox_FileContents.ConfigurationManager.Language = "mssql";
+				else UserMessages.ShowWarningMessage("Filetype not recognized cannot implement syntax highlighting: " + details.OriginalFileName);
+				//richTextBox_FileContents.LoadFile(details.GetBackupFileName(), RichTextBoxStreamType.PlainText);
 				AllowTextchangeCallback = true;
 			}
 			else
