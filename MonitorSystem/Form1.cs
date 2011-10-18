@@ -90,6 +90,9 @@ namespace MonitorSystem
 			catch { }
 
 			InitializeComponent();
+
+			RefreshSmallTodoitems();
+
 			fileSystemWatcher_SqlFiles.Path = AutoBackupDir;
 
 			if (!Directory.Exists(WindowsInterop.LocalAppDataPath)) Directory.CreateDirectory(WindowsInterop.LocalAppDataPath);
@@ -142,6 +145,19 @@ namespace MonitorSystem
 			//DONE TODO: Textbox does not get cleared when showing queued messages
 		}
 
+		private string SmallTodolistFilePath = SettingsInterop.GetFullFilePathInLocalAppdata(ThisAppName, "SmallTodolist.txt");
+		private void RefreshSmallTodoitems()
+		{
+			queuedNotifications.Clear();
+			List<string> todoItems = TextFilesInterop.GetLinesFromTextFile(SmallTodolistFilePath, false);
+			foreach (string todoitem in todoItems)
+				if (!todoitem.StartsWith("//"))
+				{
+					if (!queuedNotifications.ContainsKey(todoitem)) queuedNotifications.Add(todoitem, new QueuedNotificationClass("Todo item", todoitem));
+					else UserMessages.ShowWarningMessage("Todo item already in list, duplicates not allowed: " + todoitem);
+				}
+		}
+
 		private bool IsApplicationArestartedInstance()
 		{
 			return System.Environment.GetCommandLineArgs().Length > 1 && System.Environment.GetCommandLineArgs()[1] == "/restart";
@@ -149,7 +165,10 @@ namespace MonitorSystem
 
 		private void PopulateNotifyIconContextMenu()
 		{
-			MenuItem editTodoList = new MenuItem("Edit &todo list", delegate { this.ShowForm(); });
+			MenuItem addSmallTodoItem = new MenuItem("Add &small todo item", delegate { AddSmallTodoItem(); });
+			MenuItem refreshSmallTodoList = new MenuItem("Re&fresh small todo list", delegate { RefreshSmallTodoitems(); });
+			MenuItem showAllSmallTodoItems = new MenuItem("Show &all small todo items", delegate { ShowSmallTodolist(); });
+			MenuItem editOnlineTodoList = new MenuItem("Edit online &todo list", delegate { this.ShowForm(); });
 			MenuItem addBackupDescriptionMenuItem = new MenuItem("Add backup &description", delegate { (new AddBackupDescription()).Show(); });
 			MenuItem exitMenuItem = new MenuItem("E&xit", delegate { RequestApplicationQuit(); });
 			MenuItem viewallbackupsMenuItem = new MenuItem("View &all backups", delegate { ViewAllBackupsNow(); });
@@ -159,7 +178,11 @@ namespace MonitorSystem
 
 			notifyIcon1.ContextMenu = new ContextMenu(new MenuItem[]
 			{
-				editTodoList,
+				addSmallTodoItem,
+				refreshSmallTodoList,
+				showAllSmallTodoItems,
+				new MenuItem("-"),
+				editOnlineTodoList,
 				addBackupDescriptionMenuItem,
 				viewallbackupsMenuItem,
 				new MenuItem("-"),
@@ -167,6 +190,18 @@ namespace MonitorSystem
 				testWindowAnimations,
 				testSpeech
 			});
+		}
+
+		private void AddSmallTodoItem()
+		{
+			string newTodoItem = UserMessages.Prompt("Enter new todo item:");
+			if (newTodoItem != null && newTodoItem.Trim() != "")
+			{
+				List<string> todoItemlist = TextFilesInterop.GetLinesFromTextFile(SmallTodolistFilePath, false);
+				todoItemlist.Add(newTodoItem);
+				TextFilesInterop.WriteLinesToTextFile(SmallTodolistFilePath, todoItemlist);
+				RefreshSmallTodoitems();
+			}
 		}
 
 		private void ReadLastQueuedStatusIfFileExist()
@@ -214,7 +249,7 @@ namespace MonitorSystem
 		private void RefreshRegexList()
 		{
 			List<string> tmpList = new List<string>();
-			tmpList = TextFilesInterop.GetLinesFromTextFile(SavedListFileName);
+			tmpList = TextFilesInterop.GetLinesFromTextFile(SavedListFileName, false);
 			if (tmpList.Count > 0) currentEmailPasswordAndRegexList = tmpList;
 		}
 
@@ -516,15 +551,33 @@ namespace MonitorSystem
 		private Dictionary<string, QueuedNotificationClass> queuedNotifications = new Dictionary<string, QueuedNotificationClass>();
 		private void ShowSmallTodolist()
 		{
-			if (!queuedNotifications.ContainsKey("testing queue1")) queuedNotifications.Add("testing queue1", new QueuedNotificationClass("My notification 1", "My message 1"));
-			if (!queuedNotifications.ContainsKey("testing queue2")) queuedNotifications.Add("testing queue2", new QueuedNotificationClass("My notification 2", "My message 2"));
+			if (queuedNotifications.Count == 0) this.notifyIcon1.ShowBalloonTip(3000, "No items", "No todo items currently loaded", ToolTipIcon.Info);
 			foreach (string key in queuedNotifications.Keys)
-				CustomBalloonTip.ShowCustomBalloonTip(queuedNotifications[key].Title, queuedNotifications[key].Message, 0, CustomBalloonTip.IconTypes.Information, delegate
-				{
-					if (UserMessages.Confirm("Mark item as Done: " + key + "?"))
-						queuedNotifications.Remove(key);
-					//MessageBox.Show(key);
-				});
+				CustomBalloonTip.ShowCustomBalloonTip(
+					queuedNotifications[key].Title,
+					queuedNotifications[key].Message,
+					5000,
+					CustomBalloonTip.IconTypes.Information,
+					(sndr) =>
+					{
+						QueueingActionsInterop.EnqueueAction(delegate {
+							if (sndr != null && sndr is string)
+								if (UserMessages.Confirm("Mark item as Done: " + sndr.ToString() + "?"))
+								{
+									string todoItemText = sndr.ToString();
+									List<string> todolistFileLines = TextFilesInterop.GetLinesFromTextFile(SmallTodolistFilePath, true);
+									if (!todolistFileLines.Contains(todoItemText)) UserMessages.ShowWarningMessage("Could not mark todo item as done, missing from file: " + todoItemText);
+									else
+									{
+										todolistFileLines[todolistFileLines.IndexOf(todoItemText)] = "//" + todoItemText;
+										//queuedNotifications.Remove(sndr.ToString());
+									}
+									TextFilesInterop.WriteLinesToTextFile(SmallTodolistFilePath, todolistFileLines);
+									RefreshSmallTodoitems();
+								}
+						});
+					},
+					key);
 		}
 
 		private void ShowForm()
@@ -621,7 +674,7 @@ namespace MonitorSystem
 
 		private void linkLabel_AddEmailAndPassword_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
 		{
-			currentEmailPasswordAndRegexList = TextFilesInterop.GetLinesFromTextFile(SavedListFileName);
+			currentEmailPasswordAndRegexList = TextFilesInterop.GetLinesFromTextFile(SavedListFileName, false);
 			string NewRegexEmailAndPasswordString = GetNewEmailAndPassword();
 			if (NewRegexEmailAndPasswordString != null)
 				currentEmailPasswordAndRegexList.Add(EncodeStringHex(NewRegexEmailAndPasswordString.Split('\t')[0]) + "|" + EncodeStringHex(NewRegexEmailAndPasswordString.Split('\t')[1]) + "|" + EncodeStringHex(NewRegexEmailAndPasswordString.Split('\t')[2]));

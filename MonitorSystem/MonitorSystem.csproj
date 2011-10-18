@@ -121,6 +121,9 @@
       <Link>CustomBalloonTip.designer.cs</Link>
       <DependentUpon>CustomBalloonTip.cs</DependentUpon>
     </Compile>
+    <Compile Include="..\..\SharedClasses\FileSystemInterop.cs">
+      <Link>FileSystemInterop.cs</Link>
+    </Compile>
     <Compile Include="..\..\SharedClasses\Logging.cs">
       <Link>Logging.cs</Link>
     </Compile>
@@ -129,6 +132,12 @@
     </Compile>
     <Compile Include="..\..\SharedClasses\PhpInterop.cs">
       <Link>PhpInterop.cs</Link>
+    </Compile>
+    <Compile Include="..\..\SharedClasses\QueueingActionsInterop.cs">
+      <Link>QueueingActionsInterop.cs</Link>
+    </Compile>
+    <Compile Include="..\..\SharedClasses\SettingsInterop.cs">
+      <Link>SettingsInterop.cs</Link>
     </Compile>
     <Compile Include="..\..\SharedClasses\StylingInterop.cs">
       <Link>StylingInterop.cs</Link>
