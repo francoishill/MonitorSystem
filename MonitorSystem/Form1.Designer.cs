@@ -61,6 +61,7 @@
 					this.menuItem_AddItemToThisCategory = new System.Windows.Forms.MenuItem();
 					this.labelTestCrash = new System.Windows.Forms.Label();
 					this.labelRecoveryAndRestartSafe = new System.Windows.Forms.Label();
+					this.scintilla_DummyScintilla = new ScintillaNet.Scintilla();
 					this.statusStrip1.SuspendLayout();
 					((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
 					((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -70,6 +71,7 @@
 					((System.ComponentModel.ISupportInitialize)(this.numericUpDownRemindedCount)).BeginInit();
 					((System.ComponentModel.ISupportInitialize)(this.numericUpDownAutosnoozeInterval)).BeginInit();
 					((System.ComponentModel.ISupportInitialize)(this.fileSystemWatcher_SqlFiles)).BeginInit();
+					((System.ComponentModel.ISupportInitialize)(this.scintilla_DummyScintilla)).BeginInit();
 					this.SuspendLayout();
 					// 
 					// notifyIcon1
@@ -398,11 +400,32 @@
 					this.labelRecoveryAndRestartSafe.Text = "Recovery and Restart Safe";
 					this.labelRecoveryAndRestartSafe.Visible = false;
 					// 
+					// scintilla_DummyScintilla
+					// 
+					this.scintilla_DummyScintilla.CallTip.BackColor = System.Drawing.SystemColors.Window;
+					this.scintilla_DummyScintilla.ConfigurationManager.Language = "mssql";
+					this.scintilla_DummyScintilla.Location = new System.Drawing.Point(247, 89);
+					this.scintilla_DummyScintilla.Name = "scintilla_DummyScintilla";
+					this.scintilla_DummyScintilla.Size = new System.Drawing.Size(361, 50);
+					this.scintilla_DummyScintilla.Styles.BraceBad.BackColor = System.Drawing.SystemColors.Window;
+					this.scintilla_DummyScintilla.Styles.BraceLight.BackColor = System.Drawing.SystemColors.Window;
+					this.scintilla_DummyScintilla.Styles.CallTip.BackColor = System.Drawing.SystemColors.Window;
+					this.scintilla_DummyScintilla.Styles.ControlChar.BackColor = System.Drawing.SystemColors.Window;
+					this.scintilla_DummyScintilla.Styles.Default.BackColor = System.Drawing.SystemColors.Window;
+					this.scintilla_DummyScintilla.Styles.IndentGuide.BackColor = System.Drawing.SystemColors.Window;
+					this.scintilla_DummyScintilla.Styles.LastPredefined.BackColor = System.Drawing.SystemColors.Window;
+					this.scintilla_DummyScintilla.Styles.Max.BackColor = System.Drawing.SystemColors.Window;
+					this.scintilla_DummyScintilla.TabIndex = 23;
+					this.scintilla_DummyScintilla.Text = "Dummy control to speed up Scintilla loading time";
+					this.scintilla_DummyScintilla.UseFont = true;
+					this.scintilla_DummyScintilla.Visible = false;
+					// 
 					// Form1
 					// 
 					this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 					this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 					this.ClientSize = new System.Drawing.Size(807, 438);
+					this.Controls.Add(this.scintilla_DummyScintilla);
 					this.Controls.Add(this.labelRecoveryAndRestartSafe);
 					this.Controls.Add(this.labelTestCrash);
 					this.Controls.Add(this.checkBoxStopSnooze);
@@ -445,6 +468,7 @@
 					((System.ComponentModel.ISupportInitialize)(this.numericUpDownRemindedCount)).EndInit();
 					((System.ComponentModel.ISupportInitialize)(this.numericUpDownAutosnoozeInterval)).EndInit();
 					((System.ComponentModel.ISupportInitialize)(this.fileSystemWatcher_SqlFiles)).EndInit();
+					((System.ComponentModel.ISupportInitialize)(this.scintilla_DummyScintilla)).EndInit();
 					this.ResumeLayout(false);
 					this.PerformLayout();
 
@@ -483,6 +507,7 @@
 				private System.Windows.Forms.MenuItem menuItem_AddItemToThisCategory;
 				private System.Windows.Forms.Label labelTestCrash;
 				private System.Windows.Forms.Label labelRecoveryAndRestartSafe;
+				private ScintillaNet.Scintilla scintilla_DummyScintilla;
     }
 }
 

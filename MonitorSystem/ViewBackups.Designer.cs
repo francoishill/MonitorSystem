@@ -34,12 +34,12 @@
 			this.statusStrip1 = new System.Windows.Forms.StatusStrip();
 			this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
 			this.splitContainer2 = new System.Windows.Forms.SplitContainer();
+			this.richTextBox_FileContents = new ScintillaNet.Scintilla();
 			this.contextMenu_FileNode = new System.Windows.Forms.ContextMenu();
 			this.menuItem_DiscardEmptyBackups = new System.Windows.Forms.MenuItem();
 			this.contextMenu_ModificationNode = new System.Windows.Forms.ContextMenu();
 			this.menuItem_DiscardBackup = new System.Windows.Forms.MenuItem();
 			this.menuItem_AddDescription = new System.Windows.Forms.MenuItem();
-			this.richTextBox_FileContents = new ScintillaNet.Scintilla();
 			((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
 			this.splitContainer1.Panel1.SuspendLayout();
 			this.splitContainer1.Panel2.SuspendLayout();
@@ -69,7 +69,7 @@
 			// 
 			this.splitContainer1.Panel2.Controls.Add(this.textBoxDescription);
 			this.splitContainer1.Size = new System.Drawing.Size(705, 500);
-			this.splitContainer1.SplitterDistance = 139;
+			this.splitContainer1.SplitterDistance = 137;
 			this.splitContainer1.SplitterWidth = 6;
 			this.splitContainer1.TabIndex = 0;
 			// 
@@ -84,7 +84,7 @@
 			this.treeView1.Name = "treeView1";
 			this.treeView1.ShowLines = false;
 			this.treeView1.ShowRootLines = false;
-			this.treeView1.Size = new System.Drawing.Size(705, 139);
+			this.treeView1.Size = new System.Drawing.Size(705, 137);
 			this.treeView1.TabIndex = 0;
 			this.treeView1.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeView1_AfterSelect);
 			this.treeView1.NodeMouseClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.treeView1_NodeMouseClick);
@@ -98,7 +98,7 @@
 			this.textBoxDescription.Location = new System.Drawing.Point(0, 0);
 			this.textBoxDescription.Name = "textBoxDescription";
 			this.textBoxDescription.ReadOnly = true;
-			this.textBoxDescription.Size = new System.Drawing.Size(705, 355);
+			this.textBoxDescription.Size = new System.Drawing.Size(705, 357);
 			this.textBoxDescription.TabIndex = 0;
 			this.textBoxDescription.Text = "";
 			this.textBoxDescription.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
@@ -140,6 +140,27 @@
 			this.splitContainer2.SplitterDistance = 705;
 			this.splitContainer2.TabIndex = 2;
 			// 
+			// richTextBox_FileContents
+			// 
+			this.richTextBox_FileContents.CausesValidation = false;
+			this.richTextBox_FileContents.ConfigurationManager.Language = "mssql";
+			this.richTextBox_FileContents.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.richTextBox_FileContents.Folding.Flags = ((ScintillaNet.FoldFlag)((ScintillaNet.FoldFlag.LineBeforeContracted | ScintillaNet.FoldFlag.LineAfterContracted)));
+			this.richTextBox_FileContents.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel, ((byte)(0)));
+			this.richTextBox_FileContents.IsBraceMatching = true;
+			this.richTextBox_FileContents.IsReadOnly = true;
+			this.richTextBox_FileContents.LineWrap.Mode = ScintillaNet.WrapMode.Word;
+			this.richTextBox_FileContents.LineWrap.VisualFlags = ((ScintillaNet.WrapVisualFlag)((ScintillaNet.WrapVisualFlag.End | ScintillaNet.WrapVisualFlag.Start)));
+			this.richTextBox_FileContents.Location = new System.Drawing.Point(0, 0);
+			this.richTextBox_FileContents.Margins.FoldMarginColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
+			this.richTextBox_FileContents.Margins.Margin0.Width = 30;
+			this.richTextBox_FileContents.Margins.Margin2.Width = 20;
+			this.richTextBox_FileContents.Name = "richTextBox_FileContents";
+			this.richTextBox_FileContents.Size = new System.Drawing.Size(519, 500);
+			this.richTextBox_FileContents.TabIndex = 0;
+			this.richTextBox_FileContents.UseFont = true;
+			this.richTextBox_FileContents.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler(this.ViewBackups_PreviewKeyDown);
+			// 
 			// contextMenu_FileNode
 			// 
 			this.contextMenu_FileNode.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
@@ -168,32 +189,6 @@
 			this.menuItem_AddDescription.Index = 1;
 			this.menuItem_AddDescription.Text = "Add &description";
 			this.menuItem_AddDescription.Click += new System.EventHandler(this.menuItem_AddDescription_Click);
-			// 
-			// richTextBox_FileContents
-			// 
-			this.richTextBox_FileContents.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.richTextBox_FileContents.Folding.Flags = ((ScintillaNet.FoldFlag)((ScintillaNet.FoldFlag.LineBeforeContracted | ScintillaNet.FoldFlag.LineAfterContracted)));
-			this.richTextBox_FileContents.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel, ((byte)(0)));
-			this.richTextBox_FileContents.IsBraceMatching = true;
-			this.richTextBox_FileContents.IsReadOnly = true;
-			this.richTextBox_FileContents.LineWrap.Mode = ScintillaNet.WrapMode.Word;
-			this.richTextBox_FileContents.LineWrap.VisualFlags = ((ScintillaNet.WrapVisualFlag)((ScintillaNet.WrapVisualFlag.End | ScintillaNet.WrapVisualFlag.Start)));
-			this.richTextBox_FileContents.Location = new System.Drawing.Point(0, 0);
-			this.richTextBox_FileContents.Margins.FoldMarginColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
-			this.richTextBox_FileContents.Margins.Margin0.Width = 30;
-			this.richTextBox_FileContents.Margins.Margin2.Width = 20;
-			this.richTextBox_FileContents.Name = "richTextBox_FileContents";
-			this.richTextBox_FileContents.Size = new System.Drawing.Size(519, 500);
-			this.richTextBox_FileContents.Styles.BraceBad.FontName = "Verdana";
-			this.richTextBox_FileContents.Styles.BraceLight.FontName = "Verdana";
-			this.richTextBox_FileContents.Styles.ControlChar.FontName = "Verdana";
-			this.richTextBox_FileContents.Styles.Default.FontName = "Verdana";
-			this.richTextBox_FileContents.Styles.IndentGuide.FontName = "Verdana";
-			this.richTextBox_FileContents.Styles.LastPredefined.FontName = "Verdana";
-			this.richTextBox_FileContents.Styles.LineNumber.FontName = "Verdana";
-			this.richTextBox_FileContents.Styles.Max.FontName = "Verdana";
-			this.richTextBox_FileContents.TabIndex = 0;
-			this.richTextBox_FileContents.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler(this.ViewBackups_PreviewKeyDown);
 			// 
 			// ViewBackups
 			// 

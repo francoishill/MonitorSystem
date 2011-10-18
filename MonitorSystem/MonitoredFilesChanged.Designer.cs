@@ -165,9 +165,10 @@
 			// 
 			// richTextBox_FileContents
 			// 
+			this.richTextBox_FileContents.ConfigurationManager.Language = "mssql";
 			this.richTextBox_FileContents.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.richTextBox_FileContents.Folding.Flags = ((ScintillaNet.FoldFlag)((ScintillaNet.FoldFlag.LineBeforeContracted | ScintillaNet.FoldFlag.LineAfterContracted)));
-			this.richTextBox_FileContents.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel, ((byte)(0)));
+			this.richTextBox_FileContents.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel, ((byte)(0)));
 			this.richTextBox_FileContents.IsBraceMatching = true;
 			this.richTextBox_FileContents.IsReadOnly = true;
 			this.richTextBox_FileContents.LineWrap.Mode = ScintillaNet.WrapMode.Word;
@@ -178,15 +179,8 @@
 			this.richTextBox_FileContents.Margins.Margin2.Width = 20;
 			this.richTextBox_FileContents.Name = "richTextBox_FileContents";
 			this.richTextBox_FileContents.Size = new System.Drawing.Size(531, 459);
-			this.richTextBox_FileContents.Styles.BraceBad.FontName = "Verdana";
-			this.richTextBox_FileContents.Styles.BraceLight.FontName = "Verdana";
-			this.richTextBox_FileContents.Styles.ControlChar.FontName = "Verdana";
-			this.richTextBox_FileContents.Styles.Default.FontName = "Verdana";
-			this.richTextBox_FileContents.Styles.IndentGuide.FontName = "Verdana";
-			this.richTextBox_FileContents.Styles.LastPredefined.FontName = "Verdana";
-			this.richTextBox_FileContents.Styles.LineNumber.FontName = "Verdana";
-			this.richTextBox_FileContents.Styles.Max.FontName = "Verdana";
 			this.richTextBox_FileContents.TabIndex = 1;
+			this.richTextBox_FileContents.UseFont = true;
 			this.richTextBox_FileContents.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler(this.MonitoredFilesChanged_PreviewKeyDown);
 			// 
 			// MonitoredFilesChanged

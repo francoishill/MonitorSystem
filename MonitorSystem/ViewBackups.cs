@@ -38,7 +38,11 @@ namespace MonitorSystem
 				richTextBox_FileContents.IsReadOnly = false;
 				richTextBox_FileContents.Text = File.ReadAllText(fcd.GetBackupFileName());
 				richTextBox_FileContents.IsReadOnly = true;
-				if (fcd.OriginalFileName.ToLower().EndsWith(".sql")) richTextBox_FileContents.ConfigurationManager.Language = "mssql";
+				if (fcd.OriginalFileName.ToLower().EndsWith(".sql"))
+				{
+					if (richTextBox_FileContents.ConfigurationManager.Language != "mssql")
+						richTextBox_FileContents.ConfigurationManager.Language = "mssql";
+				}
 				else UserMessages.ShowWarningMessage("Filetype not recognized cannot implement syntax highlighting: " + fcd.OriginalFileName);
 				//richTextBox_FileContents.LoadFile(fcd.GetBackupFileName(), RichTextBoxStreamType.PlainText);
 				toolStripStatusLabel1.Text = fcd.GetBackupFileName();//.OriginalFileName;
