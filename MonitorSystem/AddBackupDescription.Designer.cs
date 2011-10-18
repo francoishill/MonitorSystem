@@ -55,20 +55,21 @@
 			this.toolStripStatusLabel1.Text = "filename:";
 			this.toolStripStatusLabel1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			// 
-			// textBox1
+			// textBox_Description
 			// 
 			this.textBox_Description.AllowDrop = true;
-			this.textBox_Description.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+			this.textBox_Description.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+									| System.Windows.Forms.AnchorStyles.Left)
+									| System.Windows.Forms.AnchorStyles.Right)));
 			this.textBox_Description.Location = new System.Drawing.Point(12, 21);
 			this.textBox_Description.Multiline = true;
-			this.textBox_Description.Name = "textBox1";
+			this.textBox_Description.Name = "textBox_Description";
 			this.textBox_Description.Size = new System.Drawing.Size(439, 112);
 			this.textBox_Description.TabIndex = 2;
 			this.textBox_Description.DragDrop += new System.Windows.Forms.DragEventHandler(this.textBox1_DragDrop);
 			this.textBox_Description.DragEnter += new System.Windows.Forms.DragEventHandler(this.textBox1_DragEnter);
 			this.textBox_Description.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.textBox1_KeyPress);
+			this.textBox_Description.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler(this.textBox_Description_PreviewKeyDown);
 			// 
 			// label1
 			// 

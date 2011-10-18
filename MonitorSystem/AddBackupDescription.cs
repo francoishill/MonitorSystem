@@ -60,10 +60,17 @@ namespace MonitorSystem
 			if (e.KeyChar == (char)10)//Ctrl + Enter
 			{
 				this.DialogResult = System.Windows.Forms.DialogResult.OK;
+				this.Close();
 			}
-			else if (e.KeyChar == (char)27)
+		}
+
+		private void textBox_Description_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
+		{
+			//Note this event is used for multiple controls
+			if (e.KeyCode == Keys.Escape)
 			{
 				this.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+				this.Close();
 			}
 		}
 	}

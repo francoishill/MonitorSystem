@@ -149,11 +149,8 @@ namespace MonitorSystem
 
 		private void PopulateNotifyIconContextMenu()
 		{
-			MenuItem addBackupDescriptionMenuItem = new MenuItem("Add backup &description", delegate
-				{
-					AddBackupDescription formAddBackupDescription = new AddBackupDescription();
-					formAddBackupDescription.Show();
-				});
+			MenuItem editTodoList = new MenuItem("Edit &todo list", delegate { this.ShowForm(); });
+			MenuItem addBackupDescriptionMenuItem = new MenuItem("Add backup &description", delegate { (new AddBackupDescription()).Show(); });
 			MenuItem exitMenuItem = new MenuItem("E&xit", delegate { RequestApplicationQuit(); });
 			MenuItem viewallbackupsMenuItem = new MenuItem("View &all backups", delegate { ViewAllBackupsNow(); });
 			//MenuItem testcustomballoontipMenuItem = new MenuItem("Test &custom balloontip", delegate { CustomBalloonTip.ShowCustomBalloonTip("Hallo", "This is a custom balloon tip for 3 seconds...", 3000, CustomBalloonTip.IconTypes.Shield, delegate { PerformBalloonTipClick(); }); });
@@ -162,6 +159,7 @@ namespace MonitorSystem
 
 			notifyIcon1.ContextMenu = new ContextMenu(new MenuItem[]
 			{
+				editTodoList,
 				addBackupDescriptionMenuItem,
 				viewallbackupsMenuItem,
 				new MenuItem("-"),
@@ -499,6 +497,37 @@ namespace MonitorSystem
 		}
 
 		private void notifyIcon1_MouseDoubleClick(object sender, MouseEventArgs e)
+		{
+			//ShowForm();
+			ShowSmallTodolist();
+		}
+
+		//TODO: Continue implementing this concept (having a todo list which can be easily accessed by double clicking on tray icon
+		class QueuedNotificationClass
+		{
+			public string Title;
+			public string Message;
+			public QueuedNotificationClass(string TitleIn, string MessageIn)
+			{
+				Title = TitleIn;
+				Message = MessageIn;
+			}
+		}
+		private Dictionary<string, QueuedNotificationClass> queuedNotifications = new Dictionary<string, QueuedNotificationClass>();
+		private void ShowSmallTodolist()
+		{
+			if (!queuedNotifications.ContainsKey("testing queue1")) queuedNotifications.Add("testing queue1", new QueuedNotificationClass("My notification 1", "My message 1"));
+			if (!queuedNotifications.ContainsKey("testing queue2")) queuedNotifications.Add("testing queue2", new QueuedNotificationClass("My notification 2", "My message 2"));
+			foreach (string key in queuedNotifications.Keys)
+				CustomBalloonTip.ShowCustomBalloonTip(queuedNotifications[key].Title, queuedNotifications[key].Message, 0, CustomBalloonTip.IconTypes.Information, delegate
+				{
+					if (UserMessages.Confirm("Mark item as Done: " + key + "?"))
+						queuedNotifications.Remove(key);
+					//MessageBox.Show(key);
+				});
+		}
+
+		private void ShowForm()
 		{
 			this.Show();
 			this.WindowState = FormWindowState.Normal;
@@ -1879,8 +1908,8 @@ namespace MonitorSystem
 					TreeNode rootDirNode = new TreeNode(rootDir + "\\");
 					bool AtleastOneFile = false;
 
-                    TreeNode FileNodeWithLastSavedTime = null;
-                    DateTime LastSavedTimeOfAllFileNodes = DateTime.MinValue;
+					TreeNode FileNodeWithLastSavedTime = null;
+					DateTime LastSavedTimeOfAllFileNodes = DateTime.MinValue;
 					foreach (string file in OriginalFilenamesWithModificationsDict.Keys)
 					{
 						string originalFileName = file.Split('\\')[file.Split('\\').Length - 1];// FileChangedDetails.GetOriginalNameFromBackupFile(file.Split('\\')[file.Split('\\').Length - 1]);
@@ -1892,7 +1921,7 @@ namespace MonitorSystem
 						fileNode.Text = originalFileName;
 						fileNode.Tag = file;
 
-                        if (FileNodeWithLastSavedTime == null) FileNodeWithLastSavedTime = fileNode;
+						if (FileNodeWithLastSavedTime == null) FileNodeWithLastSavedTime = fileNode;
 
 						fileNode.ContextMenu = formViewBackups.contextMenu_FileNode;
 
@@ -1917,20 +1946,20 @@ namespace MonitorSystem
 							}
 						}
 
-                        DateTime lastSaveTimeInNode = DateTime.MinValue;
-                        foreach (TreeNode subnode in fileNode.Nodes)
-                        {
-                            if (subnode.Tag is FileChangedDetails)
-                            {
-                                FileChangedDetails thisChangedDetails = subnode.Tag as FileChangedDetails;
-                                if (thisChangedDetails.LastWrite > lastSaveTimeInNode) lastSaveTimeInNode = thisChangedDetails.LastWrite;
-                                if (thisChangedDetails.LastWrite > LastSavedTimeOfAllFileNodes)
-                                {
-                                    LastSavedTimeOfAllFileNodes = thisChangedDetails.LastWrite;
-                                    FileNodeWithLastSavedTime = fileNode;
-                                }
-                            }
-                        }
+						DateTime lastSaveTimeInNode = DateTime.MinValue;
+						foreach (TreeNode subnode in fileNode.Nodes)
+						{
+							if (subnode.Tag is FileChangedDetails)
+							{
+								FileChangedDetails thisChangedDetails = subnode.Tag as FileChangedDetails;
+								if (thisChangedDetails.LastWrite > lastSaveTimeInNode) lastSaveTimeInNode = thisChangedDetails.LastWrite;
+								if (thisChangedDetails.LastWrite > LastSavedTimeOfAllFileNodes)
+								{
+									LastSavedTimeOfAllFileNodes = thisChangedDetails.LastWrite;
+									FileNodeWithLastSavedTime = fileNode;
+								}
+							}
+						}
 
 						fileNode.Text = fileNode.Name + "  (" + fileNode.GetNodeCount(false) + ")  " + lastSaveTimeInNode.ToString(FileChangedDetails.humandfriendlyDateFormat);
 
@@ -1944,7 +1973,7 @@ namespace MonitorSystem
 						}
 						//fileNode.NodeFont = new Font(formViewBackups.treeView1.Font.FontFamily, 8);
 					}
-                    if (FileNodeWithLastSavedTime != null) FileNodeWithLastSavedTime.ForeColor = Color.Green;
+					if (FileNodeWithLastSavedTime != null) FileNodeWithLastSavedTime.ForeColor = Color.Green;
 
 					if (AtleastOneFile)
 					{
