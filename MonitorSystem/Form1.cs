@@ -553,16 +553,17 @@ namespace MonitorSystem
 		{
 			if (queuedNotifications.Count == 0) this.notifyIcon1.ShowBalloonTip(3000, "No items", "No todo items currently loaded", ToolTipIcon.Info);
 			foreach (string key in queuedNotifications.Keys)
-				CustomBalloonTip.ShowCustomBalloonTip(
+				CustomBalloonTipwpf.ShowCustomBalloonTip(
 					queuedNotifications[key].Title,
 					queuedNotifications[key].Message,
 					5000,
-					CustomBalloonTip.IconTypes.Information,
+					CustomBalloonTipwpf.IconTypes.Information,
 					(sndr) =>
 					{
-						QueueingActionsInterop.EnqueueAction(delegate {
-							if (sndr != null && sndr is string)
-								if (UserMessages.Confirm("Mark item as Done: " + sndr.ToString() + "?"))
+						if (sndr != null && sndr is string)
+							if (UserMessages.Confirm("Mark item as Done: " + sndr.ToString() + "?"))
+							{
+								QueueingActionsInterop.EnqueueAction(delegate
 								{
 									string todoItemText = sndr.ToString();
 									List<string> todolistFileLines = TextFilesInterop.GetLinesFromTextFile(SmallTodolistFilePath, true);
@@ -574,8 +575,8 @@ namespace MonitorSystem
 									}
 									TextFilesInterop.WriteLinesToTextFile(SmallTodolistFilePath, todolistFileLines);
 									RefreshSmallTodoitems();
-								}
-						});
+								});
+							}
 					},
 					key);
 		}
@@ -1596,13 +1597,13 @@ namespace MonitorSystem
 
 		private void ShowCustomBalloonTipNotification(string Description, int duration = 3000, string Title = "Title", ToolTipIcon icon = ToolTipIcon.Info, BalloonTipActionEnum BalloonTipActionIn = BalloonTipActionEnum.None)
 		{
-			CustomBalloonTip.IconTypes iconType =
-				icon == ToolTipIcon.Error ? CustomBalloonTip.IconTypes.Error :
-				icon == ToolTipIcon.Info ? CustomBalloonTip.IconTypes.Information :
-				icon == ToolTipIcon.Warning ? CustomBalloonTip.IconTypes.Warning :
-				CustomBalloonTip.IconTypes.None;
+			CustomBalloonTipwpf.IconTypes iconType =
+				icon == ToolTipIcon.Error ? CustomBalloonTipwpf.IconTypes.Error :
+				icon == ToolTipIcon.Info ? CustomBalloonTipwpf.IconTypes.Information :
+				icon == ToolTipIcon.Warning ? CustomBalloonTipwpf.IconTypes.Warning :
+				CustomBalloonTipwpf.IconTypes.None;
 			BalloonTipAction = BalloonTipActionIn;
-			CustomBalloonTip.ShowCustomBalloonTip(Title, Description, duration, iconType, delegate { PerformBalloonTipClick(); });
+			CustomBalloonTipwpf.ShowCustomBalloonTip(Title, Description, duration, iconType, delegate { PerformBalloonTipClick(); });
 		}
 
 		//private void tmpShowPopupToolStripMenuItem_Click(object sender, EventArgs e)
