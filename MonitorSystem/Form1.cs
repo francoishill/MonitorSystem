@@ -557,7 +557,7 @@ namespace MonitorSystem
 					queuedNotifications[key].Title,
 					queuedNotifications[key].Message,
 					5000,
-					CustomBalloonTipwpf.IconTypes.Information,
+					CustomBalloonTipwpf.IconTypes.None,
 					(sndr) =>
 					{
 						if (sndr != null && sndr is string)
@@ -578,7 +578,9 @@ namespace MonitorSystem
 								});
 							}
 					},
-					key);
+					key,
+					false,
+					3);
 		}
 
 		private void ShowForm()
