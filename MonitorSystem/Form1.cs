@@ -551,6 +551,7 @@ namespace MonitorSystem
 		private Dictionary<string, QueuedNotificationClass> queuedNotifications = new Dictionary<string, QueuedNotificationClass>();
 		private void ShowSmallTodolist()
 		{
+			//TODO: Write app for transferring files (over internet / TCP), must totally manage it and have resume capability.
 			if (queuedNotifications.Count == 0) this.notifyIcon1.ShowBalloonTip(3000, "No items", "No todo items currently loaded", ToolTipIcon.Info);
 			foreach (string key in queuedNotifications.Keys)
 				CustomBalloonTipwpf.ShowCustomBalloonTip(
