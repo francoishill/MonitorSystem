@@ -30,7 +30,7 @@
 		{
 			this.splitContainer1 = new System.Windows.Forms.SplitContainer();
 			this.treeView1 = new System.Windows.Forms.TreeView();
-			this.textBoxDescription = new System.Windows.Forms.RichTextBox();
+			this.richTextBox_Description = new System.Windows.Forms.RichTextBox();
 			this.statusStrip1 = new System.Windows.Forms.StatusStrip();
 			this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
 			this.splitContainer2 = new System.Windows.Forms.SplitContainer();
@@ -67,7 +67,7 @@
 			// 
 			// splitContainer1.Panel2
 			// 
-			this.splitContainer1.Panel2.Controls.Add(this.textBoxDescription);
+			this.splitContainer1.Panel2.Controls.Add(this.richTextBox_Description);
 			this.splitContainer1.Size = new System.Drawing.Size(705, 500);
 			this.splitContainer1.SplitterDistance = 137;
 			this.splitContainer1.SplitterWidth = 6;
@@ -92,17 +92,17 @@
 			// 
 			// textBoxDescription
 			// 
-			this.textBoxDescription.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.textBoxDescription.Font = new System.Drawing.Font("Microsoft Sans Serif", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel, ((byte)(0)));
-			this.textBoxDescription.ForeColor = System.Drawing.Color.DarkGreen;
-			this.textBoxDescription.Location = new System.Drawing.Point(0, 0);
-			this.textBoxDescription.Name = "textBoxDescription";
-			this.textBoxDescription.ReadOnly = true;
-			this.textBoxDescription.Size = new System.Drawing.Size(705, 357);
-			this.textBoxDescription.TabIndex = 0;
-			this.textBoxDescription.Text = "";
-			this.textBoxDescription.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
-			this.textBoxDescription.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler(this.ViewBackups_PreviewKeyDown);
+			this.richTextBox_Description.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.richTextBox_Description.Font = new System.Drawing.Font("Microsoft Sans Serif", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel, ((byte)(0)));
+			this.richTextBox_Description.ForeColor = System.Drawing.Color.DarkGreen;
+			this.richTextBox_Description.Location = new System.Drawing.Point(0, 0);
+			this.richTextBox_Description.Name = "textBoxDescription";
+			this.richTextBox_Description.ReadOnly = true;
+			this.richTextBox_Description.Size = new System.Drawing.Size(705, 357);
+			this.richTextBox_Description.TabIndex = 0;
+			this.richTextBox_Description.Text = "";
+			this.richTextBox_Description.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
+			this.richTextBox_Description.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler(this.ViewBackups_PreviewKeyDown);
 			// 
 			// statusStrip1
 			// 
@@ -230,7 +230,7 @@
 		private System.Windows.Forms.StatusStrip statusStrip1;
 		private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
 		private System.Windows.Forms.SplitContainer splitContainer2;
-		public System.Windows.Forms.RichTextBox textBoxDescription;
+		public System.Windows.Forms.RichTextBox richTextBox_Description;
 		private System.Windows.Forms.MenuItem menuItem_DiscardEmptyBackups;
 		public System.Windows.Forms.ContextMenu contextMenu_FileNode;
 		public System.Windows.Forms.ContextMenu contextMenu_ModificationNode;

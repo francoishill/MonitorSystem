@@ -117,6 +117,9 @@
     <Compile Include="..\..\SharedClasses\ApplicationRecoveryAndRestart.cs">
       <Link>ApplicationRecoveryAndRestart.cs</Link>
     </Compile>
+    <Compile Include="..\..\SharedClasses\AutoCompleteInterop.cs">
+      <Link>AutoCompleteInterop.cs</Link>
+    </Compile>
     <Compile Include="..\..\SharedClasses\CustomBalloonTip.cs">
       <Link>CustomBalloonTip.cs</Link>
       <SubType>Form</SubType>

@@ -30,7 +30,7 @@
 		{
 			this.splitContainer1 = new System.Windows.Forms.SplitContainer();
 			this.treeView1 = new System.Windows.Forms.TreeView();
-			this.textBox_Description = new System.Windows.Forms.RichTextBox();
+			this.richTextBox_Description = new System.Windows.Forms.RichTextBox();
 			this.contextMenu_TotalFile = new System.Windows.Forms.ContextMenu();
 			this.menuItem_ClearMessages = new System.Windows.Forms.MenuItem();
 			this.menuItem_DiscardEmpty = new System.Windows.Forms.MenuItem();
@@ -65,7 +65,7 @@
 			// 
 			// splitContainer1.Panel2
 			// 
-			this.splitContainer1.Panel2.Controls.Add(this.textBox_Description);
+			this.splitContainer1.Panel2.Controls.Add(this.richTextBox_Description);
 			this.splitContainer1.Size = new System.Drawing.Size(558, 459);
 			this.splitContainer1.SplitterDistance = 138;
 			this.splitContainer1.TabIndex = 2;
@@ -87,17 +87,17 @@
 			// 
 			// textBox_Description
 			// 
-			this.textBox_Description.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.textBox_Description.Font = new System.Drawing.Font("Comic Sans MS", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel, ((byte)(0)));
-			this.textBox_Description.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(0)))));
-			this.textBox_Description.Location = new System.Drawing.Point(0, 0);
-			this.textBox_Description.Name = "textBox_Description";
-			this.textBox_Description.Size = new System.Drawing.Size(558, 317);
-			this.textBox_Description.TabIndex = 1;
-			this.textBox_Description.Text = "";
-			this.textBox_Description.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
-			this.textBox_Description.KeyDown += new System.Windows.Forms.KeyEventHandler(this.textBox_Description_KeyDown);
-			this.textBox_Description.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler(this.MonitoredFilesChanged_PreviewKeyDown);
+			this.richTextBox_Description.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.richTextBox_Description.Font = new System.Drawing.Font("Comic Sans MS", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel, ((byte)(0)));
+			this.richTextBox_Description.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(0)))));
+			this.richTextBox_Description.Location = new System.Drawing.Point(0, 0);
+			this.richTextBox_Description.Name = "textBox_Description";
+			this.richTextBox_Description.Size = new System.Drawing.Size(558, 317);
+			this.richTextBox_Description.TabIndex = 1;
+			this.richTextBox_Description.Text = "";
+			this.richTextBox_Description.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
+			this.richTextBox_Description.KeyDown += new System.Windows.Forms.KeyEventHandler(this.textBox_Description_KeyDown);
+			this.richTextBox_Description.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler(this.MonitoredFilesChanged_PreviewKeyDown);
 			// 
 			// contextMenu_TotalFile
 			// 
@@ -221,7 +221,7 @@
 		private System.Windows.Forms.MenuItem menuItem_Accept;
 		private System.Windows.Forms.MenuItem menuItem_Discard;
 		private System.Windows.Forms.SplitContainer splitContainer2;
-		public System.Windows.Forms.RichTextBox textBox_Description;
+		public System.Windows.Forms.RichTextBox richTextBox_Description;
 		private ScintillaNet.Scintilla richTextBox_FileContents;
 	}
 }

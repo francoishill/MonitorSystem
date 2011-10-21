@@ -34,9 +34,9 @@ namespace MonitorSystem
 			if (e.Node != null && e.Node.Tag != null && e.Node.Tag is Form1.FileChangedDetails)
 			{
 				Form1.FileChangedDetails fcd = e.Node.Tag as Form1.FileChangedDetails;
-				textBoxDescription.Text = fcd.Description;
+				richTextBox_Description.Text = fcd.Description;
 				richTextBox_FileContents.IsReadOnly = false;
-				richTextBox_FileContents.Text = File.ReadAllText(fcd.GetBackupFileName());
+				richTextBox_FileContents.Text = File.Exists(fcd.GetBackupFileName()) ? File.ReadAllText(fcd.GetBackupFileName()) : "";
 				richTextBox_FileContents.IsReadOnly = true;
 				if (fcd.OriginalFileName.ToLower().EndsWith(".sql"))
 				{
@@ -50,7 +50,7 @@ namespace MonitorSystem
 			else
 			{
 				toolStripStatusLabel1.Text = "";
-				textBoxDescription.Text = null;
+				richTextBox_Description.Text = null;
 				richTextBox_FileContents.Text = null;
 			}
 		}
@@ -115,7 +115,7 @@ namespace MonitorSystem
 				{
 					tmpfcd.Description = formAddBackup.textBox_Description.Text;
 					tmpfcd.WriteDescriptionFileNow();
-					textBoxDescription.Text = formAddBackup.textBox_Description.Text;
+					richTextBox_Description.Text = formAddBackup.textBox_Description.Text;
 					treeView1.SelectedNode.ForeColor = tmpfcd.GetColorBasedOnDescription();
 				}
 			}

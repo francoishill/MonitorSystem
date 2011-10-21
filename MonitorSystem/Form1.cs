@@ -1803,11 +1803,11 @@ namespace MonitorSystem
 						return;
 					}
 
-					formMonitoredFilesChanged.textBox_Description.Text = "";
+					formMonitoredFilesChanged.richTextBox_Description.Text = "";
 					formMonitoredFilesChanged.ShowDialog(this);
-					formMonitoredFilesChanged.textBox_Description.Enabled = false;
+					formMonitoredFilesChanged.richTextBox_Description.Enabled = false;
 					formMonitoredFilesChanged.AllowTextchangeCallback = false;
-					formMonitoredFilesChanged.textBox_Description.Text = null;
+					formMonitoredFilesChanged.richTextBox_Description.Text = null;
 					formMonitoredFilesChanged.AllowTextchangeCallback = true;
 					foreach (string file in QueuedFileChanges.Keys)
 					{

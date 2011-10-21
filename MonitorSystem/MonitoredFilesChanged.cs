@@ -16,13 +16,14 @@ namespace MonitorSystem
 		public MonitoredFilesChanged()
 		{
 			InitializeComponent();
+			AutoCompleteInterop.EnableRichTextboxAutocomplete(richTextBox_Description);//, AutoCompleteInterop.GetWordlistOfFileContents(richTextBox_FileContents.Text));
 		}
 
 		private void treeView1_AfterSelect(object sender, TreeViewEventArgs e)
 		{
 			if (e.Node != null && e.Node.Tag is Form1.FileChangedDetails)
 			{
-				textBox_Description.Enabled = true;
+				richTextBox_Description.Enabled = true;
 				richTextBox_FileContents.Enabled = true;
 				Form1.FileChangedDetails details = e.Node.Tag as Form1.FileChangedDetails;
 				if (details.QueueStatus == Form1.FileChangedDetails.QueueStatusEnum.New)
@@ -32,10 +33,11 @@ namespace MonitorSystem
 					//e.Node.NodeFont = new Font(e.Node.NodeFont, FontStyle.Strikeout);
 				}
 				AllowTextchangeCallback = false;
-				textBox_Description.Text = details.Description;
+				richTextBox_Description.Text = details.Description;
 				//TODO: get a way to incorporate the ScintillaNET.dll file so that it does not have to be in the Path Environment Variables.
 				richTextBox_FileContents.IsReadOnly = false;
 				richTextBox_FileContents.Text = File.ReadAllText(details.GetBackupFileName());
+				AutoCompleteInterop.SetFullAutocompleteListOfRichTextbox(richTextBox_Description, AutoCompleteInterop.GetWordlistOfFileContents(richTextBox_FileContents.Text));
 				richTextBox_FileContents.IsReadOnly = true;
 				if (details.OriginalFileName.ToLower().EndsWith(".sql"))
 				{
@@ -48,8 +50,8 @@ namespace MonitorSystem
 			}
 			else
 			{
-				textBox_Description.Enabled = false;
-				textBox_Description.Text = null;
+				richTextBox_Description.Enabled = false;
+				richTextBox_Description.Text = null;
 				richTextBox_FileContents.Enabled = false;
 				richTextBox_FileContents.Text = null;
 			}
@@ -63,9 +65,9 @@ namespace MonitorSystem
 				if (treeView1.SelectedNode != null && treeView1.SelectedNode.Tag is Form1.FileChangedDetails)
 				{
 					Form1.FileChangedDetails details =  treeView1.SelectedNode.Tag as Form1.FileChangedDetails;
-					details.Description = textBox_Description.Text;
+					details.Description = richTextBox_Description.Text;
 					//details.UpdateNodeFontandcolorFromQueueStatus(treeView1.SelectedNode);
-					if (textBox_Description.Text.Length > 0)
+					if (richTextBox_Description.Text.Length > 0)
 						details.SetNewQueueStatusAndUpdateNodeFontandcolor(details.QueueStatus == Form1.FileChangedDetails.QueueStatusEnum.Read ? Form1.FileChangedDetails.QueueStatusEnum.Accepted : details.QueueStatus, treeView1.SelectedNode);
 					else
 						details.SetNewQueueStatusAndUpdateNodeFontandcolor(details.QueueStatus == Form1.FileChangedDetails.QueueStatusEnum.Accepted ? Form1.FileChangedDetails.QueueStatusEnum.Read : details.QueueStatus, treeView1.SelectedNode);
@@ -85,7 +87,7 @@ namespace MonitorSystem
 			this.Activate();
 			this.TopMost = false;
 			if (treeView1.SelectedNode != null && treeView1.SelectedNode.Tag is Form1.FileChangedDetails)
-				textBox_Description.Focus();
+				richTextBox_Description.Focus();
 			else treeView1.Focus();
 
 			StylingInterop.SetTreeviewVistaStyle(treeView1);
@@ -159,7 +161,7 @@ namespace MonitorSystem
             if (e.KeyCode == Keys.V && e.Control && !e.Alt && !e.Shift)
             {
                 e.Handled = true;
-                textBox_Description.Paste(DataFormats.GetFormat(DataFormats.Text));
+                richTextBox_Description.Paste(DataFormats.GetFormat(DataFormats.Text));
             }
         }
 	}
