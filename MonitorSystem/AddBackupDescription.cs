@@ -12,7 +12,7 @@ namespace MonitorSystem
 {
 	public partial class AddBackupDescription : Form
 	{
-		public AddBackupDescription(Form1.FileChangedDetails fileChangedDetails = null)
+		public AddBackupDescription(MainForm.FileChangedDetails fileChangedDetails = null)
 		{
 			InitializeComponent();
 

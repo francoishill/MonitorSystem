@@ -1,21 +1,20 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Net;
-using System.Runtime.InteropServices;
-using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
-using System.Diagnostics;
 
 namespace MonitorSystem
 {
-	public partial class Form1 : Form
+	public partial class MainForm : Form
 	{
 		private static string ThisAppName = "MonitorSystem";
 		//public static readonly string LocalAppDataPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\" + "FJH" + "\\" + ThisAppName;
@@ -60,7 +59,7 @@ namespace MonitorSystem
 
 		//OverlayForm overlayForm = new OverlayForm();
 
-		public Form1()
+		public MainForm()
 		{
 			if (IsApplicationArestartedInstance())
 			{
@@ -917,7 +916,7 @@ namespace MonitorSystem
 
 		private void AddTabSeperatedLineToTreeview(string line)
 		{
-			if (line.Contains('\t') && line.Split('\t').Length >= 4)
+			if (line.Contains("\t") && line.Split('\t').Length >= 4)
 			{
 				string tmpCategory = line.Split('\t')[0];
 				string tmpSubcat = line.Split('\t')[1];
@@ -2094,6 +2093,8 @@ namespace MonitorSystem
 			ApplicationRecoveryAndRestart.TestCrash(true);
 		}
 	}
+
+
 
 	public class ItemDetails
 	{

@@ -189,11 +189,11 @@
     <Compile Include="AddTodoItem.Designer.cs">
       <DependentUpon>AddTodoItem.cs</DependentUpon>
     </Compile>
-    <Compile Include="Form1.cs">
+    <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Form1.Designer.cs">
-      <DependentUpon>Form1.cs</DependentUpon>
+    <Compile Include="MainForm.Designer.cs">
+      <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
     <Compile Include="MonitoredFilesChanged.cs">
       <SubType>Form</SubType>
@@ -233,9 +233,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="AddTodoItem.resx">
       <DependentUpon>AddTodoItem.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Form1.resx">
-      <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MonitoredFilesChanged.resx">
       <DependentUpon>MonitoredFilesChanged.cs</DependentUpon>

@@ -8,7 +8,7 @@ using System.Text;
 using System.Windows.Forms;
 using System.IO;
 using System.Diagnostics;
-using FileChangedDetails = MonitorSystem.Form1.FileChangedDetails;
+using FileChangedDetails = MonitorSystem.MainForm.FileChangedDetails;
 
 namespace MonitorSystem
 {
@@ -31,9 +31,9 @@ namespace MonitorSystem
 
 		private void treeView1_AfterSelect(object sender, TreeViewEventArgs e)
 		{
-			if (e.Node != null && e.Node.Tag != null && e.Node.Tag is Form1.FileChangedDetails)
+			if (e.Node != null && e.Node.Tag != null && e.Node.Tag is MainForm.FileChangedDetails)
 			{
-				Form1.FileChangedDetails fcd = e.Node.Tag as Form1.FileChangedDetails;
+				MainForm.FileChangedDetails fcd = e.Node.Tag as MainForm.FileChangedDetails;
 				richTextBox_Description.Text = fcd.Description;
 				richTextBox_FileContents.IsReadOnly = false;
 				richTextBox_FileContents.Text = File.Exists(fcd.GetBackupFileName()) ? File.ReadAllText(fcd.GetBackupFileName()) : "";

@@ -21,15 +21,15 @@ namespace MonitorSystem
 
 		private void treeView1_AfterSelect(object sender, TreeViewEventArgs e)
 		{
-			if (e.Node != null && e.Node.Tag is Form1.FileChangedDetails)
+			if (e.Node != null && e.Node.Tag is MainForm.FileChangedDetails)
 			{
 				richTextBox_Description.Enabled = true;
 				richTextBox_FileContents.Enabled = true;
-				Form1.FileChangedDetails details = e.Node.Tag as Form1.FileChangedDetails;
-				if (details.QueueStatus == Form1.FileChangedDetails.QueueStatusEnum.New)
+				MainForm.FileChangedDetails details = e.Node.Tag as MainForm.FileChangedDetails;
+				if (details.QueueStatus == MainForm.FileChangedDetails.QueueStatusEnum.New)
 				{
-					details.SetNewQueueStatusAndUpdateNodeFontandcolor(Form1.FileChangedDetails.QueueStatusEnum.Read, e.Node);
-					//details.QueueStatus = Form1.FileChangedDetails.QueueStatusEnum.Read;
+					details.SetNewQueueStatusAndUpdateNodeFontandcolor(MainForm.FileChangedDetails.QueueStatusEnum.Read, e.Node);
+					//details.QueueStatus = MainForm.FileChangedDetails.QueueStatusEnum.Read;
 					//e.Node.NodeFont = new Font(e.Node.NodeFont, FontStyle.Strikeout);
 				}
 				AllowTextchangeCallback = false;
@@ -62,15 +62,15 @@ namespace MonitorSystem
 		{
 			if (AllowTextchangeCallback)
 			{
-				if (treeView1.SelectedNode != null && treeView1.SelectedNode.Tag is Form1.FileChangedDetails)
+				if (treeView1.SelectedNode != null && treeView1.SelectedNode.Tag is MainForm.FileChangedDetails)
 				{
-					Form1.FileChangedDetails details =  treeView1.SelectedNode.Tag as Form1.FileChangedDetails;
+					MainForm.FileChangedDetails details =  treeView1.SelectedNode.Tag as MainForm.FileChangedDetails;
 					details.Description = richTextBox_Description.Text;
 					//details.UpdateNodeFontandcolorFromQueueStatus(treeView1.SelectedNode);
 					if (richTextBox_Description.Text.Length > 0)
-						details.SetNewQueueStatusAndUpdateNodeFontandcolor(details.QueueStatus == Form1.FileChangedDetails.QueueStatusEnum.Read ? Form1.FileChangedDetails.QueueStatusEnum.Accepted : details.QueueStatus, treeView1.SelectedNode);
+						details.SetNewQueueStatusAndUpdateNodeFontandcolor(details.QueueStatus == MainForm.FileChangedDetails.QueueStatusEnum.Read ? MainForm.FileChangedDetails.QueueStatusEnum.Accepted : details.QueueStatus, treeView1.SelectedNode);
 					else
-						details.SetNewQueueStatusAndUpdateNodeFontandcolor(details.QueueStatus == Form1.FileChangedDetails.QueueStatusEnum.Accepted ? Form1.FileChangedDetails.QueueStatusEnum.Read : details.QueueStatus, treeView1.SelectedNode);
+						details.SetNewQueueStatusAndUpdateNodeFontandcolor(details.QueueStatus == MainForm.FileChangedDetails.QueueStatusEnum.Accepted ? MainForm.FileChangedDetails.QueueStatusEnum.Read : details.QueueStatus, treeView1.SelectedNode);
 					//treeView1.SelectedNode.ForeColor = textBox1.Text == null || textBox1.Text.Trim().Length == 0 ? Color.Red : Color.Green;
 				}
 			}
@@ -86,7 +86,7 @@ namespace MonitorSystem
 			this.TopMost = true;
 			this.Activate();
 			this.TopMost = false;
-			if (treeView1.SelectedNode != null && treeView1.SelectedNode.Tag is Form1.FileChangedDetails)
+			if (treeView1.SelectedNode != null && treeView1.SelectedNode.Tag is MainForm.FileChangedDetails)
 				richTextBox_Description.Focus();
 			else treeView1.Focus();
 
@@ -101,19 +101,19 @@ namespace MonitorSystem
 
 		private void AcceptSelectedItem()
 		{
-			if (treeView1.SelectedNode != null && treeView1.SelectedNode.Tag is Form1.FileChangedDetails)
+			if (treeView1.SelectedNode != null && treeView1.SelectedNode.Tag is MainForm.FileChangedDetails)
 			{
-				Form1.FileChangedDetails details =  treeView1.SelectedNode.Tag as Form1.FileChangedDetails;
-				details.SetNewQueueStatusAndUpdateNodeFontandcolor(Form1.FileChangedDetails.QueueStatusEnum.Accepted, treeView1.SelectedNode);
+				MainForm.FileChangedDetails details =  treeView1.SelectedNode.Tag as MainForm.FileChangedDetails;
+				details.SetNewQueueStatusAndUpdateNodeFontandcolor(MainForm.FileChangedDetails.QueueStatusEnum.Accepted, treeView1.SelectedNode);
 			}
 		}
 
 		private void DiscardItem(TreeNode fileChangedNode)
 		{
-			if (fileChangedNode != null && fileChangedNode.Tag is Form1.FileChangedDetails)
+			if (fileChangedNode != null && fileChangedNode.Tag is MainForm.FileChangedDetails)
 			{
-				Form1.FileChangedDetails details =  fileChangedNode.Tag as Form1.FileChangedDetails;
-				details.SetNewQueueStatusAndUpdateNodeFontandcolor(Form1.FileChangedDetails.QueueStatusEnum.Discard, fileChangedNode);
+				MainForm.FileChangedDetails details =  fileChangedNode.Tag as MainForm.FileChangedDetails;
+				details.SetNewQueueStatusAndUpdateNodeFontandcolor(MainForm.FileChangedDetails.QueueStatusEnum.Discard, fileChangedNode);
 			}
 		}
 
@@ -122,9 +122,9 @@ namespace MonitorSystem
 			if (treeView1.SelectedNode != null)
 			{
 				foreach (TreeNode subnode in treeView1.SelectedNode.Nodes)
-					if (subnode.Tag is Form1.FileChangedDetails)
+					if (subnode.Tag is MainForm.FileChangedDetails)
 					{
-						Form1.FileChangedDetails details = subnode.Tag as Form1.FileChangedDetails;
+						MainForm.FileChangedDetails details = subnode.Tag as MainForm.FileChangedDetails;
 						if (details.Description == null || details.Description.Trim().Length == 0)
 							DiscardItem(subnode);
 					}
