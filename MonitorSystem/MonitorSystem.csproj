@@ -234,6 +234,9 @@
     <EmbeddedResource Include="AddTodoItem.resx">
       <DependentUpon>AddTodoItem.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="MainForm.resx">
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="MonitoredFilesChanged.resx">
       <DependentUpon>MonitoredFilesChanged.cs</DependentUpon>
     </EmbeddedResource>
