@@ -171,9 +171,6 @@
     <Compile Include="..\..\SharedClasses\MouseHooks.cs">
       <Link>MouseHooks.cs</Link>
     </Compile>
-    <Compile Include="..\..\SharedClasses\NetworkInterop.cs">
-      <Link>NetworkInterop.cs</Link>
-    </Compile>
     <Compile Include="..\..\SharedClasses\PhpInterop.cs">
       <Link>PhpInterop.cs</Link>
     </Compile>
@@ -188,9 +185,6 @@
     </Compile>
     <Compile Include="..\..\SharedClasses\TextFilesInterop.cs">
       <Link>TextFilesInterop.cs</Link>
-    </Compile>
-    <Compile Include="..\..\SharedClasses\ThreadingInterop.cs">
-      <Link>ThreadingInterop.cs</Link>
     </Compile>
     <Compile Include="..\..\SharedClasses\UserActivityHook.cs">
       <Link>UserActivityHook.cs</Link>
