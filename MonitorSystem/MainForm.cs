@@ -21,6 +21,8 @@ namespace MonitorSystem
 		public static string SavedListFileName = WindowsInterop.LocalAppDataPath + "\\EmailAndPasswordList.fjset";
 		public static string LastAutobackupStateFileName =  WindowsInterop.LocalAppDataPath + "\\LastAutobackupState.fjset";
 
+		private TransferDropWindow transferDropWindow = null;
+
 		////private const string ServerAddress = "http://localhost";
 		////private const string ServerAddress = "https://fjh.co.za";
 		//private const string ServerAddress = "http://firepuma.com";
@@ -142,6 +144,10 @@ namespace MonitorSystem
 			//};
 			//mouseHook.Start();
 			//DONE TODO: Textbox does not get cleared when showing queued messages
+			transferDropWindow = new TransferDropWindow(ref notifyIcon1);
+			Rectangle workingArea = Screen.FromPoint(new Point(0, 0)).WorkingArea;
+			transferDropWindow.Location = new Point(workingArea.Left + (workingArea.Width - transferDropWindow.Width), workingArea.Top + (workingArea.Height - transferDropWindow.Height));
+			transferDropWindow.Show(null);
 		}
 
 		private string SmallTodolistFilePath = SettingsInterop.GetFullFilePathInLocalAppdata(ThisAppName, "SmallTodolist.txt");
@@ -174,6 +180,12 @@ namespace MonitorSystem
 			//MenuItem testcustomballoontipMenuItem = new MenuItem("Test &custom balloontip", delegate { CustomBalloonTip.ShowCustomBalloonTip("Hallo", "This is a custom balloon tip for 3 seconds...", 3000, CustomBalloonTip.IconTypes.Shield, delegate { PerformBalloonTipClick(); }); });
 			MenuItem testWindowAnimations = new MenuItem("Test window &animations", delegate { (new TestAnimations()).Show(); });
 			MenuItem testSpeech = new MenuItem("Test &speech", delegate { (new TestSpeech()).Show(); });
+			MenuItem transferFileDropWindow = new MenuItem("Transfer Dropwindow", (sndr, evtargs) =>
+				{
+					bool newCheckedValue = !(sndr as MenuItem).Checked;
+					(sndr as MenuItem).Checked = newCheckedValue;
+					ToggleTransferDropWindowVisible(!newCheckedValue);
+				}) { Checked = true };
 
 			notifyIcon1.ContextMenu = new ContextMenu(new MenuItem[]
 			{
@@ -187,8 +199,15 @@ namespace MonitorSystem
 				new MenuItem("-"),
 				exitMenuItem,				
 				testWindowAnimations,
-				testSpeech
+				testSpeech,
+				transferFileDropWindow
 			});
+		}
+
+		private void ToggleTransferDropWindowVisible(bool newVisibility)
+		{
+			if (newVisibility) transferDropWindow.Hide();
+			else transferDropWindow.Show();
 		}
 
 		private void AddSmallTodoItem()
