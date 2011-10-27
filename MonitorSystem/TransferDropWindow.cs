@@ -75,16 +75,42 @@ namespace MonitorSystem
 				};
 				progressChangedEvent += (snder, evtargs) =>
 				{
+					ThreadingInterop.UpdateGuiFromThread(this, () =>
+					{
+						int currentValue = evtargs.CurrentValue;
+						int maxValue = evtargs.MaximumValue;
+						if (currentValue == 0 && maxValue == 100)
+						{
+							this.progressBar1.Maximum = maxValue;
+							this.progressBar1.Value = currentValue;
+							this.progressBar1.Visible = false;
+							this.Opacity = 0.5;
+						}
+						else if (currentValue > 0 && maxValue > 0)
+						{
+							this.progressBar1.Visible = true;
+							this.progressBar1.Maximum = maxValue;
+							this.progressBar1.Value = currentValue;
+							this.Opacity = 1;
+						}
+						Application.DoEvents();
+					});
 				};
-				NetworkInterop.TransferFile_FileStream(
-					files[0], 
-					out socket,
-					
-					//ipAddress: null,
-					NetworkInterop.GetIPAddressFromString("fjh.dyndns.org"),
-					
-					TextFeedbackEvent: textFeedbackEvent,
-					ProgressChangedEvent: progressChangedEvent);
+				this.progressBar1.Visible = true;
+				this.Opacity = 1;
+				Application.DoEvents();
+				ThreadingInterop.PerformVoidFunctionSeperateThread(() =>
+				{
+					NetworkInterop.TransferFile_FileStream(
+						files[0],
+						out socket,
+
+						//ipAddress: null,
+						NetworkInterop.GetIPAddressFromString("fjh.dyndns.org"),
+
+						TextFeedbackEvent: textFeedbackEvent,
+						ProgressChangedEvent: progressChangedEvent);
+				});
 			}
 		}
 
