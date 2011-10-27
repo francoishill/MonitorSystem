@@ -105,8 +105,8 @@ namespace MonitorSystem
 						files[0],
 						out socket,
 
-						//ipAddress: null,
-						NetworkInterop.GetIPAddressFromString("fjh.dyndns.org"),
+						ipAddress: null,
+						//NetworkInterop.GetIPAddressFromString("fjh.dyndns.org"),
 
 						TextFeedbackEvent: textFeedbackEvent,
 						ProgressChangedEvent: progressChangedEvent);
