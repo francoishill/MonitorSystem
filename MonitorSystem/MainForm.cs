@@ -148,7 +148,37 @@ namespace MonitorSystem
 			Rectangle workingArea = Screen.FromPoint(new Point(0, 0)).WorkingArea;
 			transferDropWindow.Location = new Point(workingArea.Left + (workingArea.Width - transferDropWindow.Width), workingArea.Top + (workingArea.Height - transferDropWindow.Height));
 			transferDropWindow.Show(null);
+
+			//InfoOfTransferToClient i = new InfoOfTransferToClient(true, 3.5D, 17.5D, 10, 300);
+			//Stream str = new MemoryStream();
+			//SerializationInterop.SerializeCustom(i, str, false, SerializationInterop.SerializationFormat.Xml);
+			//InfoOfTransferToClient i2 = (InfoOfTransferToClient)SerializationInterop.DeserializeCustom(str, new InfoOfTransferToClient(), true, SerializationInterop.SerializationFormat.Xml);
+			//MessageBox.Show(i2.AverageBytesPerSecond.ToString());
+
+			//myclass mc = new myclass("Francois", "Hill", 23.11);
+			//Stream stream = new MemoryStream();
+			//SerializationInterop.SerializeCustom(mc, stream, false);
+			////MessageBox.Show(mc.ToString());
+			////Stream stream2 = new MemoryStream();
+			//myclass mc2 = (myclass)SerializationInterop.DeserializeCustom(stream, new myclass());
+			//MessageBox.Show(mc2.Name + ", " + mc2.Surname + ", " + mc2.Age);
 		}
+
+		//class myclass
+		//{
+		//	public string Name;
+		//	public string Surname;
+		//	public double Age;
+		//	public myclass()
+		//	{
+		//	}
+		//	public myclass(string NameIn, string SurnameIn, double AgeIn)
+		//	{
+		//		Name = NameIn;
+		//		Surname = SurnameIn;
+		//		Age = AgeIn;
+		//	}
+		//}
 
 		private string SmallTodolistFilePath = SettingsInterop.GetFullFilePathInLocalAppdata(ThisAppName, "SmallTodolist.txt");
 		private void RefreshSmallTodoitems()
