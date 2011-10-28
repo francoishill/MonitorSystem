@@ -20,11 +20,54 @@ namespace MonitorSystem
 		NetworkInterop.TextFeedbackEventHandler textFeedbackEvent;
 		NetworkInterop.ProgressChangedEventHandler progressChangedEvent;
 		NotifyIcon mainNotifyIcon;
+		Size originalSize;
+		Rectangle workingArea;
 
-		public TransferDropWindow(ref NotifyIcon mainNotifyIconOfApplication)
+		public TransferDropWindow(ref NotifyIcon mainNotifyIconOfApplication, ref ContextMenu contextMenuOfNotifyIcon)
 		{
 			InitializeComponent();
 			mainNotifyIcon = mainNotifyIconOfApplication;
+			this.ContextMenu = contextMenuOfNotifyIcon;
+
+			this.HandleCreated += delegate { workingArea = Screen.FromHandle(this.Handle).WorkingArea; };
+			originalSize = this.Size;
+
+			textFeedbackEvent += (snder, evtargs) =>
+			{
+				//mainNotifyIcon.ShowBalloonTip(3000, "Textfeedback file transfer", evtargs.FeedbackText, ToolTipIcon.Info);
+				ThreadingInterop.UpdateGuiFromThread(this, () =>
+				{
+					CustomBalloonTipwpf.ShowCustomBalloonTip(
+						"Textfeedback file transfer",
+						evtargs.FeedbackText.Replace(Environment.NewLine, ".  "),
+						10000, 
+						CustomBalloonTipwpf.IconTypes.Information,
+						Scaling: 1.5);
+				});
+			};
+			progressChangedEvent += (snder, evtargs) =>
+			{
+				ThreadingInterop.UpdateGuiFromThread(this, () =>
+				{
+					int currentValue = evtargs.CurrentValue;
+					int maxValue = evtargs.MaximumValue;
+					if (currentValue == 0 && maxValue == 100)
+					{
+						this.progressBar1.Maximum = maxValue;
+						this.progressBar1.Value = currentValue;
+						this.progressBar1.Visible = false;
+						this.Opacity = 0.5;
+					}
+					else if (currentValue > 0 && maxValue > 0)
+					{
+						this.progressBar1.Visible = true;
+						this.progressBar1.Maximum = maxValue;
+						this.progressBar1.Value = currentValue;
+						this.Opacity = 1;
+					}
+					Application.DoEvents();
+				});
+			};
 		}
 
 		protected override void WndProc(ref Message m)
@@ -58,61 +101,77 @@ namespace MonitorSystem
 			}
 		}
 
+		private void PlaceThisFormBottomRight()
+		{
+			this.Location = new Point(workingArea.Left + (workingArea.Width - this.Width), workingArea.Top + (workingArea.Height - this.Height));
+		}
+
+		private void PlaceThisFormBottomLeft()
+		{
+			this.Location = new Point(workingArea.Left, workingArea.Top + (workingArea.Height - this.Height));
+		}
+
+		//private bool IsTransfersBusy = false;
 		private void TransferDropWindow_DragDrop(object sender, DragEventArgs e)
 		{
 			string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
 
 			if (files.Length == 0) MessageBox.Show(this, "No files found");
-			else if (files.Length > 1) MessageBox.Show(this, "Only one file at a time");
-			else if (!File.Exists(files[0])) MessageBox.Show(this, "File not found: " + files[0]);
+			//else if (files.Length > 1) MessageBox.Show(this, "Only one file at a time");
+			//else if (!File.Exists(files[0])) MessageBox.Show(this, "File not found: " + files[0]);
 			else
 			{
-				Socket socket;
+				//ThreadingInterop.PerformVoidFunctionSeperateThread(() =>
+				//{
+				QueueingActionsInterop.EnqueueAction(() =>// cannot use Queuing as file multiple files only one file is repeadetly transferred
+				{
+					Socket socket;
 
-				textFeedbackEvent += (snder, evtargs) =>
-				{
-					mainNotifyIcon.ShowBalloonTip(3000, "Textfeedback file transfer", evtargs.FeedbackText, ToolTipIcon.Info);
-				};
-				progressChangedEvent += (snder, evtargs) =>
-				{
 					ThreadingInterop.UpdateGuiFromThread(this, () =>
 					{
-						int currentValue = evtargs.CurrentValue;
-						int maxValue = evtargs.MaximumValue;
-						if (currentValue == 0 && maxValue == 100)
-						{
-							this.progressBar1.Maximum = maxValue;
-							this.progressBar1.Value = currentValue;
-							this.progressBar1.Visible = false;
-							this.Opacity = 0.5;
-						}
-						else if (currentValue > 0 && maxValue > 0)
-						{
-							this.progressBar1.Visible = true;
-							this.progressBar1.Maximum = maxValue;
-							this.progressBar1.Value = currentValue;
-							this.Opacity = 1;
-						}
-						Application.DoEvents();
+						this.Width = workingArea.Width;
+						this.Height = 8;
+						PlaceThisFormBottomLeft();
+						this.progressBar1.Visible = true;
+						this.Opacity = 1;
 					});
-				};
-				this.progressBar1.Visible = true;
-				this.Opacity = 1;
-				Application.DoEvents();
-				ThreadingInterop.PerformVoidFunctionSeperateThread(() =>
-				{
-					NetworkInterop.TransferFile_FileStream(
-						files[0],
-						out socket,
 
-						ipAddress: null,
-						//NetworkInterop.GetIPAddressFromString("fjh.dyndns.org"),
+					foreach (string file in files)
+					{
+						if (!File.Exists(file) && UserMessages.ShowWarningMessage("File not found: " + file, owner: this))
+							continue;
 
-						TextFeedbackEvent: textFeedbackEvent,
-						ProgressChangedEvent: progressChangedEvent);
-				},
-				false,//false,
-				"TransferFileThread");
+						string fileToTransfer = file.Clone().ToString();
+						Application.DoEvents();
+
+						NetworkInterop.TransferFile_FileStream(
+							//files[0],
+							fileToTransfer,
+							out socket,
+
+							//ipAddress: null,
+							NetworkInterop.GetIPAddressFromString("fjh.dyndns.org"),
+
+							TextFeedbackEvent: textFeedbackEvent,
+							ProgressChangedEvent: progressChangedEvent);
+					}
+
+					ThreadingInterop.UpdateGuiFromThread(this, () =>
+					{
+						this.Size = originalSize;
+						PlaceThisFormBottomRight();
+					});
+				});
+
+				int fileCount = 0;
+				foreach (string file in files)
+					if (File.Exists(file))
+						fileCount++;
+				CustomBalloonTipwpf.ShowCustomBalloonTip("Items queued", fileCount + " items were added to the queue for transferring", 500, CustomBalloonTipwpf.IconTypes.Information, null, Scaling: 1);
+
+				//},
+				//false,//false,
+				//"TransferFileThread");
 			}
 		}
 

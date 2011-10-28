@@ -126,7 +126,7 @@ namespace MonitorSystem
 			//MonitoredFilesClass.RePopulateFilesAndLastModifiedTimesDictionary(@"C:\ProgramData\GLS\ReportSQLqueries", true);
 			MonitoredAutoBackupPath = fileSystemWatcher_SqlFiles.Path;
 
-			PopulateNotifyIconContextMenu();
+			ContextMenu notifiIconContextMenu = PopulateNotifyIconContextMenu();
 
 			//mouseHook = new MouseHooks.MouseHook();
 			////mouseHook.MouseGestureEvent += (o, gest) => { if (gest.MouseGesture == Win32Api.MouseGestures.RL) UserMessages.ShowErrorMessage("Message"); };
@@ -144,10 +144,11 @@ namespace MonitorSystem
 			//};
 			//mouseHook.Start();
 			//DONE TODO: Textbox does not get cleared when showing queued messages
-			transferDropWindow = new TransferDropWindow(ref notifyIcon1);
+			transferDropWindow = new TransferDropWindow(ref notifyIcon1, ref notifiIconContextMenu);
 			Rectangle workingArea = Screen.FromPoint(new Point(0, 0)).WorkingArea;
 			transferDropWindow.Location = new Point(workingArea.Left + (workingArea.Width - transferDropWindow.Width), workingArea.Top + (workingArea.Height - transferDropWindow.Height));
-			transferDropWindow.Show(null);
+			transferDropWindow.Show();//null);
+			transferDropWindow.BringToFront();
 
 			//InfoOfTransferToClient i = new InfoOfTransferToClient(true, 3.5D, 17.5D, 10, 300);
 			//Stream str = new MemoryStream();
@@ -198,7 +199,7 @@ namespace MonitorSystem
 			return System.Environment.GetCommandLineArgs().Length > 1 && System.Environment.GetCommandLineArgs()[1] == "/restart";
 		}
 
-		private void PopulateNotifyIconContextMenu()
+		private ContextMenu PopulateNotifyIconContextMenu()
 		{
 			MenuItem addSmallTodoItem = new MenuItem("Add &small todo item", delegate { AddSmallTodoItem(); });
 			MenuItem refreshSmallTodoList = new MenuItem("Re&fresh small todo list", delegate { RefreshSmallTodoitems(); });
@@ -232,6 +233,7 @@ namespace MonitorSystem
 				testSpeech,
 				transferFileDropWindow
 			});
+			return notifyIcon1.ContextMenu;
 		}
 
 		private void ToggleTransferDropWindowVisible(bool newVisibility)
