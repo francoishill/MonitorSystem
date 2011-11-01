@@ -37,7 +37,9 @@ namespace MonitorSystem
 				//TODO: get a way to incorporate the ScintillaNET.dll file so that it does not have to be in the Path Environment Variables.
 				richTextBox_FileContents.IsReadOnly = false;
 				richTextBox_FileContents.Text = File.ReadAllText(details.GetBackupFileName());
-				AutoCompleteInterop.SetFullAutocompleteListOfRichTextbox(richTextBox_Description, AutoCompleteInterop.GetWordlistOfFileContents(richTextBox_FileContents.Text));
+				AutoCompleteInterop.SetFullAutocompleteListOfRichTextbox(
+					richTextBox_Description,
+					AutoCompleteInterop.GetWordlistOfFileContents(richTextBox_FileContents.Text, new List<char>() { '_' }));
 				richTextBox_FileContents.IsReadOnly = true;
 				if (details.OriginalFileName.ToLower().EndsWith(".sql"))
 				{
