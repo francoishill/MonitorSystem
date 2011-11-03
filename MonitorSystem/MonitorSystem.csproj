@@ -28,7 +28,7 @@
     <ProductName>MonitorSystem</ProductName>
     <PublisherName>Francois Hill</PublisherName>
     <SuiteName>Own applications</SuiteName>
-    <ApplicationRevision>79</ApplicationRevision>
+    <ApplicationRevision>80</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
