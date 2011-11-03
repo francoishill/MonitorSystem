@@ -17,8 +17,8 @@ namespace MonitorSystem
 		private const int WM_WINDOWPOSCHANGING = 0x0046;
 		private const int WM_GETMINMAXINFO = 0x0024;
 
-		NetworkInterop.TextFeedbackEventHandler textFeedbackEvent;
-		NetworkInterop.ProgressChangedEventHandler progressChangedEvent;
+		TextFeedbackEventHandler textFeedbackEvent;
+		ProgressChangedEventHandler progressChangedEvent;
 		NotifyIcon mainNotifyIcon;
 		Size originalSize;
 		Rectangle workingArea;
