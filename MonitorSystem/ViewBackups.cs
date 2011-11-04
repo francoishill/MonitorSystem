@@ -14,6 +14,7 @@ namespace MonitorSystem
 {
 	public partial class ViewBackups : Form
 	{
+		//TODO: Should have string search (maybe even regex) functionality on file description. Can filter on file (regex of filename) and/or dates
 		public ViewBackups()
 		{
 			InitializeComponent();
