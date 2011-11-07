@@ -28,11 +28,16 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
+			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ViewBackups));
 			this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+			this.label1 = new System.Windows.Forms.Label();
+			this.comboBox1 = new System.Windows.Forms.ComboBox();
 			this.treeView1 = new System.Windows.Forms.TreeView();
 			this.richTextBox_Description = new System.Windows.Forms.RichTextBox();
 			this.statusStrip1 = new System.Windows.Forms.StatusStrip();
 			this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
+			this.toolStripDropDownButton_Filter = new System.Windows.Forms.ToolStripDropDownButton();
+			this.toolStripTextBox1 = new System.Windows.Forms.ToolStripTextBox();
 			this.splitContainer2 = new System.Windows.Forms.SplitContainer();
 			this.richTextBox_FileContents = new ScintillaNet.Scintilla();
 			this.contextMenu_FileNode = new System.Windows.Forms.ContextMenu();
@@ -63,15 +68,43 @@
 			// 
 			// splitContainer1.Panel1
 			// 
+			this.splitContainer1.Panel1.Controls.Add(this.label1);
+			this.splitContainer1.Panel1.Controls.Add(this.comboBox1);
 			this.splitContainer1.Panel1.Controls.Add(this.treeView1);
+			this.splitContainer1.Panel1.Padding = new System.Windows.Forms.Padding(0, 30, 0, 0);
 			// 
 			// splitContainer1.Panel2
 			// 
 			this.splitContainer1.Panel2.Controls.Add(this.richTextBox_Description);
 			this.splitContainer1.Size = new System.Drawing.Size(705, 500);
-			this.splitContainer1.SplitterDistance = 137;
+			this.splitContainer1.SplitterDistance = 191;
 			this.splitContainer1.SplitterWidth = 6;
 			this.splitContainer1.TabIndex = 0;
+			// 
+			// label1
+			// 
+			this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.label1.AutoSize = true;
+			this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.label1.ForeColor = System.Drawing.Color.Gray;
+			this.label1.Location = new System.Drawing.Point(479, 6);
+			this.label1.Name = "label1";
+			this.label1.Size = new System.Drawing.Size(32, 13);
+			this.label1.TabIndex = 4;
+			this.label1.Text = "Filter:";
+			// 
+			// comboBox1
+			// 
+			this.comboBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.comboBox1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(255)))), ((int)(((byte)(220)))));
+			this.comboBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.comboBox1.ForeColor = System.Drawing.SystemColors.WindowText;
+			this.comboBox1.FormattingEnabled = true;
+			this.comboBox1.Location = new System.Drawing.Point(517, 3);
+			this.comboBox1.Name = "comboBox1";
+			this.comboBox1.Size = new System.Drawing.Size(185, 21);
+			this.comboBox1.TabIndex = 3;
+			this.comboBox1.TextChanged += new System.EventHandler(this.comboBox1_TextChanged);
 			// 
 			// treeView1
 			// 
@@ -79,26 +112,26 @@
 			this.treeView1.HideSelection = false;
 			this.treeView1.HotTracking = true;
 			this.treeView1.Indent = 30;
-			this.treeView1.Location = new System.Drawing.Point(0, 0);
+			this.treeView1.Location = new System.Drawing.Point(0, 30);
 			this.treeView1.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.treeView1.Name = "treeView1";
 			this.treeView1.ShowLines = false;
 			this.treeView1.ShowRootLines = false;
-			this.treeView1.Size = new System.Drawing.Size(705, 137);
+			this.treeView1.Size = new System.Drawing.Size(705, 161);
 			this.treeView1.TabIndex = 0;
 			this.treeView1.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeView1_AfterSelect);
 			this.treeView1.NodeMouseClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.treeView1_NodeMouseClick);
 			this.treeView1.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler(this.ViewBackups_PreviewKeyDown);
 			// 
-			// textBoxDescription
+			// richTextBox_Description
 			// 
 			this.richTextBox_Description.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.richTextBox_Description.Font = new System.Drawing.Font("Microsoft Sans Serif", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel, ((byte)(0)));
 			this.richTextBox_Description.ForeColor = System.Drawing.Color.DarkGreen;
 			this.richTextBox_Description.Location = new System.Drawing.Point(0, 0);
-			this.richTextBox_Description.Name = "textBoxDescription";
+			this.richTextBox_Description.Name = "richTextBox_Description";
 			this.richTextBox_Description.ReadOnly = true;
-			this.richTextBox_Description.Size = new System.Drawing.Size(705, 357);
+			this.richTextBox_Description.Size = new System.Drawing.Size(705, 303);
 			this.richTextBox_Description.TabIndex = 0;
 			this.richTextBox_Description.Text = "";
 			this.richTextBox_Description.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
@@ -107,7 +140,8 @@
 			// statusStrip1
 			// 
 			this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolStripStatusLabel1});
+            this.toolStripStatusLabel1,
+            this.toolStripDropDownButton_Filter});
 			this.statusStrip1.Location = new System.Drawing.Point(0, 500);
 			this.statusStrip1.Name = "statusStrip1";
 			this.statusStrip1.Size = new System.Drawing.Size(1228, 22);
@@ -119,8 +153,24 @@
 			// 
 			this.toolStripStatusLabel1.BorderStyle = System.Windows.Forms.Border3DStyle.RaisedOuter;
 			this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
-			this.toolStripStatusLabel1.Size = new System.Drawing.Size(118, 17);
+			this.toolStripStatusLabel1.Size = new System.Drawing.Size(118, 18);
 			this.toolStripStatusLabel1.Text = "toolStripStatusLabel1";
+			// 
+			// toolStripDropDownButton_Filter
+			// 
+			this.toolStripDropDownButton_Filter.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+			this.toolStripDropDownButton_Filter.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripTextBox1});
+			this.toolStripDropDownButton_Filter.Image = ((System.Drawing.Image)(resources.GetObject("toolStripDropDownButton_Filter.Image")));
+			this.toolStripDropDownButton_Filter.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.toolStripDropDownButton_Filter.Name = "toolStripDropDownButton_Filter";
+			this.toolStripDropDownButton_Filter.Size = new System.Drawing.Size(110, 20);
+			this.toolStripDropDownButton_Filter.Text = "Click to add filter";
+			// 
+			// toolStripTextBox1
+			// 
+			this.toolStripTextBox1.Name = "toolStripTextBox1";
+			this.toolStripTextBox1.Size = new System.Drawing.Size(100, 23);
 			// 
 			// splitContainer2
 			// 
@@ -208,6 +258,7 @@
 			this.Shown += new System.EventHandler(this.ViewBackups_Shown);
 			this.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler(this.ViewBackups_PreviewKeyDown);
 			this.splitContainer1.Panel1.ResumeLayout(false);
+			this.splitContainer1.Panel1.PerformLayout();
 			this.splitContainer1.Panel2.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
 			this.splitContainer1.ResumeLayout(false);
@@ -237,5 +288,9 @@
 		private System.Windows.Forms.MenuItem menuItem_DiscardBackup;
 		private System.Windows.Forms.MenuItem menuItem_AddDescription;
 		private ScintillaNet.Scintilla richTextBox_FileContents;
+		private System.Windows.Forms.ToolStripDropDownButton toolStripDropDownButton_Filter;
+		private System.Windows.Forms.ToolStripTextBox toolStripTextBox1;
+		private System.Windows.Forms.ComboBox comboBox1;
+		private System.Windows.Forms.Label label1;
 	}
 }

@@ -1501,7 +1501,7 @@ namespace MonitorSystem
 					node.NodeFont = new Font(fontPrototype, nodeFontStyle);
 			}
 
-			public static string humandfriendlyDateFormat = @"dd MMM yyyy HH\hmm:ss";
+			public static string humandfriendlyDateFormat = @"ddd dd-MMM-yyyy \a\t HH\hmm:ss";
 			public static string dateFormat = @"yyyy MM dd (HH\hmm ss)";
 			public static string SavetofileDateFormat = "yyyyMMddHHmmss";
 
@@ -1672,8 +1672,8 @@ namespace MonitorSystem
 		//    });
 		//}
 
-		enum BalloonTipActionEnum { ChangedFileList, None };
-		private BalloonTipActionEnum BalloonTipAction = BalloonTipActionEnum.None;
+		public enum BalloonTipActionEnum { ChangedFileList, None };
+		public static BalloonTipActionEnum BalloonTipAction = BalloonTipActionEnum.None;
 		private FileChangedDetails LastFileChangedDetailsAdded = null;
 		private void notifyIcon1_BalloonTipClicked_1(object sender, EventArgs e)
 		{
@@ -1688,7 +1688,7 @@ namespace MonitorSystem
 			}
 		}
 
-		private static TreeNode PopulateTreeNode(string path, TreeNode rootnode)
+		public static TreeNode PopulateTreeNode(string path, TreeNode rootnode)
 		{
 			TreeNode lastNode = null;
 			string subPathAgg;
@@ -1807,7 +1807,7 @@ namespace MonitorSystem
 							if (fcd.QueueStatus != FileChangedDetails.QueueStatusEnum.Accepted && fcd.QueueStatus != FileChangedDetails.QueueStatusEnum.Complete && fcd.QueueStatus != FileChangedDetails.QueueStatusEnum.Discard)
 							{
 								AtleastOneFilechangedNode = true;
-								TreeNode fileModifiedNode = new TreeNode(date.ToString("yyyy-MM-dd HH:mm:ss"));
+								TreeNode fileModifiedNode = new TreeNode(date.ToString(FileChangedDetails.humandfriendlyDateFormat));////MySQLdateformat));
 								fileModifiedNode.Tag = fcd;
 								fileModifiedNode.ContextMenu = formMonitoredFilesChanged.contextMenu_FileModification;
 								fcd.UpdateNodeFontandcolorFromQueueStatus(fileModifiedNode);
@@ -1980,7 +1980,16 @@ namespace MonitorSystem
 			if (formViewBackups == null) formViewBackups = new ViewBackups();
 			if (!formViewBackups.Modal)
 			{
-				formViewBackups.treeView1.Nodes.Clear();
+				int countNodesAdded =
+					formViewBackups.RefreshNodes(null, fileSystemWatcher_SqlFiles.Path, LastFileChangedDetailsAdded);
+				if (countNodesAdded == 0)
+				{
+					ShowBalloonTipNotification("No backup files found");
+					return;
+				}
+				formViewBackups.ShowDialog();
+
+				/*formViewBackups.treeView1.Nodes.Clear();
 
 				Dictionary<string, Dictionary<DateTime, FileChangedDetails>> OriginalFilenamesWithModificationsDict = null;// new Dictionary<string, Dictionary<DateTime, FileChangedDetails>>();
 
@@ -2091,13 +2100,13 @@ namespace MonitorSystem
 
 					if (formViewBackups.treeView1.Nodes.Count == 0)
 					{
-						ShowBalloonTipNotification("No file changes queued");
+						ShowBalloonTipNotification("No backup files found");
 						return;
 					}
 
 					formViewBackups.ShowDialog();
 				}
-				//formViewBackups.ShowDialog();
+				//formViewBackups.ShowDialog();*/
 			}
 		}
 
