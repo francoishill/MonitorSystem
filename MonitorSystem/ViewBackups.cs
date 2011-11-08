@@ -75,7 +75,9 @@ namespace MonitorSystem
 			{
 				toolStripStatusLabel1.Text = "";
 				richTextBox_Description.Text = null;
+				richTextBox_FileContents.IsReadOnly = false;
 				richTextBox_FileContents.Text = null;
+				richTextBox_FileContents.IsReadOnly = true;
 			}
 		}
 

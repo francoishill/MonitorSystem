@@ -55,7 +55,9 @@ namespace MonitorSystem
 				richTextBox_Description.Enabled = false;
 				richTextBox_Description.Text = null;
 				richTextBox_FileContents.Enabled = false;
+				richTextBox_FileContents.IsReadOnly = false;
 				richTextBox_FileContents.Text = null;
+				richTextBox_FileContents.IsReadOnly = true;
 			}
 		}
 
