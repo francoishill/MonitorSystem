@@ -40,7 +40,7 @@ namespace MonitorSystem
 					CustomBalloonTipwpf.ShowCustomBalloonTip(
 						"Textfeedback file transfer",
 						evtargs.FeedbackText.Replace(Environment.NewLine, ".  "),
-						10000, 
+						10000,
 						CustomBalloonTipwpf.IconTypes.Information,
 						Scaling: 1.5);
 				});
@@ -51,7 +51,7 @@ namespace MonitorSystem
 				{
 					int currentValue = evtargs.CurrentValue;
 					int maxValue = evtargs.MaximumValue;
-					if (currentValue == 0 && maxValue == 100)
+					if ((currentValue == 0 || currentValue == 100) && maxValue == 100)
 					{
 						this.progressBar1.Maximum = maxValue;
 						this.progressBar1.Value = currentValue;
@@ -68,6 +68,8 @@ namespace MonitorSystem
 					Application.DoEvents();
 				});
 			};
+
+			SharedClassesSettings.EnsureAllSharedClassesSettingsNotNullCreateDefault();
 		}
 
 		protected override void WndProc(ref Message m)
@@ -125,42 +127,7 @@ namespace MonitorSystem
 				//{
 				QueueingActionsInterop.EnqueueAction(() =>// cannot use Queuing as file multiple files only one file is repeadetly transferred
 				{
-					Socket socket;
-
-					ThreadingInterop.UpdateGuiFromThread(this, () =>
-					{
-						this.Width = workingArea.Width;
-						this.Height = 8;
-						PlaceThisFormBottomLeft();
-						this.progressBar1.Visible = true;
-						this.Opacity = 1;
-					});
-
-					foreach (string file in files)
-					{
-						if (!File.Exists(file) && UserMessages.ShowWarningMessage("File not found: " + file, owner: this))
-							continue;
-
-						string fileToTransfer = file.Clone().ToString();
-						Application.DoEvents();
-
-						NetworkInterop.TransferFile_FileStream(
-							//files[0],
-							fileToTransfer,
-							out socket,
-
-							//ipAddress: null,
-							NetworkInterop.GetIPAddressFromString("fjh.dyndns.org"),
-
-							TextFeedbackEvent: textFeedbackEvent,
-							ProgressChangedEvent: progressChangedEvent);
-					}
-
-					ThreadingInterop.UpdateGuiFromThread(this, () =>
-					{
-						this.Size = originalSize;
-						PlaceThisFormBottomRight();
-					});
+					UploadFilesToFtp(files);
 				});
 
 				int fileCount = 0;
@@ -173,6 +140,56 @@ namespace MonitorSystem
 				//false,//false,
 				//"TransferFileThread");
 			}
+		}
+
+		private async void UploadFilesToFtp(string[] files)
+		{
+
+			Socket socket;
+
+			ThreadingInterop.UpdateGuiFromThread(this, () =>
+			{
+				this.Width = workingArea.Width;
+				this.Height = 8;
+				PlaceThisFormBottomLeft();
+				this.progressBar1.Visible = true;
+				this.Opacity = 1;
+			});
+
+			foreach (string file in files)
+			{
+				if (!File.Exists(file) && UserMessages.ShowWarningMessage("File not found: " + file, owner: this))
+					continue;
+
+				string fileToTransfer = file.Clone().ToString();
+				Application.DoEvents();
+
+				await NetworkInterop.FtpUploadFiles(
+					"ftp://fjh.dyndns.org/tempReceived",
+					SharedClassesSettings.visualStudioInterop.FtpUsername,
+					SharedClassesSettings.visualStudioInterop.FtpPassword,
+					files,
+					textFeedbackEvent: textFeedbackEvent,
+					progressChanged: progressChangedEvent);
+
+				//NetworkInterop.TransferFile_FileStream(
+				//	//files[0],
+				//	fileToTransfer,
+				//	out socket,
+
+				//	//ipAddress: null,
+				//	NetworkInterop.GetIPAddressFromString("fjh.dyndns.org"),
+
+				//	TextFeedbackEvent: textFeedbackEvent,
+				//	ProgressChangedEvent: progressChangedEvent);
+			}
+
+			ThreadingInterop.UpdateGuiFromThread(this, () =>
+			{
+				this.Size = originalSize;
+				PlaceThisFormBottomRight();
+			});
+
 		}
 
 		struct WindowPos
