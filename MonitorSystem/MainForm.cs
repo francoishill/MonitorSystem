@@ -1187,7 +1187,7 @@ namespace MonitorSystem
 								if (MustWriteResultToLogsTextbox) appendLogTextbox("Result for " + TaskName + ": " + decryptedstring);
 								mustreturn = true;
 							}
-							catch (Exception exc) { UserMessages.ShowErrorMessage("Exception:" + exc.Message, "Exception", this); }
+							catch (Exception exc) { UserMessages.ShowErrorMessage(this, "Exception:" + exc.Message, "Exception"); }
 						});
 						if (mustreturn) return decryptedstring;
 					}
@@ -2125,7 +2125,7 @@ namespace MonitorSystem
 
 		private void menuItem_DeleteThisItem_Click(object sender, EventArgs e)
 		{
-			if (UserMessages.Confirm("Are you sure you want to delete " + treeViewTodolist.SelectedNode.Text + "?", "Confirm delete", owner: this))
+			if (UserMessages.Confirm(this, "Are you sure you want to delete " + treeViewTodolist.SelectedNode.Text + "?", "Confirm delete"))
 			{
 				bool successfulDelete = PerformDesktopAppDoTask(
 						PhpInterop.Username,
