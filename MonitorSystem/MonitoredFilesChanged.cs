@@ -41,10 +41,15 @@ namespace MonitorSystem
 					richTextBox_Description,
 					AutoCompleteInterop.GetWordlistOfFileContents(richTextBox_FileContents.Text, new List<char>() { '_' }));
 				richTextBox_FileContents.IsReadOnly = true;
-				if (details.OriginalFileName.ToLower().EndsWith(".sql"))
+				if (MainForm.IsFileInExtionFilter(details.OriginalFileName))
 				{
-					if (richTextBox_FileContents.ConfigurationManager.Language != "mssql")
-						richTextBox_FileContents.ConfigurationManager.Language = "mssql";
+					string syntaxLanguage =
+						details.OriginalFileName.ToLower().EndsWith(".sql") ? "mssql"
+						 : details.OriginalFileName.ToLower().EndsWith(".xml") ? "xml"
+						 : details.OriginalFileName.ToLower().EndsWith(".cs") ? "cs" :
+						 "";
+					if (richTextBox_FileContents.ConfigurationManager.Language != syntaxLanguage)
+						richTextBox_FileContents.ConfigurationManager.Language = syntaxLanguage;
 				}
 				else UserMessages.ShowWarningMessage("Filetype not recognized cannot implement syntax highlighting: " + details.OriginalFileName);
 				//richTextBox_FileContents.LoadFile(details.GetBackupFileName(), RichTextBoxStreamType.PlainText);

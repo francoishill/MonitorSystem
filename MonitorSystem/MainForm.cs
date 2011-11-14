@@ -1567,7 +1567,7 @@ namespace MonitorSystem
 			}
 		}
 
-		private bool IsFileInExtionFilter(string filePath)
+		public static bool IsFileInExtionFilter(string filePath)
 		{
 			foreach (string ex in AutobackupExtensionFilters)
 				if (filePath.ToLower().EndsWith(ex.ToLower()))
@@ -1575,7 +1575,7 @@ namespace MonitorSystem
 			return false;
 		}
 
-		private readonly string[] AutobackupExtensionFilters = new string[] { ".sql", ".xml" };
+		private static readonly string[] AutobackupExtensionFilters = new string[] { ".sql", ".xml", ".cs" };
 		Dictionary<string, Dictionary<DateTime, FileChangedDetails>> QueuedFileChanges = new Dictionary<string, Dictionary<DateTime, FileChangedDetails>>();
 		private void fileSystemWatcher_SqlFiles_Changed(object sender, FileSystemEventArgs e)
 		{

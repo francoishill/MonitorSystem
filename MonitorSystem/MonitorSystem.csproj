@@ -171,9 +171,6 @@
     <Compile Include="..\..\SharedClasses\QueueingActionsInterop.cs">
       <Link>QueueingActionsInterop.cs</Link>
     </Compile>
-    <Compile Include="..\..\SharedClasses\SharedClassesSettings.cs">
-      <Link>SharedClassesSettings.cs</Link>
-    </Compile>
     <Compile Include="..\..\SharedClasses\StylingInterop.cs">
       <Link>StylingInterop.cs</Link>
     </Compile>

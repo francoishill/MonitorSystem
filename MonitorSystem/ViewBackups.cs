@@ -62,10 +62,15 @@ namespace MonitorSystem
 				richTextBox_FileContents.IsReadOnly = false;
 				richTextBox_FileContents.Text = File.Exists(fcd.GetBackupFileName()) ? File.ReadAllText(fcd.GetBackupFileName()) : "";
 				richTextBox_FileContents.IsReadOnly = true;
-				if (fcd.OriginalFileName.ToLower().EndsWith(".sql"))
+				if (MainForm.IsFileInExtionFilter(fcd.OriginalFileName))
 				{
-					if (richTextBox_FileContents.ConfigurationManager.Language != "mssql")
-						richTextBox_FileContents.ConfigurationManager.Language = "mssql";
+					string syntaxLanguage =
+						fcd.OriginalFileName.ToLower().EndsWith(".sql") ? "mssql"
+						: fcd.OriginalFileName.ToLower().EndsWith(".xml") ? "xml"
+						: fcd.OriginalFileName.ToLower().EndsWith(".cs") ? "cs" :
+						"";
+					if (richTextBox_FileContents.ConfigurationManager.Language != syntaxLanguage)
+						richTextBox_FileContents.ConfigurationManager.Language = syntaxLanguage;
 				}
 				else UserMessages.ShowWarningMessage("Filetype not recognized cannot implement syntax highlighting: " + fcd.OriginalFileName);
 				//richTextBox_FileContents.LoadFile(fcd.GetBackupFileName(), RichTextBoxStreamType.PlainText);

@@ -158,7 +158,7 @@ namespace MonitorSystem
 
 			foreach (string file in files)
 			{
-				if (!File.Exists(file) && UserMessages.ShowWarningMessage("File not found: " + file, owner: this))
+				if (!File.Exists(file) && UserMessages.ShowWarningMessage(this, "File not found: " + file))
 					continue;
 
 				string fileToTransfer = file.Clone().ToString();
