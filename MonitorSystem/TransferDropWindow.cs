@@ -69,7 +69,7 @@ namespace MonitorSystem
 				});
 			};
 
-			SharedClassesSettings.EnsureAllSharedClassesSettingsNotNullCreateDefault();
+			//SharedClassesSettings.EnsureAllSharedClassesSettingsNotNullCreateDefault();
 		}
 
 		protected override void WndProc(ref Message m)
@@ -166,8 +166,8 @@ namespace MonitorSystem
 
 				await NetworkInterop.FtpUploadFiles(
 					"ftp://fjh.dyndns.org/tempReceived",
-					SharedClassesSettings.visualStudioInterop.FtpUsername,
-					SharedClassesSettings.visualStudioInterop.FtpPassword,
+					GlobalSettings.VisualStudioInteropSettings.Instance.FtpUsername,
+					GlobalSettings.VisualStudioInteropSettings.Instance.FtpPassword,
 					files,
 					textFeedbackEvent: textFeedbackEvent,
 					progressChanged: progressChangedEvent);
