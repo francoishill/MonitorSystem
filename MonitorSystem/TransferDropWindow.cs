@@ -145,7 +145,7 @@ namespace MonitorSystem
 		private async void UploadFilesToFtp(string[] files)
 		{
 
-			Socket socket;
+			//Socket socket;
 
 			ThreadingInterop.UpdateGuiFromThread(this, () =>
 			{
@@ -165,6 +165,7 @@ namespace MonitorSystem
 				Application.DoEvents();
 
 				await NetworkInterop.FtpUploadFiles(
+					null,
 					"ftp://fjh.dyndns.org/tempReceived",
 					GlobalSettings.VisualStudioInteropSettings.Instance.FtpUsername,
 					GlobalSettings.VisualStudioInteropSettings.Instance.FtpPassword,
