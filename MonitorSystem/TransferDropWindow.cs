@@ -9,6 +9,7 @@ using System.Windows.Forms;
 using System.Runtime.InteropServices;
 using System.IO;
 using System.Net.Sockets;
+using SharedClasses;
 
 namespace MonitorSystem
 {
@@ -193,16 +194,16 @@ namespace MonitorSystem
 
 		}
 
-		struct WindowPos
-		{
-			public IntPtr hwnd;
-			public IntPtr hwndInsertAfter;
-			public int x;
-			public int y;
-			public int width;
-			public int height;
-			public uint flags;
-		}
+		//struct WindowPos
+		//{
+		//	public IntPtr hwnd;
+		//	public IntPtr hwndInsertAfter;
+		//	public int x;
+		//	public int y;
+		//	public int width;
+		//	public int height;
+		//	public uint flags;
+		//}
 
 		struct POINT
 		{

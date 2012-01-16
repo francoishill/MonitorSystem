@@ -226,14 +226,14 @@ namespace MonitorSystem
 
 					fileNode.ContextMenu = this.contextMenu_FileNode;
 
-					bool AtleastOneFileModification = false;
+					//bool AtleastOneFileModification = false;
 					foreach (DateTime date in OriginalFilenamesWithModificationsDict[file].Keys)
 					{
 						FileChangedDetails fcd = OriginalFilenamesWithModificationsDict[file][date];
 						if (fcd.QueueStatus != FileChangedDetails.QueueStatusEnum.Accepted && fcd.QueueStatus != FileChangedDetails.QueueStatusEnum.Complete)
 						{
 							AtleastOneFile = true;
-							AtleastOneFileModification = true;
+							//AtleastOneFileModification = true;
 							TreeNode fileModifiedNode = new TreeNode(date.ToString(FileChangedDetails.humandfriendlyDateFormat));////MySQLdateformat));
 							fileModifiedNode.Tag = fcd;
 							fileModifiedNode.ContextMenu = this.contextMenu_ModificationNode;

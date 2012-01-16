@@ -172,17 +172,11 @@
     <Compile Include="..\..\SharedClasses\QueueingActionsInterop.cs">
       <Link>QueueingActionsInterop.cs</Link>
     </Compile>
-    <Compile Include="..\..\SharedClasses\StylingInterop.cs">
-      <Link>StylingInterop.cs</Link>
-    </Compile>
     <Compile Include="..\..\SharedClasses\TextFilesInterop.cs">
       <Link>TextFilesInterop.cs</Link>
     </Compile>
     <Compile Include="..\..\SharedClasses\UserActivityHook.cs">
       <Link>UserActivityHook.cs</Link>
-    </Compile>
-    <Compile Include="..\..\SharedClasses\Win32Api.cs">
-      <Link>Win32Api.cs</Link>
     </Compile>
     <Compile Include="..\..\SharedClasses\WindowsInterop.cs">
       <Link>WindowsInterop.cs</Link>
