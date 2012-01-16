@@ -11,6 +11,8 @@ using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
+using SharedClasses;
+using CustomBalloonTipClass = SharedClasses.CustomBalloonTipwpf.CustomBalloonTipClass;
 
 namespace MonitorSystem
 {
@@ -611,12 +613,12 @@ namespace MonitorSystem
 					CustomBalloonTipwpf.IconTypes.None,
 					(sndr) =>
 					{
-						if (sndr != null && sndr is string)
-							if (UserMessages.Confirm("Mark item as Done: " + sndr.ToString() + "?"))
+						if (sndr != null && sndr is CustomBalloonTipClass)
+							if (UserMessages.Confirm("Mark item as Done: " + (sndr as CustomBalloonTipClass).Message + "?"))
 							{
 								QueueingActionsInterop.EnqueueAction(delegate
 								{
-									string todoItemText = sndr.ToString();
+									string todoItemText = (sndr as CustomBalloonTipClass).Message;
 									List<string> todolistFileLines = TextFilesInterop.GetLinesFromTextFile(SmallTodolistFilePath, true);
 									if (!todolistFileLines.Contains(todoItemText)) UserMessages.ShowWarningMessage("Could not mark todo item as done, missing from file: " + todoItemText);
 									else

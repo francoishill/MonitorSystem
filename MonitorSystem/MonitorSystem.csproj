@@ -156,10 +156,6 @@
       <Link>CustomBalloonTip.designer.cs</Link>
       <DependentUpon>CustomBalloonTip.cs</DependentUpon>
     </Compile>
-    <Compile Include="..\..\SharedClasses\CustomBalloonTipwpf.xaml.cs">
-      <Link>CustomBalloonTipwpf.xaml.cs</Link>
-      <DependentUpon>CustomBalloonTipwpf.xaml</DependentUpon>
-    </Compile>
     <Compile Include="..\..\SharedClasses\Logging.cs">
       <Link>Logging.cs</Link>
     </Compile>
@@ -313,13 +309,6 @@
       <ProductName>Windows Installer 3.1</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
-  </ItemGroup>
-  <ItemGroup>
-    <Page Include="..\..\SharedClasses\CustomBalloonTipwpf.xaml">
-      <Link>CustomBalloonTipwpf.xaml</Link>
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\QuickAccess\InlineCommandToolkit\InlineCommandToolkit.csproj">
