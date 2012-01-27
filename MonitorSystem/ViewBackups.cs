@@ -176,10 +176,16 @@ namespace MonitorSystem
 
 			Dictionary<string, Dictionary<DateTime, FileChangedDetails>> OriginalFilenamesWithModificationsDict = null;// new Dictionary<string, Dictionary<DateTime, FileChangedDetails>>();
 		
+
+			bool IgnoreFilesInFoldersEndingWith_old = UserMessages.Confirm("Ignore all files in folders which end with '.._old\\'?");
+
 			while (RootDir.EndsWith("\\")) RootDir = RootDir.Substring(0, RootDir.Length - 1);
 			string[] backupFiles = Directory.GetFiles(RootDir, "*" + FileChangedDetails.backupExt, SearchOption.AllDirectories);
 			foreach (string backupFile in backupFiles)
 			{
+				//ignores all folders which ends on _old
+				if (IgnoreFilesInFoldersEndingWith_old && backupFile.ToLower().Contains("_old\\"))
+					continue;
 				//asdads.sql_2011 09 28 (13h29 55).bac
 				//"yyyy MM dd (HH\hmm ss)"
 				string datePartOfFile = backupFile.Substring(backupFile.LastIndexOf('_') + 1);

@@ -47,8 +47,8 @@ namespace MonitorSystem
 		{
 			get
 			{
-				if (Directory.Exists(@"C:\ProgramData\GLS\ReportSQLqueries"))
-					return @"C:\ProgramData\GLS\ReportSQLqueries";
+				if (Directory.Exists(@"C:\ProgramData\GLS"))//\ReportSQLqueries"))
+					return @"C:\ProgramData\GLS";//\ReportSQLqueries";
 				else if (Directory.Exists(@"C:\Francois\other\Test\SqlFilesAutobackup"))
 					return @"C:\Francois\other\Test\SqlFilesAutobackup";
 				else return @"c:\windows\system32";
