@@ -210,6 +210,7 @@ namespace MonitorSystem
 			MenuItem addBackupDescriptionMenuItem = new MenuItem("Add backup &description", delegate { (new AddBackupDescription()).Show(); });
 			MenuItem exitMenuItem = new MenuItem("E&xit", delegate { RequestApplicationQuit(); });
 			MenuItem viewallbackupsMenuItem = new MenuItem("View &all backups", delegate { ViewAllBackupsNow(); });
+			MenuItem showqueuedmessagesMenuItem = new MenuItem("Show &queued messages", delegate { ShowQueuedMessages(); });
 			//MenuItem testcustomballoontipMenuItem = new MenuItem("Test &custom balloontip", delegate { CustomBalloonTip.ShowCustomBalloonTip("Hallo", "This is a custom balloon tip for 3 seconds...", 3000, CustomBalloonTip.IconTypes.Shield, delegate { PerformBalloonTipClick(); }); });
 			MenuItem testWindowAnimations = new MenuItem("Test window &animations", delegate { (new TestAnimations()).Show(); });
 			MenuItem testSpeech = new MenuItem("Test &speech", delegate { (new TestSpeech()).Show(); });
@@ -229,6 +230,8 @@ namespace MonitorSystem
 				editOnlineTodoList,
 				addBackupDescriptionMenuItem,
 				viewallbackupsMenuItem,
+				new MenuItem("-"),
+				showqueuedmessagesMenuItem,
 				new MenuItem("-"),
 				exitMenuItem,				
 				testWindowAnimations,
@@ -724,7 +727,8 @@ namespace MonitorSystem
 				Application.Exit();
 			}
 			else
-				ShowBalloonTipNotification("Please process unread notifications", BalloonTipActionIn: BalloonTipActionEnum.ChangedFileList);
+				//ShowBalloonTipNotification("Please process unread notifications", BalloonTipActionIn: BalloonTipActionEnum.ChangedFileList);
+				ShowCustomBalloonTipNotification("Please process unread notifications", BalloonTipActionIn: BalloonTipActionEnum.ChangedFileList);
 			return false;
 		}
 
@@ -1983,7 +1987,7 @@ namespace MonitorSystem
 			if (!formViewBackups.Modal)
 			{
 				int countNodesAdded =
-					formViewBackups.RefreshNodes(null, fileSystemWatcher_SqlFiles.Path, LastFileChangedDetailsAdded);
+					formViewBackups.RefreshNodes(null, fileSystemWatcher_SqlFiles.Path, LastFileChangedDetailsAdded, true);
 				if (countNodesAdded == 0)
 				{
 					ShowBalloonTipNotification("No backup files found");

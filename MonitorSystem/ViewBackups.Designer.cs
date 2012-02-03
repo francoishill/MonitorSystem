@@ -77,7 +77,7 @@
 			// 
 			this.splitContainer1.Panel2.Controls.Add(this.richTextBox_Description);
 			this.splitContainer1.Size = new System.Drawing.Size(705, 500);
-			this.splitContainer1.SplitterDistance = 191;
+			this.splitContainer1.SplitterDistance = 189;
 			this.splitContainer1.SplitterWidth = 6;
 			this.splitContainer1.TabIndex = 0;
 			// 
@@ -87,11 +87,11 @@
 			this.label1.AutoSize = true;
 			this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.label1.ForeColor = System.Drawing.Color.Gray;
-			this.label1.Location = new System.Drawing.Point(479, 6);
+			this.label1.Location = new System.Drawing.Point(411, 6);
 			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(32, 13);
+			this.label1.Size = new System.Drawing.Size(100, 13);
 			this.label1.TabIndex = 4;
-			this.label1.Text = "Filter:";
+			this.label1.Text = "Filter by description:";
 			// 
 			// comboBox1
 			// 
@@ -117,7 +117,7 @@
 			this.treeView1.Name = "treeView1";
 			this.treeView1.ShowLines = false;
 			this.treeView1.ShowRootLines = false;
-			this.treeView1.Size = new System.Drawing.Size(705, 161);
+			this.treeView1.Size = new System.Drawing.Size(705, 159);
 			this.treeView1.TabIndex = 0;
 			this.treeView1.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeView1_AfterSelect);
 			this.treeView1.NodeMouseClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.treeView1_NodeMouseClick);
@@ -131,7 +131,7 @@
 			this.richTextBox_Description.Location = new System.Drawing.Point(0, 0);
 			this.richTextBox_Description.Name = "richTextBox_Description";
 			this.richTextBox_Description.ReadOnly = true;
-			this.richTextBox_Description.Size = new System.Drawing.Size(705, 303);
+			this.richTextBox_Description.Size = new System.Drawing.Size(705, 305);
 			this.richTextBox_Description.TabIndex = 0;
 			this.richTextBox_Description.Text = "";
 			this.richTextBox_Description.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
@@ -153,7 +153,7 @@
 			// 
 			this.toolStripStatusLabel1.BorderStyle = System.Windows.Forms.Border3DStyle.RaisedOuter;
 			this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
-			this.toolStripStatusLabel1.Size = new System.Drawing.Size(118, 18);
+			this.toolStripStatusLabel1.Size = new System.Drawing.Size(118, 17);
 			this.toolStripStatusLabel1.Text = "toolStripStatusLabel1";
 			// 
 			// toolStripDropDownButton_Filter

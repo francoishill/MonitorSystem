@@ -37,12 +37,11 @@ namespace MonitorSystem
 				//comboStripItem1.history.Add(comboStripItem1.Text);
 			};
 
-			comboBox1.TextChanged += delegate
-			//toolStripTextBox1.TextChanged += delegate
-			{
-				//foreach (TreeNode node in treeView1.Nodes)
-				RefreshNodes(comboBox1.Text);//toolStripTextBox1.Text);
-			};
+			//comboBox1.TextChanged += delegate
+			////toolStripTextBox1.TextChanged += delegate
+			//{
+				
+			//};
 		}
 
 		public bool AllowTextchangeCallback = true;
@@ -160,7 +159,10 @@ namespace MonitorSystem
 			//}
 		}
 
-		public int RefreshNodes(string filterString, string rootDir = null, FileChangedDetails lastFileChangedDetailsAdded = null)
+
+		bool IgnoreFilesInFoldersEndingWith_old = false;
+		bool AlreadyPromptedForIgnoreFiles = false;
+		public int RefreshNodes(string filterString, string rootDir = null, FileChangedDetails lastFileChangedDetailsAdded = null, bool ForceAskToIgnoreOldFolders = false)
 		{
 			if (rootDir != null) RootDir = rootDir;
 			if (lastFileChangedDetailsAdded != null) LastFileChangedDetailsAdded = lastFileChangedDetailsAdded;
@@ -175,9 +177,12 @@ namespace MonitorSystem
 			this.treeView1.Nodes.Clear();
 
 			Dictionary<string, Dictionary<DateTime, FileChangedDetails>> OriginalFilenamesWithModificationsDict = null;// new Dictionary<string, Dictionary<DateTime, FileChangedDetails>>();
-		
 
-			bool IgnoreFilesInFoldersEndingWith_old = UserMessages.Confirm("Ignore all files in folders which end with '.._old\\'?");
+			if (!AlreadyPromptedForIgnoreFiles || ForceAskToIgnoreOldFolders)
+			{
+				IgnoreFilesInFoldersEndingWith_old = UserMessages.Confirm("Ignore all files in folders which end with '.._old\\'?");
+				AlreadyPromptedForIgnoreFiles = true;
+			}
 
 			while (RootDir.EndsWith("\\")) RootDir = RootDir.Substring(0, RootDir.Length - 1);
 			string[] backupFiles = Directory.GetFiles(RootDir, "*" + FileChangedDetails.backupExt, SearchOption.AllDirectories);
@@ -305,6 +310,9 @@ namespace MonitorSystem
 		private void comboBox1_TextChanged(object sender, EventArgs e)
 		{
 			UpdateFilterBackgroundColor();
+
+			//foreach (TreeNode node in treeView1.Nodes)
+			RefreshNodes(comboBox1.Text);//toolStripTextBox1.Text);
 		}
 
 		private void UpdateFilterBackgroundColor()
