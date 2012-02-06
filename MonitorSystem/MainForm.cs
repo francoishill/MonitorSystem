@@ -165,6 +165,8 @@ namespace MonitorSystem
 			////Stream stream2 = new MemoryStream();
 			//myclass mc2 = (myclass)SerializationInterop.DeserializeCustom(stream, new myclass());
 			//MessageBox.Show(mc2.Name + ", " + mc2.Surname + ", " + mc2.Age);
+
+			//GenericSettings.EnsureAllSettingsAreInitialized();
 		}
 
 		//class myclass
