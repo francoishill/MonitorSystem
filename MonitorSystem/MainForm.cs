@@ -93,6 +93,7 @@ namespace MonitorSystem
 			catch { }
 
 			InitializeComponent();
+			WindowMessagesInterop.InitializeClientMessages();//"MonitorSystem");
 
 			RefreshSmallTodoitems();
 
@@ -251,7 +252,7 @@ namespace MonitorSystem
 
 		private void AddSmallTodoItem()
 		{
-			string newTodoItem = UserMessages.Prompt("Enter new todo item:");
+			string newTodoItem = InputBoxWPF.Prompt("Enter new todo item:");
 			if (newTodoItem != null && newTodoItem.Trim() != "")
 			{
 				List<string> todoItemlist = TextFilesInterop.GetLinesFromTextFile(SmallTodolistFilePath, false);
@@ -355,7 +356,29 @@ namespace MonitorSystem
 
 		protected override void WndProc(ref Message m)
 		{
-			if (m.Msg == Win32Api.WM_HOTKEY)
+			WindowMessagesInterop.MessageTypes mt;
+			WindowMessagesInterop.ClientHandleMessage(m.Msg, m.WParam, m.LParam, out mt);
+			if (mt == WindowMessagesInterop.MessageTypes.Show)
+			{
+				this.Show();
+				if (this.WindowState == FormWindowState.Minimized)
+					this.WindowState = FormWindowState.Normal;
+				bool tmptopmost = this.TopMost;
+				this.TopMost = true;
+				Application.DoEvents();
+				this.TopMost = tmptopmost;
+				this.Activate();
+			}
+			else if (mt == WindowMessagesInterop.MessageTypes.Close)
+			{
+				ForceClosing = true;
+				this.Close();
+			}
+			else if (mt == WindowMessagesInterop.MessageTypes.Hide)
+			{
+				this.WindowState = FormWindowState.Minimized;
+			}
+			else if (m.Msg == Win32Api.WM_HOTKEY)
 			{
 				if (m.WParam == new IntPtr(Win32Api.Hotkey1))
 					ShowQueuedMessages();
@@ -654,10 +677,11 @@ namespace MonitorSystem
 			System.Diagnostics.Process.Start("explorer", @"C:\Francois\tmp\Screenshots");
 		}
 
+		private bool ForceClosing = false;
 		private void Form1_FormClosing(object sender, FormClosingEventArgs e)
 		{
 			ApplicationRecoveryAndRestart.UnregisterApplicationRecoveryAndRestart();
-			if (e.CloseReason == CloseReason.UserClosing)
+			if (e.CloseReason == CloseReason.UserClosing && !ForceClosing)
 			{
 				this.WindowState = FormWindowState.Minimized;
 				e.Cancel = true;
