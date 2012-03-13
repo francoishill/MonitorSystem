@@ -21,7 +21,7 @@ namespace MonitorSystem
 		private static string ThisAppName = "MonitorSystem";
 		//public static readonly string LocalAppDataPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\" + "FJH" + "\\" + ThisAppName;
 		public static string SavedListFileName = WindowsInterop.LocalAppDataPath + "\\EmailAndPasswordList.fjset";
-		public static string LastAutobackupStateFileName =  WindowsInterop.LocalAppDataPath + "\\LastAutobackupState.fjset";
+		public static string LastAutobackupStateFileName = WindowsInterop.LocalAppDataPath + "\\LastAutobackupState.fjset";
 
 		private TransferDropWindow transferDropWindow = null;
 
@@ -93,7 +93,8 @@ namespace MonitorSystem
 			catch { }
 
 			InitializeComponent();
-			WindowMessagesInterop.InitializeClientMessages();//"MonitorSystem");
+			//WindowMessagesInterop.InitializeClientMessages();//"MonitorSystem");
+			StartPipeClient();
 
 			RefreshSmallTodoitems();
 
@@ -354,31 +355,71 @@ namespace MonitorSystem
 			if (Environment.CommandLine.ToLower().Contains(@"documents\visual studio 2010\")) labelTestCrash.Visible = true;
 		}
 
+		NamedPipesInterop.NamedPipeClient pipeclient;
+		private void StartPipeClient()
+		{
+			pipeclient = NamedPipesInterop.NamedPipeClient.StartNewPipeClient(
+			ActionOnError: (e) => { Console.WriteLine("Error occured: " + e.GetException().Message); },
+			ActionOnMessageReceived: (m) =>
+			{
+				if (m.MessageType == PipeMessageTypes.AcknowledgeClientRegistration)
+					Console.WriteLine("Client successfully registered.");
+				else
+				{
+					if (m.MessageType == PipeMessageTypes.Show)
+					{
+						this.Show();
+						if (this.WindowState == FormWindowState.Minimized)
+							this.WindowState = FormWindowState.Normal;
+						bool tmptopmost = this.TopMost;
+						this.TopMost = true;
+						Application.DoEvents();
+						this.TopMost = tmptopmost;
+						this.Activate();
+					}
+					else if (m.MessageType == PipeMessageTypes.Hide)
+					{
+						this.WindowState = FormWindowState.Minimized;
+					}
+					else if (m.MessageType == PipeMessageTypes.Close)
+					{
+						ForceClosing = true;
+						this.notifyIcon1.Visible = false;
+						if (this.InvokeRequired)
+							this.Invoke((Action)delegate { RequestApplicationQuit(); });
+						else
+							RequestApplicationQuit();
+					}
+				}
+			});
+		}
+
 		protected override void WndProc(ref Message m)
 		{
-			WindowMessagesInterop.MessageTypes mt;
-			WindowMessagesInterop.ClientHandleMessage(m.Msg, m.WParam, m.LParam, out mt);
-			if (mt == WindowMessagesInterop.MessageTypes.Show)
-			{
-				this.Show();
-				if (this.WindowState == FormWindowState.Minimized)
-					this.WindowState = FormWindowState.Normal;
-				bool tmptopmost = this.TopMost;
-				this.TopMost = true;
-				Application.DoEvents();
-				this.TopMost = tmptopmost;
-				this.Activate();
-			}
-			else if (mt == WindowMessagesInterop.MessageTypes.Close)
-			{
-				ForceClosing = true;
-				this.Close();
-			}
-			else if (mt == WindowMessagesInterop.MessageTypes.Hide)
-			{
-				this.WindowState = FormWindowState.Minimized;
-			}
-			else if (m.Msg == Win32Api.WM_HOTKEY)
+			//WindowMessagesInterop.MessageTypes mt;
+			//WindowMessagesInterop.ClientHandleMessage(m.Msg, m.WParam, m.LParam, out mt);
+			//if (mt == WindowMessagesInterop.MessageTypes.Show)
+			//{
+			//	this.Show();
+			//	if (this.WindowState == FormWindowState.Minimized)
+			//		this.WindowState = FormWindowState.Normal;
+			//	bool tmptopmost = this.TopMost;
+			//	this.TopMost = true;
+			//	Application.DoEvents();
+			//	this.TopMost = tmptopmost;
+			//	this.Activate();
+			//}
+			//else if (mt == WindowMessagesInterop.MessageTypes.Close)
+			//{
+			//	ForceClosing = true;
+			//	this.Close();
+			//}
+			//else if (mt == WindowMessagesInterop.MessageTypes.Hide)
+			//{
+			//	this.WindowState = FormWindowState.Minimized;
+			//}
+			//else
+			if (m.Msg == Win32Api.WM_HOTKEY)
 			{
 				if (m.WParam == new IntPtr(Win32Api.Hotkey1))
 					ShowQueuedMessages();
@@ -720,6 +761,8 @@ namespace MonitorSystem
 					}
 				}, true);
 				e.Cancel = false;
+				if (pipeclient != null)
+					pipeclient.ForceCancelRetryLoop = true;
 				//System.Diagnostics.Process.Start("shutdown", "-a");
 				//Interaction.Shell("shutdown -a", AppWinStyle.MinimizedFocus, false, -1);
 			}
@@ -750,7 +793,12 @@ namespace MonitorSystem
 			{
 				this.notifyIcon1.Visible = false;
 				Application.DoEvents();
-				Application.Exit();
+				ForceClosing = true;
+				if (pipeclient != null)
+					pipeclient.ForceCancelRetryLoop = true;
+				this.Close();
+				return true;
+				//Application.Exit();
 			}
 			else
 				//ShowBalloonTipNotification("Please process unread notifications", BalloonTipActionIn: BalloonTipActionEnum.ChangedFileList);
@@ -1959,11 +2007,11 @@ namespace MonitorSystem
 					!= FileAttributes.Hidden & fi.Extension != ".gz")
 				{
 					// Create the compressed file.
-					using (FileStream outFile = 
-                    			File.Create(fi.FullName + ".gz"))
+					using (FileStream outFile =
+								File.Create(fi.FullName + ".gz"))
 					{
-						using (GZipStream Compress = 
-                        	new GZipStream(outFile,
+						using (GZipStream Compress =
+							new GZipStream(outFile,
 							CompressionMode.Compress))
 						{
 							// Copy the source file into 
