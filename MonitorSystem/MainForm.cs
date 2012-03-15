@@ -93,8 +93,8 @@ namespace MonitorSystem
 			catch { }
 
 			InitializeComponent();
-			//WindowMessagesInterop.InitializeClientMessages();//"MonitorSystem");
-			StartPipeClient();
+			WindowMessagesInterop.InitializeClientMessages();//"MonitorSystem");
+			//StartPipeClient();
 
 			RefreshSmallTodoitems();
 
@@ -355,7 +355,7 @@ namespace MonitorSystem
 			if (Environment.CommandLine.ToLower().Contains(@"documents\visual studio 2010\")) labelTestCrash.Visible = true;
 		}
 
-		NamedPipesInterop.NamedPipeClient pipeclient;
+		/*NamedPipesInterop.NamedPipeClient pipeclient;
 		private void StartPipeClient()
 		{
 			pipeclient = NamedPipesInterop.NamedPipeClient.StartNewPipeClient(
@@ -392,34 +392,33 @@ namespace MonitorSystem
 					}
 				}
 			});
-		}
+		}*/
 
 		protected override void WndProc(ref Message m)
 		{
-			//WindowMessagesInterop.MessageTypes mt;
-			//WindowMessagesInterop.ClientHandleMessage(m.Msg, m.WParam, m.LParam, out mt);
-			//if (mt == WindowMessagesInterop.MessageTypes.Show)
-			//{
-			//	this.Show();
-			//	if (this.WindowState == FormWindowState.Minimized)
-			//		this.WindowState = FormWindowState.Normal;
-			//	bool tmptopmost = this.TopMost;
-			//	this.TopMost = true;
-			//	Application.DoEvents();
-			//	this.TopMost = tmptopmost;
-			//	this.Activate();
-			//}
-			//else if (mt == WindowMessagesInterop.MessageTypes.Close)
-			//{
-			//	ForceClosing = true;
-			//	this.Close();
-			//}
-			//else if (mt == WindowMessagesInterop.MessageTypes.Hide)
-			//{
-			//	this.WindowState = FormWindowState.Minimized;
-			//}
-			//else
-			if (m.Msg == Win32Api.WM_HOTKEY)
+			WindowMessagesInterop.MessageTypes mt;
+			WindowMessagesInterop.ClientHandleMessage(m.Msg, m.WParam, m.LParam, out mt);
+			if (mt == WindowMessagesInterop.MessageTypes.Show)
+			{
+				this.Show();
+				if (this.WindowState == FormWindowState.Minimized)
+					this.WindowState = FormWindowState.Normal;
+				bool tmptopmost = this.TopMost;
+				this.TopMost = true;
+				Application.DoEvents();
+				this.TopMost = tmptopmost;
+				this.Activate();
+			}
+			else if (mt == WindowMessagesInterop.MessageTypes.Close)
+			{
+				ForceClosing = true;
+				this.Close();
+			}
+			else if (mt == WindowMessagesInterop.MessageTypes.Hide)
+			{
+				this.WindowState = FormWindowState.Minimized;
+			}
+			else if (m.Msg == Win32Api.WM_HOTKEY)
 			{
 				if (m.WParam == new IntPtr(Win32Api.Hotkey1))
 					ShowQueuedMessages();
@@ -761,8 +760,8 @@ namespace MonitorSystem
 					}
 				}, true);
 				e.Cancel = false;
-				if (pipeclient != null)
-					pipeclient.ForceCancelRetryLoop = true;
+				//if (pipeclient != null)
+				//	pipeclient.ForceCancelRetryLoop = true;
 				//System.Diagnostics.Process.Start("shutdown", "-a");
 				//Interaction.Shell("shutdown -a", AppWinStyle.MinimizedFocus, false, -1);
 			}
@@ -794,8 +793,8 @@ namespace MonitorSystem
 				this.notifyIcon1.Visible = false;
 				Application.DoEvents();
 				ForceClosing = true;
-				if (pipeclient != null)
-					pipeclient.ForceCancelRetryLoop = true;
+				//if (pipeclient != null)
+				//	pipeclient.ForceCancelRetryLoop = true;
 				this.Close();
 				return true;
 				//Application.Exit();
