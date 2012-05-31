@@ -346,7 +346,7 @@ namespace MonitorSystem
 
 			//InitializeHooks(true, true);
 			//notifyIcon1.ShowBalloonTip(3000, "Hooks disabled", "Hooks were disabled in code", ToolTipIcon.Info);
-			if (!Win32Api.RegisterHotKey(this.Handle, Win32Api.Hotkey1, Win32Api.MOD_WIN, (int)Keys.Q)) UserMessages.ShowWarningMessage("QuickAccess could not register hotkey WinKey + Q");
+			if (!Win32Api.RegisterHotKey(this.Handle, Win32Api.Hotkey1, Win32Api.MOD_WIN, (int)Keys.Q)) UserMessages.ShowWarningMessage("MonitorSystem could not register hotkey WinKey + Q");
 
 			ReadLastQueuedStatusIfFileExist();
 
