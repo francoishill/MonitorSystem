@@ -888,7 +888,11 @@ namespace MonitorSystem
 
 				ThreadingInterop.PerformVoidFunctionSeperateThread(() =>
 				{
-					tmpkey = PostPHP(PhpInterop.ServerAddress + "/generateprivatekey.php", "username=" + PhpInterop.Username + "&password=" + PhpInterop.Password);
+					string tmpResult;
+					if (WebInterop.PostPHP(PhpInterop.ServerAddress + "/generateprivatekey.php", "username=" + PhpInterop.Username + "&password=" + PhpInterop.Password, out tmpResult))
+						tmpkey = tmpResult;
+					else
+						appendLogTextbox(tmpResult);
 				});
 
 				string tmpSuccessKeyString = "Success: Key=";
@@ -1071,61 +1075,6 @@ namespace MonitorSystem
 			if (!treeViewTodolist.Nodes[Category].Nodes.ContainsKey(Subcat)) treeViewTodolist.Nodes[Category].Nodes.Add(Subcat, Subcat);
 			treeViewTodolist.Nodes[Category].Nodes[Subcat].Nodes.Add(tmpItemsNode);
 			tmpItemsNode.Parent.ContextMenu = contextMenuItemsSubcat;
-		}
-
-		/// <summary>
-		/// Post data to php, maximum length of data is 8Mb
-		/// </summary>
-		/// <param name="url">The url of the php, do not include the ?</param>
-		/// <param name="data">The data, i.e. "name=koos&surname=koekemoer". Note to not include the ?</param>
-		/// <returns>Returns the data received from the php (usually the "echo" statements in the php.</returns>
-		public string PostPHP(string url, string data)
-		{
-			string vystup = "";
-			try
-			{
-				data = data.Replace("+", "[|]");
-				//Our postvars
-				byte[] buffer = Encoding.ASCII.GetBytes(data);
-				//Initialisation, we use localhost, change if appliable
-				HttpWebRequest WebReq = (HttpWebRequest)WebRequest.Create(url);
-				//Our method is post, otherwise the buffer (postvars) would be useless
-				WebReq.Method = "POST";
-				//We use form contentType, for the postvars.
-				WebReq.ContentType = "application/x-www-form-urlencoded";
-				//The length of the buffer (postvars) is used as contentlength.
-				WebReq.ContentLength = buffer.Length;
-				//We open a stream for writing the postvars
-				Stream PostData = WebReq.GetRequestStream();
-				//Now we write, and afterwards, we close. Closing is always important!
-				PostData.Write(buffer, 0, buffer.Length);
-				PostData.Close();
-				//Get the response handle, we have no true response yet!
-				HttpWebResponse WebResp = (HttpWebResponse)WebReq.GetResponse();
-				//Let's show some information about the response
-				//System.Windows.Forms.MessageBox.Show(WebResp.StatusCode.ToString());
-				//System.Windows.Forms.MessageBox.Show(WebResp.Server);
-
-				//Now, we read the response (the string), and output it.
-				Stream Answer = WebResp.GetResponseStream();
-				StreamReader _Answer = new StreamReader(Answer);
-				vystup = _Answer.ReadToEnd();
-
-				//Congratulations, you just requested your first POST page, you
-				//can now start logging into most login forms, with your application
-				//Or other examples.
-				string tmpresult = vystup.Trim() + "\n";
-			}
-			catch (Exception exc)
-			{
-				if (!exc.Message.ToUpper().StartsWith("The remote name could not be resolved:".ToUpper()))
-					//LoggingClass.AddToLogList(UserMessages.MessageTypes.PostPHP, exc.Message);
-					appendLogTextbox("Post php: " + exc.Message);
-				else //LoggingClass.AddToLogList(UserMessages.MessageTypes.PostPHPremotename, exc.Message);
-					appendLogTextbox("Post php remote name: " + exc.Message);
-				//SysWinForms.MessageBox.Show("Error (092892): " + Environment.NewLine + exc.Message, "Exception error", SysWinForms.MessageBoxButtons.OK, SysWinForms.MessageBoxIcon.Error);
-			}
-			return vystup;
 		}
 
 		private void appendLogTextbox(string str, bool mustUpdateStatusText = true)
