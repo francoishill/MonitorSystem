@@ -172,6 +172,9 @@
     <Compile Include="..\..\SharedClasses\EventHandlers.cs">
       <Link>EventHandlers.cs</Link>
     </Compile>
+    <Compile Include="..\..\SharedClasses\fastJSON.cs">
+      <Link>fastJSON.cs</Link>
+    </Compile>
     <Compile Include="..\..\SharedClasses\FileSystemInterop.cs">
       <Link>FileSystemInterop.cs</Link>
     </Compile>
