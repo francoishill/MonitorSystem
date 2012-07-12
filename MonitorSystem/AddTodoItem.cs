@@ -13,11 +13,11 @@ namespace MonitorSystem
     {
         Control ControlToFocusFirst = null;
 
-        public AddTodoItem(string Category = null, string Subcat = null)
+        public AddTodoItem(string Category = "", string Subcat = "")
         {
             InitializeComponent();
-            if (Category != null) { textBoxCategory.Text = Category; ControlToFocusFirst = textBoxSubcat; }
-            if (Subcat != null) { textBoxSubcat.Text = Subcat; ControlToFocusFirst = textBoxItems; }
+			if (Category != "") { comboBoxCategory.Text = Category; ControlToFocusFirst = comboBoxSubcat; }
+            if (Subcat != "") { comboBoxSubcat.Text = Subcat; ControlToFocusFirst = textBoxItems; }
             dateTimePickerRemindOn.Value = DateTime.Now.AddMinutes(30);
         }
 
@@ -28,11 +28,11 @@ namespace MonitorSystem
 
         private void AcceptNow()
         {
-            if (textBoxCategory.Text.Trim().Length == 0) MessageBox.Show("Please enter a Category", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            else if (textBoxSubcat.Text.Trim().Length == 0) MessageBox.Show("Please enter a subcategory", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            if (comboBoxCategory.Text.Trim().Length == 0) MessageBox.Show("Please enter a Category", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+			else if (comboBoxSubcat.Text.Trim().Length == 0) MessageBox.Show("Please enter a subcategory", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             else if (textBoxItems.Text.Trim().Length == 0) MessageBox.Show("Please enter the items", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             //else if (textBoxDescription.Text.Trim().Length == 0 && MessageBox.Show("Accept a blank description?", "No description", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != System.Windows.Forms.DialogResult.Yes) { }
-            else if (textBoxDescription.Text.Trim().Length == 0) MessageBox.Show("Please enter a description", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+			//else if (textBoxDescription.Text.Trim().Length == 0) MessageBox.Show("Please enter a description", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
 
             else this.DialogResult = System.Windows.Forms.DialogResult.OK;
         }
@@ -77,5 +77,31 @@ namespace MonitorSystem
                 label6.Enabled = false;
             }
         }
+
+		private void comboBoxCategory_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			comboBoxSubcat.Items.Clear();
+
+			var tmpCatAndSubcat = comboBoxCategory.SelectedItem as TodoCategoryAndSubcats;
+			if (tmpCatAndSubcat == null)
+				return;
+
+			comboBoxSubcat.Items.AddRange(tmpCatAndSubcat.Subcategories.ToArray());
+		}
     }
+
+	public class TodoCategoryAndSubcats
+	{
+		public string Category;
+		public List<string> Subcategories;
+		public TodoCategoryAndSubcats(string Category, List<string> Subcategories)
+		{
+			this.Category = Category;
+			this.Subcategories = Subcategories;
+		}
+		public override string ToString()
+		{
+			return Category;
+		}
+	}
 }

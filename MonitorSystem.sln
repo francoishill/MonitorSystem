@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 11
+# Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonitorSystem", "MonitorSystem\MonitorSystem.csproj", "{5EAC9B03-C756-443A-9E70-0ECB8E06878B}"
 EndProject
 Global

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
+using SharedClasses;
 
 namespace MonitorSystem
 {
@@ -15,6 +16,7 @@ namespace MonitorSystem
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
+			AutoUpdatingForm.CheckForUpdates(delegate { Application.Exit(); });
             Application.Run(new MainForm());
         }
     }

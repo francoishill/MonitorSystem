@@ -1010,9 +1010,21 @@ namespace MonitorSystem
 			AddTodoItemNow();
 		}
 
-		private void AddTodoItemNow(string Category = null, string Subcat = null)
+		private void AddTodoItemNow(string Category = "", string Subcat = "")
 		{
 			AddTodoItem addform = new AddTodoItem(Category, Subcat);
+
+			if (treeViewTodolist.Nodes.Count == 0)
+				GetCurrentTodolist();
+
+			foreach (TreeNode catnode in treeViewTodolist.Nodes)
+			{
+				List<string> tmplist = new List<string>();
+				foreach (TreeNode subcatnode in catnode.Nodes)
+					tmplist.Add(subcatnode.Text);
+				addform.comboBoxCategory.Items.Add(new TodoCategoryAndSubcats(catnode.Text, tmplist));
+			}
+
 			if (addform.ShowDialog(this) == System.Windows.Forms.DialogResult.OK)
 			{
 				bool successfulAdd = PerformDesktopAppDoTask(
@@ -1020,10 +1032,10 @@ namespace MonitorSystem
 						"addtolist",
 						new List<string>()
                 {
-                    addform.textBoxCategory.Text,
-                    addform.textBoxSubcat.Text,
+                    addform.comboBoxCategory.Text,
+                    addform.comboBoxSubcat.Text,
                     addform.textBoxItems.Text,
-                    addform.textBoxDescription.Text,
+                    addform.textBoxDescription.Text ?? "",
                     addform.dateTimePickerRemindOn.Value.ToString(MySQLdateformat),
                     addform.dateTimePickerRemindOn.Checked ? "0" : "1",//This is correct, checbox sais remind but database it is stopsnooze
                     addform.checkBoxAutosnooze.Checked ? ((int)addform.numericUpDownAutosnoozeInterval.Value).ToString() : "0"
@@ -1034,8 +1046,8 @@ namespace MonitorSystem
 				{
 					appendLogTextbox("Successfully added " + addform.textBoxItems.Text);
 					AdditemToTreeview(
-							addform.textBoxCategory.Text,
-							addform.textBoxSubcat.Text,
+							addform.comboBoxCategory.Text,
+							addform.comboBoxSubcat.Text,
 							addform.textBoxItems.Text,
 							addform.textBoxDescription.Text,
 							false,
