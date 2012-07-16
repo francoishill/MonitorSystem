@@ -502,9 +502,9 @@ namespace MonitorSystem
 
 					foreach (string RegexUsernamePassword in currentEmailPasswordAndRegexList)
 					{
-						string tmpRegex = DecodeStringHex(RegexUsernamePassword.Split('|')[0]);
-						string tmpUsername = DecodeStringHex(RegexUsernamePassword.Split('|')[1]);
-						string tmpPassword = DecodeStringHex(RegexUsernamePassword.Split('|')[2]);
+						string tmpRegex = EncodeAndDecodeInterop.DecodeStringHex(RegexUsernamePassword.Split('|')[0], hex16CharactersToUseOnlineTodo);
+						string tmpUsername = EncodeAndDecodeInterop.DecodeStringHex(RegexUsernamePassword.Split('|')[1],hex16CharactersToUseOnlineTodo);
+						string tmpPassword = EncodeAndDecodeInterop.DecodeStringHex(RegexUsernamePassword.Split('|')[2], hex16CharactersToUseOnlineTodo);
 
 						//string currText = Clipboard.GetText();
 						if (Regex.IsMatch(activeTitle, tmpRegex, RegexOptions.IgnoreCase | RegexOptions.Multiline))
@@ -595,7 +595,7 @@ namespace MonitorSystem
 					activeTitle = activeTitle.Replace("\n", "").Replace("\r", "");
 					foreach (string RegexUsernamePassword in currentEmailPasswordAndRegexList)
 					{
-						string tmpRegex = DecodeStringHex(RegexUsernamePassword.Split('|')[0]);
+						string tmpRegex = EncodeAndDecodeInterop.DecodeStringHex(RegexUsernamePassword.Split('|')[0], hex16CharactersToUseOnlineTodo);
 						if (Regex.IsMatch(activeTitle, tmpRegex, RegexOptions.IgnoreCase | RegexOptions.Multiline))
 							Clipboard.Clear();
 					}
@@ -810,14 +810,14 @@ namespace MonitorSystem
 			currentEmailPasswordAndRegexList = TextFilesInterop.GetLinesFromTextFile(SavedListFileName, false);
 			string NewRegexEmailAndPasswordString = GetNewEmailAndPassword();
 			if (NewRegexEmailAndPasswordString != null)
-				currentEmailPasswordAndRegexList.Add(EncodeStringHex(NewRegexEmailAndPasswordString.Split('\t')[0]) + "|" + EncodeStringHex(NewRegexEmailAndPasswordString.Split('\t')[1]) + "|" + EncodeStringHex(NewRegexEmailAndPasswordString.Split('\t')[2]));
+				currentEmailPasswordAndRegexList.Add(EncodeAndDecodeInterop.EncodeStringHex(NewRegexEmailAndPasswordString.Split('\t')[0], hex16CharactersToUseOnlineTodo) + "|" + EncodeAndDecodeInterop.EncodeStringHex(NewRegexEmailAndPasswordString.Split('\t')[1], hex16CharactersToUseOnlineTodo) + "|" + EncodeAndDecodeInterop.EncodeStringHex(NewRegexEmailAndPasswordString.Split('\t')[2], hex16CharactersToUseOnlineTodo));
 			TextFilesInterop.WriteLinesToTextFile(SavedListFileName, currentEmailPasswordAndRegexList);
 			RefreshRegexList();
 			foreach (string RegexUsernamePassword in currentEmailPasswordAndRegexList)
 			{
-				string tmpRegex = DecodeStringHex(RegexUsernamePassword.Split('|')[0]);
-				string tmpUsername = DecodeStringHex(RegexUsernamePassword.Split('|')[1]);
-				string tmpPassword = DecodeStringHex(RegexUsernamePassword.Split('|')[2]);
+				string tmpRegex = EncodeAndDecodeInterop.DecodeStringHex(RegexUsernamePassword.Split('|')[0], hex16CharactersToUseOnlineTodo);
+				string tmpUsername = EncodeAndDecodeInterop.DecodeStringHex(RegexUsernamePassword.Split('|')[1], hex16CharactersToUseOnlineTodo);
+				string tmpPassword = EncodeAndDecodeInterop.DecodeStringHex(RegexUsernamePassword.Split('|')[2], hex16CharactersToUseOnlineTodo);
 				string nl = Environment.NewLine;
 			}
 		}
@@ -832,38 +832,7 @@ namespace MonitorSystem
 			return null;
 		}
 
-		static string password = "abcdefhkiljqwpmz";
-		private string EncodeStringHex(string StringToEncode)
-		{
-			string tmpstr = "";
-			foreach (char c in StringToEncode.ToCharArray())
-			{
-				int remainder;
-				int div;
-				try
-				{
-					if ((int)c == 8211) div = Math.DivRem((int)'-', 16, out remainder);
-					else div = Math.DivRem((int)c, 16, out remainder);
-					tmpstr += password[div].ToString() + password[remainder].ToString();
-				}
-				catch (Exception exc)
-				{
-					UserMessages.ShowErrorMessage("Error, could not encode hex, char " + c.ToString() + ", (int)char = " + (int)c + ": " + Environment.NewLine + exc.Message, "Exception error");
-				}
-			}
-			return tmpstr;
-		}
-
-		//enum StringTypeEnum { Regex, Username, Password };
-		private string DecodeStringHex(string StringToDecode)//, StringTypeEnum StringType)
-		{
-			string tmpstr = "";
-			for (int i = 0; i <= StringToDecode.Length - 2; i = i + 2)
-			{
-				tmpstr += (char)(password.IndexOf(StringToDecode[i]) * 16 + password.IndexOf(StringToDecode[i + 1]));
-			}
-			return tmpstr;
-		}
+		private static string hex16CharactersToUseOnlineTodo = "abcdefhkiljqwpmz";
 
 		//PerformFunctionSeperateThread((Func<int, string>)delegate(int i) { return ""; }, null);
 		public object PerformFunctionSeperateThread(Delegate method, object[] param)

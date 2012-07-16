@@ -201,6 +201,13 @@
     <Compile Include="..\..\SharedClasses\Logging.cs">
       <Link>Logging.cs</Link>
     </Compile>
+    <Compile Include="..\..\SharedClasses\MiniDownloadBarForm.cs">
+      <Link>MiniDownloadBarForm.cs</Link>
+    </Compile>
+    <Compile Include="..\..\SharedClasses\MiniDownloadBarForm.designer.cs">
+      <Link>MiniDownloadBarForm.designer.cs</Link>
+      <DependentUpon>MiniDownloadBarForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="..\..\SharedClasses\MouseHooks.cs">
       <Link>MouseHooks.cs</Link>
     </Compile>
@@ -329,6 +336,10 @@
     <EmbeddedResource Include="..\..\SharedClasses\CustomBalloonTip.resx">
       <Link>CustomBalloonTip.resx</Link>
       <DependentUpon>CustomBalloonTip.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\..\SharedClasses\MiniDownloadBarForm.resx">
+      <Link>MiniDownloadBarForm.resx</Link>
+      <DependentUpon>MiniDownloadBarForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="..\..\SharedClasses\UserMessageBox.resx">
       <Link>UserMessageBox.resx</Link>
