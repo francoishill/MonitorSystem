@@ -503,7 +503,7 @@ namespace MonitorSystem
 					foreach (string RegexUsernamePassword in currentEmailPasswordAndRegexList)
 					{
 						string tmpRegex = EncodeAndDecodeInterop.DecodeStringHex(RegexUsernamePassword.Split('|')[0], hex16CharactersToUseOnlineTodo);
-						string tmpUsername = EncodeAndDecodeInterop.DecodeStringHex(RegexUsernamePassword.Split('|')[1],hex16CharactersToUseOnlineTodo);
+						string tmpUsername = EncodeAndDecodeInterop.DecodeStringHex(RegexUsernamePassword.Split('|')[1], hex16CharactersToUseOnlineTodo);
 						string tmpPassword = EncodeAndDecodeInterop.DecodeStringHex(RegexUsernamePassword.Split('|')[2], hex16CharactersToUseOnlineTodo);
 
 						//string currText = Clipboard.GetText();
@@ -1043,7 +1043,11 @@ namespace MonitorSystem
 				int tmpRemindedCount = Convert.ToInt32(line.Split('\t')[7]);
 				bool tmpStopSnooze = line.Split('\t')[8] == "1";
 				int tmpAutosnoozeInterval = Convert.ToInt32(line.Split('\t')[9]);
-				AdditemToTreeview(tmpCategory, tmpSubcat, tmpItems, tmpDescription, tmpCompleted, tmpDue, tmpCreated, tmpRemindedCount, tmpStopSnooze, tmpAutosnoozeInterval);
+
+				if (string.IsNullOrWhiteSpace(tmpCategory) || string.IsNullOrWhiteSpace(tmpSubcat))
+					UserMessages.ShowWarningMessage("Cannot obtain item (category/subcat is empty) on line: " + line);
+				else
+					AdditemToTreeview(tmpCategory, tmpSubcat, tmpItems, tmpDescription, tmpCompleted, tmpDue, tmpCreated, tmpRemindedCount, tmpStopSnooze, tmpAutosnoozeInterval);
 			}
 			else UserMessages.ShowWarningMessage("The following line is invalid todo line: " + line);
 		}
