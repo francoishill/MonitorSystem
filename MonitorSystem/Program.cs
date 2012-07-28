@@ -16,8 +16,14 @@ namespace MonitorSystem
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-			AutoUpdatingForm.CheckForUpdates(delegate { Application.Exit(); });
-            Application.Run(new MainForm());
+			
+			MainForm mainform = new MainForm();
+			AutoUpdatingForm.CheckForUpdates(
+				exitApplicationAction: () => Application.Exit(),
+				ActionIfUptoDate_Versionstring: uptodateversion => ThreadingInterop.UpdateGuiFromThread(mainform, () => mainform.Text += " (up to date version " + uptodateversion + ")"),
+				ActionIfUnableToCheckForUpdates: errmsg => ThreadingInterop.UpdateGuiFromThread(mainform, () => mainform.Text += " (" + errmsg + ")"));
+
+            Application.Run(mainform);
         }
     }
 }
