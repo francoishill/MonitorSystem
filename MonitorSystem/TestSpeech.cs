@@ -27,8 +27,13 @@ namespace MonitorSystem
 				button1.Text = "Speak Now";
 				recognizer.SetInputToDefaultAudioDevice();
 				RecognitionResult result = recognizer.Recognize();
-				button1.Text = "&Click";
-				textBox1.Text += (textBox1.Text.Length > 0 ? Environment.NewLine : "") + result.Text;
+				if (result != null)
+				{
+					button1.Text = "&Click";
+					textBox1.Text += (textBox1.Text.Length > 0 ? Environment.NewLine : "") + result.Text;
+				}
+				else
+					UserMessages.ShowWarningMessage("Cannot recognize speech, no result");
 			}
 			catch (InvalidOperationException exception)
 			{
