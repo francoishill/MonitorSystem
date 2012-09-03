@@ -87,7 +87,8 @@ namespace MonitorSystem
 			{
 				labelRecoveryAndRestartSafe.Visible = true;
 				notifyIcon1.ShowBalloonTip(3000, "Recovery and Restart", "MonitorSystem is now Recovery and Restart Safe", ToolTipIcon.Info);
-			});
+			},
+			err => UserMessages.ShowErrorMessage(err));
 
 			try { Win32Api._fpreset(); }
 			catch { }
@@ -430,7 +431,7 @@ namespace MonitorSystem
 		private void InitializeHooks(bool InstallMouseHook, bool InstallKeyboardHook)
 		{
 			actHook = new UserActivityHook(InstallMouseHook, InstallKeyboardHook);
-			actHook.OnMouseActivity += new MouseEventHandler(actHook_OnMouseActivity);
+			actHook.OnMouseActivity += new UserActivityHook.MoreMouseEventHandler(actHook_OnMouseActivity);
 			actHook.KeyDown += new KeyEventHandler(actHook_KeyDown);
 			actHook.KeyPress += new KeyPressEventHandler(actHook_KeyPress);
 			actHook.KeyUp += new KeyEventHandler(actHook_KeyUp);
@@ -456,9 +457,9 @@ namespace MonitorSystem
 
 		enum NextActionEnum { Username, Password };
 		NextActionEnum NextAction = NextActionEnum.Username;
-		void actHook_OnMouseActivity(object sender, MouseEventArgs e)
+		void actHook_OnMouseActivity(object sender, UserActivityHook.MoreMouseEventArgs e)
 		{
-			switch (e.Button)
+			switch (e.Button.Button)
 			{
 				case MouseButtons.Left:
 					if ((ModifierKeys & Keys.Control) == Keys.Control && (ModifierKeys & Keys.Shift) == Keys.Shift && (ModifierKeys & Keys.Alt) == Keys.Alt)
@@ -810,7 +811,10 @@ namespace MonitorSystem
 			currentEmailPasswordAndRegexList = TextFilesInterop.GetLinesFromTextFile(SavedListFileName, false);
 			string NewRegexEmailAndPasswordString = GetNewEmailAndPassword();
 			if (NewRegexEmailAndPasswordString != null)
-				currentEmailPasswordAndRegexList.Add(EncodeAndDecodeInterop.EncodeStringHex(NewRegexEmailAndPasswordString.Split('\t')[0], hex16CharactersToUseOnlineTodo) + "|" + EncodeAndDecodeInterop.EncodeStringHex(NewRegexEmailAndPasswordString.Split('\t')[1], hex16CharactersToUseOnlineTodo) + "|" + EncodeAndDecodeInterop.EncodeStringHex(NewRegexEmailAndPasswordString.Split('\t')[2], hex16CharactersToUseOnlineTodo));
+				currentEmailPasswordAndRegexList.Add(
+					EncodeAndDecodeInterop.EncodeStringHex(NewRegexEmailAndPasswordString.Split('\t')[0], (err) => UserMessages.ShowErrorMessage(err), hex16CharactersToUseOnlineTodo)
+					+ "|" + EncodeAndDecodeInterop.EncodeStringHex(NewRegexEmailAndPasswordString.Split('\t')[1], (err) => UserMessages.ShowErrorMessage(err), hex16CharactersToUseOnlineTodo)
+					+ "|" + EncodeAndDecodeInterop.EncodeStringHex(NewRegexEmailAndPasswordString.Split('\t')[2], (err) => UserMessages.ShowErrorMessage(err), hex16CharactersToUseOnlineTodo));
 			TextFilesInterop.WriteLinesToTextFile(SavedListFileName, currentEmailPasswordAndRegexList);
 			RefreshRegexList();
 			foreach (string RegexUsernamePassword in currentEmailPasswordAndRegexList)
@@ -2163,7 +2167,7 @@ namespace MonitorSystem
 
 		private void label5_Click(object sender, EventArgs e)
 		{
-			ApplicationRecoveryAndRestart.TestCrash(true);
+			ApplicationRecoveryAndRestart.TestCrash(true, (msg) => UserMessages.Confirm(msg));
 		}
 	}
 

@@ -61,7 +61,7 @@
 			this.menuItem_AddItemToThisCategory = new System.Windows.Forms.MenuItem();
 			this.labelTestCrash = new System.Windows.Forms.Label();
 			this.labelRecoveryAndRestartSafe = new System.Windows.Forms.Label();
-			this.scintilla_DummyScintilla = new ScintillaNet.Scintilla();
+			this.scintilla_DummyScintilla = new ScintillaNET.Scintilla();
 			this.statusStrip1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -417,7 +417,7 @@
 			this.scintilla_DummyScintilla.Styles.Max.BackColor = System.Drawing.SystemColors.Window;
 			this.scintilla_DummyScintilla.TabIndex = 23;
 			this.scintilla_DummyScintilla.Text = "Dummy control to speed up Scintilla loading time";
-			this.scintilla_DummyScintilla.UseFont = true;
+			//this.scintilla_DummyScintilla.UseFont = true;
 			this.scintilla_DummyScintilla.Visible = false;
 			// 
 			// MainForm
@@ -506,6 +506,6 @@
 		private System.Windows.Forms.MenuItem menuItem_AddItemToThisCategory;
 		private System.Windows.Forms.Label labelTestCrash;
 		private System.Windows.Forms.Label labelRecoveryAndRestartSafe;
-		private ScintillaNet.Scintilla scintilla_DummyScintilla;
+		private ScintillaNET.Scintilla scintilla_DummyScintilla;
 	}
 }

@@ -171,6 +171,7 @@ namespace MonitorSystem
 					GlobalSettings.VisualStudioInteropSettings.Instance.FtpUsername,
 					GlobalSettings.VisualStudioInteropSettings.Instance.FtpPassword,
 					files,
+					(err) => UserMessages.ShowErrorMessage(err),
 					textFeedbackEvent: textFeedbackEvent,
 					progressChanged: progressChangedEvent);
 

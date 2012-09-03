@@ -39,7 +39,7 @@
 			this.menuItem_Accept = new System.Windows.Forms.MenuItem();
 			this.menuItem_Discard = new System.Windows.Forms.MenuItem();
 			this.splitContainer2 = new System.Windows.Forms.SplitContainer();
-			this.richTextBox_FileContents = new ScintillaNet.Scintilla();
+			this.richTextBox_FileContents = new ScintillaNET.Scintilla();
 			((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
 			this.splitContainer1.Panel1.SuspendLayout();
 			this.splitContainer1.Panel2.SuspendLayout();
@@ -168,12 +168,12 @@
 			// 
 			this.richTextBox_FileContents.ConfigurationManager.Language = "mssql";
 			this.richTextBox_FileContents.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.richTextBox_FileContents.Folding.Flags = ((ScintillaNet.FoldFlag)((ScintillaNet.FoldFlag.LineBeforeContracted | ScintillaNet.FoldFlag.LineAfterContracted)));
+			this.richTextBox_FileContents.Folding.Flags = ((ScintillaNET.FoldFlag)((ScintillaNET.FoldFlag.LineBeforeContracted | ScintillaNET.FoldFlag.LineAfterContracted)));
 			this.richTextBox_FileContents.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel, ((byte)(0)));
 			this.richTextBox_FileContents.IsBraceMatching = true;
 			this.richTextBox_FileContents.IsReadOnly = true;
-			this.richTextBox_FileContents.LineWrap.Mode = ScintillaNet.WrapMode.Word;
-			this.richTextBox_FileContents.LineWrap.VisualFlags = ((ScintillaNet.WrapVisualFlag)((ScintillaNet.WrapVisualFlag.End | ScintillaNet.WrapVisualFlag.Start)));
+			this.richTextBox_FileContents.LineWrapping.Mode = ScintillaNET.LineWrappingMode.Word;
+			this.richTextBox_FileContents.LineWrapping.VisualFlags = ((ScintillaNET.LineWrappingVisualFlags)((ScintillaNET.LineWrappingVisualFlags.End | ScintillaNET.LineWrappingVisualFlags.Start)));
 			this.richTextBox_FileContents.Location = new System.Drawing.Point(0, 0);
 			this.richTextBox_FileContents.Margins.FoldMarginColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
 			this.richTextBox_FileContents.Margins.Margin0.Width = 30;
@@ -181,7 +181,7 @@
 			this.richTextBox_FileContents.Name = "richTextBox_FileContents";
 			this.richTextBox_FileContents.Size = new System.Drawing.Size(531, 459);
 			this.richTextBox_FileContents.TabIndex = 1;
-			this.richTextBox_FileContents.UseFont = true;
+			//this.richTextBox_FileContents.UseFont = true;
 			this.richTextBox_FileContents.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler(this.MonitoredFilesChanged_PreviewKeyDown);
 			// 
 			// MonitoredFilesChanged
@@ -222,6 +222,6 @@
 		private System.Windows.Forms.MenuItem menuItem_Discard;
 		private System.Windows.Forms.SplitContainer splitContainer2;
 		public System.Windows.Forms.RichTextBox richTextBox_Description;
-		private ScintillaNet.Scintilla richTextBox_FileContents;
+		private ScintillaNET.Scintilla richTextBox_FileContents;
 	}
 }

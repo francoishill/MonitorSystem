@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>MonitorSystem</RootNamespace>
     <AssemblyName>MonitorSystem</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <TargetFrameworkProfile>
     </TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
@@ -154,13 +154,11 @@
     <Compile Include="..\..\SharedClasses\AutoCompleteInterop.cs">
       <Link>AutoCompleteInterop.cs</Link>
     </Compile>
-    <Compile Include="..\..\SharedClasses\AutoUpdatingForm.cs">
-      <Link>AutoUpdatingForm.cs</Link>
-      <SubType>Form</SubType>
+    <Compile Include="..\..\SharedClasses\AutoUpdating.cs">
+      <Link>AutoUpdating.cs</Link>
     </Compile>
-    <Compile Include="..\..\SharedClasses\AutoUpdatingForm.designer.cs">
-      <Link>AutoUpdatingForm.designer.cs</Link>
-      <DependentUpon>AutoUpdatingForm.cs</DependentUpon>
+    <Compile Include="..\..\SharedClasses\CompareObjects.cs">
+      <Link>CompareObjects.cs</Link>
     </Compile>
     <Compile Include="..\..\SharedClasses\CustomBalloonTip.cs">
       <Link>CustomBalloonTip.cs</Link>
@@ -229,8 +227,14 @@
     <Compile Include="..\..\SharedClasses\PhpInterop.cs">
       <Link>PhpInterop.cs</Link>
     </Compile>
+    <Compile Include="..\..\SharedClasses\ProcessesInterop.cs">
+      <Link>ProcessesInterop.cs</Link>
+    </Compile>
     <Compile Include="..\..\SharedClasses\QueueingActionsInterop.cs">
       <Link>QueueingActionsInterop.cs</Link>
+    </Compile>
+    <Compile Include="..\..\SharedClasses\RegistryInterop.cs">
+      <Link>RegistryInterop.cs</Link>
     </Compile>
     <Compile Include="..\..\SharedClasses\SerializationInterop.cs">
       <Link>SerializationInterop.cs</Link>
@@ -240,6 +244,9 @@
     </Compile>
     <Compile Include="..\..\SharedClasses\SharedClassesSettings.cs">
       <Link>SharedClassesSettings.cs</Link>
+    </Compile>
+    <Compile Include="..\..\SharedClasses\ShowNoCallbackNotificationInterop.cs">
+      <Link>ShowNoCallbackNotificationInterop.cs</Link>
     </Compile>
     <Compile Include="..\..\SharedClasses\StringExtensions.cs">
       <Link>StringExtensions.cs</Link>
@@ -256,16 +263,12 @@
     <Compile Include="..\..\SharedClasses\UserActivityHook.cs">
       <Link>UserActivityHook.cs</Link>
     </Compile>
-    <Compile Include="..\..\SharedClasses\UserMessageBox.cs">
-      <Link>UserMessageBox.cs</Link>
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="..\..\SharedClasses\UserMessageBox.designer.cs">
-      <Link>UserMessageBox.designer.cs</Link>
-      <DependentUpon>UserMessageBox.cs</DependentUpon>
-    </Compile>
     <Compile Include="..\..\SharedClasses\UserMessages.cs">
       <Link>UserMessages.cs</Link>
+    </Compile>
+    <Compile Include="..\..\SharedClasses\UserMessages.designer.cs">
+      <Link>UserMessages.designer.cs</Link>
+      <DependentUpon>UserMessages.cs</DependentUpon>
     </Compile>
     <Compile Include="..\..\SharedClasses\WebInterop.cs">
       <Link>WebInterop.cs</Link>
@@ -342,10 +345,6 @@
     <Compile Include="ViewBackups.Designer.cs">
       <DependentUpon>ViewBackups.cs</DependentUpon>
     </Compile>
-    <EmbeddedResource Include="..\..\SharedClasses\AutoUpdatingForm.resx">
-      <Link>AutoUpdatingForm.resx</Link>
-      <DependentUpon>AutoUpdatingForm.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="..\..\SharedClasses\CustomBalloonTip.resx">
       <Link>CustomBalloonTip.resx</Link>
       <DependentUpon>CustomBalloonTip.cs</DependentUpon>
@@ -358,9 +357,9 @@
       <Link>MiniIndeterminateProgress.resx</Link>
       <DependentUpon>MiniIndeterminateProgress.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="..\..\SharedClasses\UserMessageBox.resx">
-      <Link>UserMessageBox.resx</Link>
-      <DependentUpon>UserMessageBox.cs</DependentUpon>
+    <EmbeddedResource Include="..\..\SharedClasses\UserMessages.resx">
+      <Link>UserMessages.resx</Link>
+      <DependentUpon>UserMessages.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="AddBackupDescription.resx">
       <DependentUpon>AddBackupDescription.cs</DependentUpon>

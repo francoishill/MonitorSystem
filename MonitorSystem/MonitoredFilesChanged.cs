@@ -16,7 +16,7 @@ namespace MonitorSystem
 		public MonitoredFilesChanged()
 		{
 			InitializeComponent();
-			AutoCompleteInterop.EnableRichTextboxAutocomplete(richTextBox_Description);//, AutoCompleteInterop.GetWordlistOfFileContents(richTextBox_FileContents.Text));
+			AutoCompleteInterop.EnableRichTextboxAutocomplete(richTextBox_Description, (err) => UserMessages.ShowErrorMessage(err));//, AutoCompleteInterop.GetWordlistOfFileContents(richTextBox_FileContents.Text));
 		}
 
 		private void treeView1_AfterSelect(object sender, TreeViewEventArgs e)
@@ -39,7 +39,8 @@ namespace MonitorSystem
 				richTextBox_FileContents.Text = File.ReadAllText(details.GetBackupFileName());
 				AutoCompleteInterop.SetFullAutocompleteListOfRichTextbox(
 					richTextBox_Description,
-					AutoCompleteInterop.GetWordlistOfFileContents(richTextBox_FileContents.Text, new List<char>() { '_' }));
+					AutoCompleteInterop.GetWordlistOfFileContents(richTextBox_FileContents.Text, new List<char>() { '_' }),
+					(err) => UserMessages.ShowErrorMessage(err));
 				richTextBox_FileContents.IsReadOnly = true;
 				if (MainForm.IsFileInExtionFilter(details.OriginalFileName))
 				{
