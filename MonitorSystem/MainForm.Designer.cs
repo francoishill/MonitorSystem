@@ -384,7 +384,7 @@
 			this.labelTestCrash.Size = new System.Drawing.Size(58, 13);
 			this.labelTestCrash.TabIndex = 21;
 			this.labelTestCrash.Text = "Test Crash";
-			this.labelTestCrash.Visible = false;
+			this.labelTestCrash.Visible = true;
 			this.labelTestCrash.Click += new System.EventHandler(this.label5_Click);
 			// 
 			// labelRecoveryAndRestartSafe
@@ -455,6 +455,7 @@
 			this.Text = "Monitor System";
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
 			this.Shown += new System.EventHandler(this.Form1_Shown);
+			this.Load += new System.EventHandler(MainForm_Load);
 			this.SizeChanged += new System.EventHandler(this.Form1_SizeChanged);
 			this.statusStrip1.ResumeLayout(false);
 			this.statusStrip1.PerformLayout();

@@ -65,31 +65,6 @@ namespace MonitorSystem
 
 		public MainForm()
 		{
-			if (IsApplicationArestartedInstance())
-			{
-				//MessageBox.Show("Application successfully restarted from crash. No functionality incorporated yet.", "Restarted", MessageBoxButtons.OK, MessageBoxIcon.Information);
-				if (Directory.Exists(ApplicationRecoveryAndRestart.CrashReportsDirectory))
-				{
-					MessageBox.Show("MonitorSystem successfully restarted from crash. See Crash report.", "Restarted successfully", MessageBoxButtons.OK, MessageBoxIcon.Information);
-					Process.Start("explorer", "\"" + ApplicationRecoveryAndRestart.CrashReportsDirectory + "\"");
-				}
-				else MessageBox.Show("MonitorSystem successfully restarted from crash. Could not find Crash reports folder ("
-					+ ApplicationRecoveryAndRestart.CrashReportsDirectory
-					+ ").", "Successfully Restarted", MessageBoxButtons.OK, MessageBoxIcon.Information);
-			}
-
-			ApplicationRecoveryAndRestart.RegisterApplicationRecoveryAndRestart(delegate
-			{
-				//TODO: Application Restart and Recovery is there but no use so far?
-				ApplicationRecoveryAndRestart.WriteCrashReportFile("MonitorSystem", "Application crashed, more details not incorporated yet.");
-			},
-			delegate
-			{
-				labelRecoveryAndRestartSafe.Visible = true;
-				notifyIcon1.ShowBalloonTip(3000, "Recovery and Restart", "MonitorSystem is now Recovery and Restart Safe", ToolTipIcon.Info);
-			},
-			err => UserMessages.ShowErrorMessage(err));
-
 			try { Win32Api._fpreset(); }
 			catch { }
 
@@ -170,6 +145,36 @@ namespace MonitorSystem
 			//MessageBox.Show(mc2.Name + ", " + mc2.Surname + ", " + mc2.Age);
 
 			//GenericSettings.EnsureAllSettingsAreInitialized();
+		}
+
+		private void MainForm_Load(object sender, System.EventArgs e)
+		{
+			ApplicationRecoveryAndRestart.RegisterForRecoveryAndRestart(
+				delegate//On crash
+				{
+					this.notifyIcon1.Visible = false;
+					//File.WriteAllText(@"c:\francois\other\tmp.txt", DateTime.Now.ToString("HH:mm:ss"));
+				},
+				delegate//On successfull restart
+				{
+					//MessageBox.Show("Application successfully restarted from crash. No functionality incorporated yet.", "Restarted", MessageBoxButtons.OK, MessageBoxIcon.Information);
+					if (Directory.Exists(ApplicationRecoveryAndRestart.CrashReportsDirectory))
+					{
+						MessageBox.Show("MonitorSystem successfully restarted from crash. See Crash report.", "Restarted successfully", MessageBoxButtons.OK, MessageBoxIcon.Information);
+						Process.Start("explorer", "\"" + ApplicationRecoveryAndRestart.CrashReportsDirectory + "\"");
+					}
+					else MessageBox.Show("MonitorSystem successfully restarted from crash. Could not find Crash reports folder ("
+						+ ApplicationRecoveryAndRestart.CrashReportsDirectory
+						+ ").", "Successfully Restarted", MessageBoxButtons.OK, MessageBoxIcon.Information);
+				},
+				delegate//After 60 seconds, when restart ready
+				{
+					this.Invoke((Action)delegate
+					{
+						labelRecoveryAndRestartSafe.Visible = true;
+						notifyIcon1.ShowBalloonTip(3000, "Recovery and Restart", "MonitorSystem is now Restart Safe", ToolTipIcon.Info);
+					});
+				});
 		}
 
 		//class myclass
@@ -721,7 +726,7 @@ namespace MonitorSystem
 		private bool ForceClosing = false;
 		private void Form1_FormClosing(object sender, FormClosingEventArgs e)
 		{
-			ApplicationRecoveryAndRestart.UnregisterApplicationRecoveryAndRestart();
+			ApplicationRecoveryAndRestart.UnregisterForRecoveryAndRestart();
 			if (e.CloseReason == CloseReason.UserClosing && !ForceClosing)
 			{
 				this.WindowState = FormWindowState.Minimized;
@@ -2167,7 +2172,7 @@ namespace MonitorSystem
 
 		private void label5_Click(object sender, EventArgs e)
 		{
-			ApplicationRecoveryAndRestart.TestCrash(true, (msg) => UserMessages.Confirm(msg));
+			OwnUnhandledExceptionHandler.TestCrash(true, (msg) => UserMessages.Confirm(msg));
 		}
 	}
 
