@@ -243,10 +243,11 @@ namespace MonitorSystem
 				new MenuItem("-"),
 				showqueuedmessagesMenuItem,
 				new MenuItem("-"),
-				exitMenuItem,				
 				testWindowAnimations,
 				testSpeech,
-				transferFileDropWindow
+				transferFileDropWindow,
+				new MenuItem("-"),
+				exitMenuItem,
 			});
 			return notifyIcon1.ContextMenu;
 		}
