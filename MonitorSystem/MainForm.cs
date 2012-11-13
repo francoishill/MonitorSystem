@@ -90,7 +90,7 @@ namespace MonitorSystem
 				regkeyRUN.SetValue(ThisAppName, "\"" + System.Windows.Forms.Application.ExecutablePath + "\"", Microsoft.Win32.RegistryValueKind.String);
 			}*/
 
-			RegisterSnarl();
+			//RegisterSnarl();
 			//NotifySnarl("Halo", "How are you");
 
 			RefreshRegexList();
@@ -317,33 +317,6 @@ namespace MonitorSystem
 			List<string> tmpList = new List<string>();
 			tmpList = TextFilesInterop.GetLinesFromTextFile(SavedListFileName, false);
 			if (tmpList.Count > 0) currentEmailPasswordAndRegexList = tmpList;
-		}
-
-		private void RegisterSnarl()
-		{
-			try
-			{
-				System.Diagnostics.Process.Start(@"C:\Program Files (x86)\full phat\Snarl\tools\heysnarl.exe", "register?app-sig=app/" + ThisAppName + "&title=MonitorSystem in C#");
-			}
-			catch { }
-		}
-
-		private void NotifySnarl(string title, string msg)
-		{
-			try
-			{
-				System.Diagnostics.Process.Start(@"C:\Program Files (x86)\full phat\Snarl\tools\heysnarl.exe", "notify?app-sig=app/" + ThisAppName + "&title=" + title + "&text=" + msg);
-			}
-			catch { }
-		}
-
-		private void UnregisterSnarl()
-		{
-			try
-			{
-				System.Diagnostics.Process.Start(@"C:\Program Files (x86)\full phat\Snarl\tools\heysnarl.exe", "unregister?app-sig=app/" + ThisAppName);
-			}
-			catch { }
 		}
 
 		private void Form1_Shown(object sender, EventArgs e)
