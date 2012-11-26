@@ -193,6 +193,9 @@
     <Compile Include="..\..\SharedClasses\FileSystemInterop.cs">
       <Link>FileSystemInterop.cs</Link>
     </Compile>
+    <Compile Include="..\..\SharedClasses\FirepumaInterop.cs">
+      <Link>FirepumaInterop.cs</Link>
+    </Compile>
     <Compile Include="..\..\SharedClasses\Generics.cs">
       <Link>Generics.cs</Link>
     </Compile>

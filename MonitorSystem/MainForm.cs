@@ -831,37 +831,6 @@ namespace MonitorSystem
 			return res;
 		}
 
-		private string GetPrivateKey()
-		{
-			try
-			{
-				toolStripStatusLabelCurrentStatus.Text = "Obtaining pvt key...";
-				string tmpkey = null;
-
-				ThreadingInterop.PerformVoidFunctionSeperateThread(() =>
-				{
-					string tmpResult;
-					if (WebInterop.PostPHP(PhpInterop.ServerAddress + "/generateprivatekey.php", "username=" + PhpInterop.Username + "&password=" + PhpInterop.Password, out tmpResult))
-						tmpkey = tmpResult;
-					else
-						appendLogTextbox(tmpResult);
-				});
-
-				string tmpSuccessKeyString = "Success: Key=";
-				if (tmpkey != null && tmpkey.Length > 0 && tmpkey.ToUpper().StartsWith(tmpSuccessKeyString.ToUpper()))
-				{
-					tmpkey = tmpkey.Substring(tmpSuccessKeyString.Length).Replace("\n", "").Replace("\r", "");
-					toolStripStatusLabelCurrentStatus.Text = tmpkey;
-				}
-				return tmpkey;
-			}
-			catch (Exception exc)
-			{
-				appendLogTextbox("Obtain private key exception: " + exc.Message);
-				return null;
-			}
-		}
-
 		private void linkLabelGetCurrentTodolist_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
 		{
 			GetCurrentTodolist();
@@ -1142,7 +1111,10 @@ namespace MonitorSystem
 
 		private string GetResultOfPerformingDesktopAppDoTask(string UsernameIn, string TaskName, List<string> ArgumentList, bool MustWriteResultToLogsTextbox = false)
 		{
-			string tmpkey = GetPrivateKey();
+			//toolStripStatusLabelCurrentStatus.Text
+			string tmpkey = FirepumaInterop.GetPrivateKey(
+				(status) => { toolStripStatusLabelCurrentStatus.Text = status; appendLogTextbox(status); },
+				(err) => { appendLogTextbox("ERROR: " + err); });
 
 			if (tmpkey != null)
 			{
