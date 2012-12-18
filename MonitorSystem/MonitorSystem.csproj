@@ -178,6 +178,9 @@
       <Link>CustomBalloonTipwpf.xaml.cs</Link>
       <DependentUpon>CustomBalloonTipwpf.xaml</DependentUpon>
     </Compile>
+    <Compile Include="..\..\SharedClasses\DeveloperCommunication.cs">
+      <Link>DeveloperCommunication.cs</Link>
+    </Compile>
     <Compile Include="..\..\SharedClasses\EncodeAndDecodeInterop.cs">
       <Link>EncodeAndDecodeInterop.cs</Link>
     </Compile>
@@ -283,6 +286,10 @@
     </Compile>
     <Compile Include="..\..\SharedClasses\ThreadingInterop.cs">
       <Link>ThreadingInterop.cs</Link>
+    </Compile>
+    <Compile Include="..\..\SharedClasses\UnhandledExceptionsWindow.xaml.cs">
+      <Link>UnhandledExceptionsWindow.xaml.cs</Link>
+      <DependentUpon>UnhandledExceptionsWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="..\..\SharedClasses\UserActivityHook.cs">
       <Link>UserActivityHook.cs</Link>
@@ -435,11 +442,11 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="c:\Francois\Dev\DLLs\ScintillaNET\x86\SciLexer.dll">
+    <Content Include="..\..\..\DLLs\ScintillaNET\x86\SciLexer.dll">
       <Link>SciLexer.dll</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="c:\Francois\Dev\DLLs\ScintillaNET\x64\SciLexer64.dll">
+    <Content Include="..\..\..\DLLs\ScintillaNET\x64\SciLexer64.dll">
       <Link>SciLexer64.dll</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -475,6 +482,11 @@
     </Page>
     <Page Include="..\..\SharedClasses\InputBoxWPF.xaml">
       <Link>InputBoxWPF.xaml</Link>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="..\..\SharedClasses\UnhandledExceptionsWindow.xaml">
+      <Link>UnhandledExceptionsWindow.xaml</Link>
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
