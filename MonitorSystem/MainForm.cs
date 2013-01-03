@@ -218,6 +218,7 @@ namespace MonitorSystem
 			MenuItem showAllSmallTodoItems = new MenuItem("Show &all small todo items", delegate { ShowSmallTodolist(); });
 			MenuItem editOnlineTodoList = new MenuItem("Edit online &todo list", delegate { this.ShowForm(); });
 			MenuItem addBackupDescriptionMenuItem = new MenuItem("Add backup &description", delegate { (new AddBackupDescription()).Show(); });
+			MenuItem aboutMenuItem = new MenuItem("&About", delegate { ShowAboutWindow(); });
 			MenuItem exitMenuItem = new MenuItem("E&xit", delegate { RequestApplicationQuit(); });
 			MenuItem viewallbackupsMenuItem = new MenuItem("View &all backups", delegate { ViewAllBackupsNow(); });
 			MenuItem showqueuedmessagesMenuItem = new MenuItem("Show &queued messages", delegate { ShowQueuedMessages(); });
@@ -247,9 +248,20 @@ namespace MonitorSystem
 				testSpeech,
 				transferFileDropWindow,
 				new MenuItem("-"),
+				aboutMenuItem,
+				new MenuItem("-"),
 				exitMenuItem,
 			});
 			return notifyIcon1.ContextMenu;
+		}
+
+		private void ShowAboutWindow()
+		{
+			AboutWindow2.ShowAboutWindow(new System.Collections.ObjectModel.ObservableCollection<DisplayItem>()
+			{
+				new DisplayItem("Author", "Francois Hill"),
+				new DisplayItem("Icon(s) obtained from", null)
+			});
 		}
 
 		private void ToggleTransferDropWindowVisible(bool newVisibility)
