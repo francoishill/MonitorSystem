@@ -76,8 +76,8 @@
 			// splitContainer1.Panel2
 			// 
 			this.splitContainer1.Panel2.Controls.Add(this.richTextBox_Description);
-			this.splitContainer1.Size = new System.Drawing.Size(705, 500);
-			this.splitContainer1.SplitterDistance = 189;
+			this.splitContainer1.Size = new System.Drawing.Size(705, 486);
+			this.splitContainer1.SplitterDistance = 173;
 			this.splitContainer1.SplitterWidth = 6;
 			this.splitContainer1.TabIndex = 0;
 			// 
@@ -117,7 +117,7 @@
 			this.treeView1.Name = "treeView1";
 			this.treeView1.ShowLines = false;
 			this.treeView1.ShowRootLines = false;
-			this.treeView1.Size = new System.Drawing.Size(705, 159);
+			this.treeView1.Size = new System.Drawing.Size(705, 143);
 			this.treeView1.TabIndex = 0;
 			this.treeView1.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeView1_AfterSelect);
 			this.treeView1.NodeMouseClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.treeView1_NodeMouseClick);
@@ -131,7 +131,7 @@
 			this.richTextBox_Description.Location = new System.Drawing.Point(0, 0);
 			this.richTextBox_Description.Name = "richTextBox_Description";
 			this.richTextBox_Description.ReadOnly = true;
-			this.richTextBox_Description.Size = new System.Drawing.Size(705, 305);
+			this.richTextBox_Description.Size = new System.Drawing.Size(705, 307);
 			this.richTextBox_Description.TabIndex = 0;
 			this.richTextBox_Description.Text = "";
 			this.richTextBox_Description.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
@@ -142,9 +142,9 @@
 			this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripStatusLabel1,
             this.toolStripDropDownButton_Filter});
-			this.statusStrip1.Location = new System.Drawing.Point(0, 500);
+			this.statusStrip1.Location = new System.Drawing.Point(7, 493);
 			this.statusStrip1.Name = "statusStrip1";
-			this.statusStrip1.Size = new System.Drawing.Size(1228, 22);
+			this.statusStrip1.Size = new System.Drawing.Size(1214, 22);
 			this.statusStrip1.TabIndex = 1;
 			this.statusStrip1.Text = "statusStrip1";
 			this.statusStrip1.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler(this.ViewBackups_PreviewKeyDown);
@@ -176,7 +176,7 @@
 			// 
 			this.splitContainer2.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.splitContainer2.FixedPanel = System.Windows.Forms.FixedPanel.Panel1;
-			this.splitContainer2.Location = new System.Drawing.Point(0, 0);
+			this.splitContainer2.Location = new System.Drawing.Point(7, 7);
 			this.splitContainer2.Name = "splitContainer2";
 			// 
 			// splitContainer2.Panel1
@@ -186,7 +186,7 @@
 			// splitContainer2.Panel2
 			// 
 			this.splitContainer2.Panel2.Controls.Add(this.richTextBox_FileContents);
-			this.splitContainer2.Size = new System.Drawing.Size(1228, 500);
+			this.splitContainer2.Size = new System.Drawing.Size(1214, 486);
 			this.splitContainer2.SplitterDistance = 705;
 			this.splitContainer2.TabIndex = 2;
 			// 
@@ -206,9 +206,17 @@
 			this.richTextBox_FileContents.Margins.Margin0.Width = 30;
 			this.richTextBox_FileContents.Margins.Margin2.Width = 20;
 			this.richTextBox_FileContents.Name = "richTextBox_FileContents";
-			this.richTextBox_FileContents.Size = new System.Drawing.Size(519, 500);
+			this.richTextBox_FileContents.Size = new System.Drawing.Size(505, 486);
+			this.richTextBox_FileContents.Styles.BraceBad.Size = 7F;
+			this.richTextBox_FileContents.Styles.BraceLight.Size = 7F;
+			this.richTextBox_FileContents.Styles.ControlChar.Size = 7F;
+			this.richTextBox_FileContents.Styles.Default.BackColor = System.Drawing.SystemColors.Window;
+			this.richTextBox_FileContents.Styles.Default.Size = 7F;
+			this.richTextBox_FileContents.Styles.IndentGuide.Size = 7F;
+			this.richTextBox_FileContents.Styles.LastPredefined.Size = 7F;
+			this.richTextBox_FileContents.Styles.LineNumber.Size = 7F;
+			this.richTextBox_FileContents.Styles.Max.Size = 7F;
 			this.richTextBox_FileContents.TabIndex = 0;
-			//this.richTextBox_FileContents.UseFont = true;
 			this.richTextBox_FileContents.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler(this.ViewBackups_PreviewKeyDown);
 			// 
 			// contextMenu_FileNode
@@ -252,6 +260,7 @@
 			this.KeyPreview = true;
 			this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.Name = "ViewBackups";
+			this.Padding = new System.Windows.Forms.Padding(7);
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
 			this.Text = "ViewBackups";
 			this.WindowState = System.Windows.Forms.FormWindowState.Maximized;

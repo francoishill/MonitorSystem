@@ -43,15 +43,20 @@ namespace MonitorSystem
 
 		//MouseHooks.MouseHook mouseHook;
 
+		private static readonly List<string> cListOfPossibleMonitoredPaths = new List<string>()
+		{
+			@"C:\ProgramData\GLS",//\ReportSQLqueries",
+			@"C:\Francois\Other\TestMonitorSystemAutoBackup",
+			@"C:\Francois\other\Test\SqlFilesAutobackup"
+		};
 		public static string AutoBackupDir
 		{
 			get
 			{
-				if (Directory.Exists(@"C:\ProgramData\GLS"))//\ReportSQLqueries"))
-					return @"C:\ProgramData\GLS";//\ReportSQLqueries";
-				else if (Directory.Exists(@"C:\Francois\other\Test\SqlFilesAutobackup"))
-					return @"C:\Francois\other\Test\SqlFilesAutobackup";
-				else return @"c:\windows\system32";
+				foreach (var dir in cListOfPossibleMonitoredPaths)
+					if (Directory.Exists(dir))
+						return dir;
+				return @"c:\windows\system32";
 			}
 		}
 
@@ -669,7 +674,7 @@ namespace MonitorSystem
 				CustomBalloonTipwpf.ShowCustomBalloonTip(
 					queuedNotifications[key].Title,
 					queuedNotifications[key].Message,
-					5000,
+					TimeSpan.FromSeconds(5),
 					CustomBalloonTipwpf.IconTypes.None,
 					(sndr) =>
 					{
@@ -1611,7 +1616,7 @@ namespace MonitorSystem
 		private void ShowFileChangedBalloonTip(FileChangedDetails fcd)
 		{
 			//ShowBalloonTipNotification(fcd.FileName, 3000, "File changed, click to add description", ToolTipIcon.Info, BalloonTipActionEnum.ChangedFileList);
-			ShowCustomBalloonTipNotification(fcd.OriginalFileName, 3000, "File changed, click to add description", ToolTipIcon.Info, BalloonTipActionEnum.ChangedFileList);
+			ShowCustomBalloonTipNotification(fcd.OriginalFileName, TimeSpan.FromSeconds(3), "File changed, click to add description", ToolTipIcon.Info, BalloonTipActionEnum.ChangedFileList);
 			//ShowCustomBalloonTipNotification(fcd.FileName, 1000, "File changed, click to add description", ToolTipIcon.Info, BalloonTipActionEnum.ChangedFileList);
 			//ShowCustomBalloonTipNotification(fcd.FileName, 2000, "File changed, click to add description", ToolTipIcon.Info, BalloonTipActionEnum.ChangedFileList);
 			//ShowCustomBalloonTipNotification(fcd.FileName, 10000, "File changed, click to add description", ToolTipIcon.Info, BalloonTipActionEnum.ChangedFileList);
@@ -1628,15 +1633,17 @@ namespace MonitorSystem
 			//TODO: Dink bietjie oor speech input
 		}
 
-		private void ShowCustomBalloonTipNotification(string Description, int duration = 3000, string Title = "Title", ToolTipIcon icon = ToolTipIcon.Info, BalloonTipActionEnum BalloonTipActionIn = BalloonTipActionEnum.None)
+		private void ShowCustomBalloonTipNotification(string Description, TimeSpan? duration = null, string Title = "Title", ToolTipIcon icon = ToolTipIcon.Info, BalloonTipActionEnum BalloonTipActionIn = BalloonTipActionEnum.None)
 		{
+			duration = duration ?? TimeSpan.FromSeconds(3);
+
 			CustomBalloonTipwpf.IconTypes iconType =
 				icon == ToolTipIcon.Error ? CustomBalloonTipwpf.IconTypes.Error :
 				icon == ToolTipIcon.Info ? CustomBalloonTipwpf.IconTypes.Information :
 				icon == ToolTipIcon.Warning ? CustomBalloonTipwpf.IconTypes.Warning :
 				CustomBalloonTipwpf.IconTypes.None;
 			BalloonTipAction = BalloonTipActionIn;
-			CustomBalloonTipwpf.ShowCustomBalloonTip(Title, Description, duration, iconType, delegate { PerformBalloonTipClick(); });
+			CustomBalloonTipwpf.ShowCustomBalloonTip(Title, Description, duration.Value, iconType, delegate { PerformBalloonTipClick(); });
 		}
 
 		//private void tmpShowPopupToolStripMenuItem_Click(object sender, EventArgs e)

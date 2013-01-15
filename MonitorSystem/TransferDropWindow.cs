@@ -41,7 +41,7 @@ namespace MonitorSystem
 					CustomBalloonTipwpf.ShowCustomBalloonTip(
 						"Textfeedback file transfer",
 						evtargs.FeedbackText.Replace(Environment.NewLine, ".  "),
-						10000,
+						TimeSpan.FromMilliseconds(10),
 						CustomBalloonTipwpf.IconTypes.Information,
 						Scaling: 1.5);
 				});
@@ -135,7 +135,7 @@ namespace MonitorSystem
 				foreach (string file in files)
 					if (File.Exists(file))
 						fileCount++;
-				CustomBalloonTipwpf.ShowCustomBalloonTip("Items queued", fileCount + " items were added to the queue for transferring", 500, CustomBalloonTipwpf.IconTypes.Information, null, Scaling: 1);
+				CustomBalloonTipwpf.ShowCustomBalloonTip("Items queued", fileCount + " items were added to the queue for transferring", TimeSpan.FromMilliseconds(500), CustomBalloonTipwpf.IconTypes.Information, null, Scaling: 1);
 
 				//},
 				//false,//false,
