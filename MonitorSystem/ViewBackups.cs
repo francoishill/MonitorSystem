@@ -11,6 +11,7 @@ using System.Diagnostics;
 using FileChangedDetails = MonitorSystem.MainForm.FileChangedDetails;
 using System.Globalization;
 using System.Windows.Forms.Design;
+using SharedClasses;
 
 namespace MonitorSystem
 {

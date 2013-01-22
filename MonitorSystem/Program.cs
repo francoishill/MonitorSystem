@@ -17,14 +17,14 @@ namespace MonitorSystem
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
-			for (int i = 0; i < 5; i++)
+			/*for (int i = 0; i < 5; i++)
 				CustomBalloonTipwpf.ShowCustomBalloonTip(
 					"Title"+ i,
 					"Message" + i,
 					TimeSpan.FromSeconds(0),
 					CustomBalloonTipwpf.IconTypes.Information);
 			Application.Run(new Form());
-			return;
+			return;*/
 
 			MainForm mainform = new MainForm();
 			AutoUpdating.CheckForUpdates_ExceptionHandler(delegate
