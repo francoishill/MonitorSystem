@@ -35,7 +35,6 @@ namespace MonitorSystem
 				}
 				AllowTextchangeCallback = false;
 				richTextBox_Description.Text = details.Description;
-				//TODO: get a way to incorporate the ScintillaNET.dll file so that it does not have to be in the Path Environment Variables.
 				richTextBox_FileContents.IsReadOnly = false;
 				richTextBox_FileContents.Text = File.ReadAllText(details.GetBackupFileName());
 				AutoCompleteInterop.SetFullAutocompleteListOfRichTextbox(

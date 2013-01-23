@@ -128,7 +128,6 @@ namespace MonitorSystem
 			//  }
 			//};
 			//mouseHook.Start();
-			//DONE TODO: Textbox does not get cleared when showing queued messages
 			transferDropWindow = new TransferDropWindow(ref notifyIcon1, ref notifiIconContextMenu);
 			Rectangle workingArea = Screen.FromPoint(new Point(0, 0)).WorkingArea;
 			transferDropWindow.Location = new Point(workingArea.Left + (workingArea.Width - transferDropWindow.Width), workingArea.Top + (workingArea.Height - transferDropWindow.Height));
@@ -654,7 +653,6 @@ namespace MonitorSystem
 			ShowSmallTodolist();
 		}
 
-		//TODO: Continue implementing this concept (having a todo list which can be easily accessed by double clicking on tray icon
 		class QueuedNotificationClass
 		{
 			public string Title;
@@ -668,7 +666,6 @@ namespace MonitorSystem
 		private Dictionary<string, QueuedNotificationClass> queuedNotifications = new Dictionary<string, QueuedNotificationClass>();
 		private void ShowSmallTodolist()
 		{
-			//TODO: Write app for transferring files (over internet / TCP), must totally manage it and have resume capability.
 			if (queuedNotifications.Count == 0) this.notifyIcon1.ShowBalloonTip(3000, "No items", "No todo items currently loaded", ToolTipIcon.Info);
 			foreach (string key in queuedNotifications.Keys)
 				CustomBalloonTipwpf.ShowCustomBalloonTip(
@@ -728,8 +725,6 @@ namespace MonitorSystem
 				e.Cancel = true;
 				this.Show();
 				this.WindowState = FormWindowState.Normal;
-				//This code prevents shutdown
-				//DONE TODO: Should reload the "state" again (and notifying user) on next startup instead of preventing shutdown, i.e. reload the QueuedFileChanges Dictionary
 				bool ShouldRatherSaveThis_State_AndReloadOnPcStartupAgain_AndNotifyUser;
 				this.Activate();
 				toolStripStatusLabelCurrentStatus.Text = "Saving current state, please wait...";
@@ -1630,7 +1625,6 @@ namespace MonitorSystem
 		{
 			notifyIcon1.ShowBalloonTip(duration, Title, Description, icon);
 			BalloonTipAction = BalloonTipActionIn;
-			//TODO: Dink bietjie oor speech input
 		}
 
 		private void ShowCustomBalloonTipNotification(string Description, TimeSpan? duration = null, string Title = "Title", ToolTipIcon icon = ToolTipIcon.Info, BalloonTipActionEnum BalloonTipActionIn = BalloonTipActionEnum.None)
@@ -1884,7 +1878,6 @@ namespace MonitorSystem
 							{
 								try
 								{
-									//TODO: Eventually add functionality to delete files (according to date, empty description, timeafter previous backup, etc)
 									File.Delete(fcd.GetBackupFileName());//lastWrite));
 									fcd.QueueStatus = FileChangedDetails.QueueStatusEnum.Complete;
 								}

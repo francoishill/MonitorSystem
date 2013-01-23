@@ -20,7 +20,6 @@ namespace MonitorSystem
 		string RootDir = null;
 		FileChangedDetails LastFileChangedDetailsAdded;
 
-		//TODO: Should have string search (maybe even regex) functionality on file description. Can filter on file (regex of filename) and/or dates
 		public ViewBackups()
 		{
 			InitializeComponent();
