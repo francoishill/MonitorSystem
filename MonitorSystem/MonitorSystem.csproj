@@ -158,100 +158,15 @@
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\..\SharedClasses\AboutWindow2.xaml.cs">
-      <Link>AboutWindow2.xaml.cs</Link>
-      <DependentUpon>AboutWindow2.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="..\..\SharedClasses\ApplicationRecoveryAndRestart.cs">
-      <Link>ApplicationRecoveryAndRestart.cs</Link>
-    </Compile>
-    <Compile Include="..\..\SharedClasses\AppTypeIndependant.cs">
-      <Link>AppTypeIndependant.cs</Link>
-    </Compile>
     <Compile Include="..\..\SharedClasses\AutoCompleteInterop.cs">
       <Link>AutoCompleteInterop.cs</Link>
-    </Compile>
-    <Compile Include="..\..\SharedClasses\AutoUpdating.cs">
-      <Link>AutoUpdating.cs</Link>
-    </Compile>
-    <Compile Include="..\..\SharedClasses\CalledFromService.cs">
-      <Link>CalledFromService.cs</Link>
-    </Compile>
-    <Compile Include="..\..\SharedClasses\CompareObjects.cs">
-      <Link>CompareObjects.cs</Link>
-    </Compile>
-    <Compile Include="..\..\SharedClasses\CustomBalloonTip.cs">
-      <Link>CustomBalloonTip.cs</Link>
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="..\..\SharedClasses\CustomBalloonTip.designer.cs">
-      <Link>CustomBalloonTip.designer.cs</Link>
-      <DependentUpon>CustomBalloonTip.cs</DependentUpon>
     </Compile>
     <Compile Include="..\..\SharedClasses\CustomBalloonTipwpf.xaml.cs">
       <Link>CustomBalloonTipwpf.xaml.cs</Link>
       <DependentUpon>CustomBalloonTipwpf.xaml</DependentUpon>
     </Compile>
-    <Compile Include="..\..\SharedClasses\DeveloperCommunication.cs">
-      <Link>DeveloperCommunication.cs</Link>
-    </Compile>
-    <Compile Include="..\..\SharedClasses\EncodeAndDecodeInterop.cs">
-      <Link>EncodeAndDecodeInterop.cs</Link>
-    </Compile>
-    <Compile Include="..\..\SharedClasses\EncryptionInterop.cs">
-      <Link>EncryptionInterop.cs</Link>
-    </Compile>
-    <Compile Include="..\..\SharedClasses\EventHandlers.cs">
-      <Link>EventHandlers.cs</Link>
-    </Compile>
-    <Compile Include="..\..\SharedClasses\fastJSON.cs">
-      <Link>fastJSON.cs</Link>
-    </Compile>
-    <Compile Include="..\..\SharedClasses\FeedbackMessageTypes.cs">
-      <Link>FeedbackMessageTypes.cs</Link>
-    </Compile>
-    <Compile Include="..\..\SharedClasses\FileSystemInterop.cs">
-      <Link>FileSystemInterop.cs</Link>
-    </Compile>
     <Compile Include="..\..\SharedClasses\FirepumaInterop.cs">
       <Link>FirepumaInterop.cs</Link>
-    </Compile>
-    <Compile Include="..\..\SharedClasses\Generics.cs">
-      <Link>Generics.cs</Link>
-    </Compile>
-    <Compile Include="..\..\SharedClasses\InputBox.cs">
-      <Link>InputBox.cs</Link>
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="..\..\SharedClasses\InputBox.designer.cs">
-      <Link>InputBox.designer.cs</Link>
-      <DependentUpon>InputBox.cs</DependentUpon>
-    </Compile>
-    <Compile Include="..\..\SharedClasses\InputBoxWPF.xaml.cs">
-      <Link>InputBoxWPF.xaml.cs</Link>
-      <DependentUpon>InputBoxWPF.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="..\..\SharedClasses\Logging.cs">
-      <Link>Logging.cs</Link>
-    </Compile>
-    <Compile Include="..\..\SharedClasses\MiniDownloadBarForm.cs">
-      <Link>MiniDownloadBarForm.cs</Link>
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="..\..\SharedClasses\MiniDownloadBarForm.designer.cs">
-      <Link>MiniDownloadBarForm.designer.cs</Link>
-      <DependentUpon>MiniDownloadBarForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="..\..\SharedClasses\MiniIndeterminateProgress.cs">
-      <Link>MiniIndeterminateProgress.cs</Link>
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="..\..\SharedClasses\MiniIndeterminateProgress.designer.cs">
-      <Link>MiniIndeterminateProgress.designer.cs</Link>
-      <DependentUpon>MiniIndeterminateProgress.cs</DependentUpon>
-    </Compile>
-    <Compile Include="..\..\SharedClasses\MouseHooks.cs">
-      <Link>MouseHooks.cs</Link>
     </Compile>
     <Compile Include="..\..\SharedClasses\NetworkInterop.cs">
       <Link>NetworkInterop.cs</Link>
@@ -259,38 +174,8 @@
     <Compile Include="..\..\SharedClasses\NetworkInteropSerializedClasses\InfoTransferred.cs">
       <Link>InfoTransferred.cs</Link>
     </Compile>
-    <Compile Include="..\..\SharedClasses\PhpInterop.cs">
-      <Link>PhpInterop.cs</Link>
-    </Compile>
-    <Compile Include="..\..\SharedClasses\ProcessesInterop.cs">
-      <Link>ProcessesInterop.cs</Link>
-    </Compile>
-    <Compile Include="..\..\SharedClasses\QueueingActionsInterop.cs">
-      <Link>QueueingActionsInterop.cs</Link>
-    </Compile>
-    <Compile Include="..\..\SharedClasses\ReflectionInterop.cs">
-      <Link>ReflectionInterop.cs</Link>
-    </Compile>
-    <Compile Include="..\..\SharedClasses\RegistryInterop.cs">
-      <Link>RegistryInterop.cs</Link>
-    </Compile>
     <Compile Include="..\..\SharedClasses\SerializationInterop.cs">
       <Link>SerializationInterop.cs</Link>
-    </Compile>
-    <Compile Include="..\..\SharedClasses\SettingsInterop.cs">
-      <Link>SettingsInterop.cs</Link>
-    </Compile>
-    <Compile Include="..\..\SharedClasses\SettingsSimple.cs">
-      <Link>SettingsSimple.cs</Link>
-    </Compile>
-    <Compile Include="..\..\SharedClasses\SharedClassesSettings.cs">
-      <Link>SharedClassesSettings.cs</Link>
-    </Compile>
-    <Compile Include="..\..\SharedClasses\ShowNoCallbackNotificationInterop.cs">
-      <Link>ShowNoCallbackNotificationInterop.cs</Link>
-    </Compile>
-    <Compile Include="..\..\SharedClasses\StringExtensions.cs">
-      <Link>StringExtensions.cs</Link>
     </Compile>
     <Compile Include="..\..\SharedClasses\StylingInterop.cs">
       <Link>StylingInterop.cs</Link>
@@ -298,45 +183,14 @@
     <Compile Include="..\..\SharedClasses\TextFilesInterop.cs">
       <Link>TextFilesInterop.cs</Link>
     </Compile>
-    <Compile Include="..\..\SharedClasses\ThreadingInterop.cs">
-      <Link>ThreadingInterop.cs</Link>
-    </Compile>
-    <Compile Include="..\..\SharedClasses\UnhandledExceptionsWindow.xaml.cs">
-      <Link>UnhandledExceptionsWindow.xaml.cs</Link>
-      <DependentUpon>UnhandledExceptionsWindow.xaml</DependentUpon>
-    </Compile>
     <Compile Include="..\..\SharedClasses\UserActivityHook.cs">
       <Link>UserActivityHook.cs</Link>
-    </Compile>
-    <Compile Include="..\..\SharedClasses\UserMessages.cs">
-      <Link>UserMessages.cs</Link>
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="..\..\SharedClasses\UserMessages.designer.cs">
-      <Link>UserMessages.designer.cs</Link>
-      <DependentUpon>UserMessages.cs</DependentUpon>
-    </Compile>
-    <Compile Include="..\..\SharedClasses\WebInterop.cs">
-      <Link>WebInterop.cs</Link>
-    </Compile>
-    <Compile Include="..\..\SharedClasses\Win32Api.cs">
-      <Link>Win32Api.cs</Link>
     </Compile>
     <Compile Include="..\..\SharedClasses\WindowMessagesInterop.cs">
       <Link>WindowMessagesInterop.cs</Link>
     </Compile>
-    <Compile Include="..\..\SharedClasses\Windows7JumpListsInterop.cs">
-      <Link>Windows7JumpListsInterop.cs</Link>
-    </Compile>
     <Compile Include="..\..\SharedClasses\WindowsInterop.cs">
       <Link>WindowsInterop.cs</Link>
-    </Compile>
-    <Compile Include="..\..\SharedClasses\WPFdraggableCanvas.cs">
-      <Link>WPFdraggableCanvas.cs</Link>
-    </Compile>
-    <Compile Include="..\..\SharedClasses\WpfNotificationWindow.xaml.cs">
-      <Link>WpfNotificationWindow.xaml.cs</Link>
-      <DependentUpon>WpfNotificationWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="AddBackupDescription.cs">
       <SubType>Form</SubType>
@@ -394,22 +248,6 @@
     <Compile Include="ViewBackups.Designer.cs">
       <DependentUpon>ViewBackups.cs</DependentUpon>
     </Compile>
-    <EmbeddedResource Include="..\..\SharedClasses\CustomBalloonTip.resx">
-      <Link>CustomBalloonTip.resx</Link>
-      <DependentUpon>CustomBalloonTip.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="..\..\SharedClasses\MiniDownloadBarForm.resx">
-      <Link>MiniDownloadBarForm.resx</Link>
-      <DependentUpon>MiniDownloadBarForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="..\..\SharedClasses\MiniIndeterminateProgress.resx">
-      <Link>MiniIndeterminateProgress.resx</Link>
-      <DependentUpon>MiniIndeterminateProgress.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="..\..\SharedClasses\UserMessages.resx">
-      <Link>UserMessages.resx</Link>
-      <DependentUpon>UserMessages.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="AddBackupDescription.resx">
       <DependentUpon>AddBackupDescription.cs</DependentUpon>
     </EmbeddedResource>
@@ -493,33 +331,6 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <Page Include="..\..\SharedClasses\AboutWindow2.xaml">
-      <Link>AboutWindow2.xaml</Link>
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="..\..\SharedClasses\CustomBalloonTipwpf.xaml">
-      <Link>CustomBalloonTipwpf.xaml</Link>
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="..\..\SharedClasses\InputBoxWPF.xaml">
-      <Link>InputBoxWPF.xaml</Link>
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="..\..\SharedClasses\UnhandledExceptionsWindow.xaml">
-      <Link>UnhandledExceptionsWindow.xaml</Link>
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="..\..\SharedClasses\WpfNotificationWindow.xaml">
-      <Link>WpfNotificationWindow.xaml</Link>
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-  </ItemGroup>
-  <ItemGroup>
     <COMReference Include="Shell32">
       <Guid>{50A7E9B0-70EF-11D1-B75A-00A0C90564FE}</Guid>
       <VersionMajor>1</VersionMajor>
@@ -529,6 +340,19 @@
       <Isolated>False</Isolated>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </COMReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\SharedClasses\_OwnAppsSharedDll\_OwnAppsSharedDll.csproj">
+      <Project>{5AA050A3-9D5F-4FEF-9071-BB5D87A7BE3F}</Project>
+      <Name>_OwnAppsSharedDll</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="..\..\SharedClasses\CustomBalloonTipwpf.xaml">
+      <Link>CustomBalloonTipwpf.xaml</Link>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
